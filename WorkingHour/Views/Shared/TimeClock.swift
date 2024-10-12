@@ -33,7 +33,7 @@ struct TimeClock: View {
             HStack(alignment: .center, spacing: 12.0) {
                 VStack(alignment: .leading, spacing: 4.0) {
                     if let clockInTime = activeEntry?.clockInTime {
-                        Text(Date.now, style: .date)
+                        Text(clockInTime, style: .date)
                             .foregroundStyle(.secondary)
                             .fontWeight(.bold)
                         Text(clockInTime, style: .time)
