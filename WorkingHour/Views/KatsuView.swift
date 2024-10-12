@@ -23,6 +23,15 @@ struct KatsuView: View {
         NavigationStack {
             List(entries) { entry in
                 EntryRow(entry: entry)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        Button("Delete", systemImage: "xmark") {
+                            modelContext.delete(entry)
+                        }
+                        .tint(.red)
+                        Button("Edit", systemImage: "xmark") {
+                            // TODO: Open editor
+                        }
+                    }
             }
             .listStyle(.plain)
             .defaultScrollAnchor(.bottom)
