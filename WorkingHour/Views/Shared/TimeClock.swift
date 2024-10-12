@@ -14,6 +14,7 @@ struct TimeClock: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12.0) {
+            // Title Bar
             HStack(alignment: .center) {
                 Text("Working Hours")
                     .font(.title2)
@@ -27,6 +28,8 @@ struct TimeClock: View {
                 }
             }
             Divider()
+
+            // Working Time
             HStack(alignment: .center, spacing: 12.0) {
                 VStack(alignment: .leading, spacing: 4.0) {
                     if let clockInTime = activeEntry?.clockInTime {
@@ -67,49 +70,49 @@ struct TimeClock: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
             }
             .frame(maxWidth: .infinity)
-            HStack(alignment: .center, spacing: 12.0) {
-                Group {
-                    if let activeEntry, activeEntry.clockOutTime == nil {
-                        Button {
-                            clockOut()
-                        } label: {
-                            Label("Clock Out", systemImage: "rectangle.portrait.and.arrow.right")
-                                .fontWeight(.semibold)
-                                .padding([.top, .bottom], 2.0)
-                                .frame(maxWidth: .infinity)
-                        }
-                    } else {
-                        Button {
-                            clockIn()
-                        } label: {
-                            Label("Clock In", systemImage: "ipad.and.arrow.forward")
-                                .fontWeight(.semibold)
-                                .padding([.top, .bottom], 2.0)
-                                .frame(maxWidth: .infinity)
-                        }
+
+            // Clock In/Out Buttons
+            Group {
+                if let activeEntry, activeEntry.clockOutTime == nil {
+                    Button {
+                        clockOut()
+                    } label: {
+                        Label("Clock Out", systemImage: "rectangle.portrait.and.arrow.right")
+                            .fontWeight(.semibold)
+                            .padding([.top, .bottom], 4.0)
+                            .frame(maxWidth: .infinity)
+                    }
+                } else {
+                    Button {
+                        clockIn()
+                    } label: {
+                        Label("Clock In", systemImage: "ipad.and.arrow.forward")
+                            .fontWeight(.semibold)
+                            .padding([.top, .bottom], 4.0)
+                            .frame(maxWidth: .infinity)
                     }
                 }
-                .clipShape(.capsule)
-                .buttonStyle(.borderedProminent)
             }
+            .clipShape(.capsule)
+            .buttonStyle(.borderedProminent)
+
             if let activeEntry, activeEntry.clockOutTime == nil {
-                Divider()
-                VStack(alignment: .leading, spacing: 4.0) {
-                    Text("Break Time")
-                        .foregroundStyle(.secondary)
-                        .fontWeight(.bold)
-                    if let lastBreakTime = activeEntry.breakTimes.last,
-                       activeEntry.isOnBreak {
+                // Break Time
+                if activeEntry.isOnBreak,
+                   let lastBreakTime = activeEntry.breakTimes.last {
+                    VStack(alignment: .leading, spacing: 4.0) {
+                        Text("Break Time")
+                            .foregroundStyle(.secondary)
+                            .fontWeight(.bold)
                         Text(lastBreakTime.start, style: .timer)
                             .font(.largeTitle)
                             .fontWeight(.bold)
-                    } else {
-                        Text(verbatim: "-")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding([.top], 6.0)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+
+                // Start/End Break Buttons
                 HStack(alignment: .center, spacing: 12.0) {
                     Group {
                         if !activeEntry.isOnBreak {
@@ -118,7 +121,7 @@ struct TimeClock: View {
                             } label: {
                                 Label("Start Break", systemImage: "cup.and.heat.waves.fill")
                                     .fontWeight(.semibold)
-                                    .padding([.top, .bottom], 2.0)
+                                    .padding([.top, .bottom], 4.0)
                                     .frame(maxWidth: .infinity)
                             }
                         } else {
@@ -127,7 +130,7 @@ struct TimeClock: View {
                             } label: {
                                 Label("End Break", systemImage: "arrowshape.turn.up.backward.badge.clock.fill")
                                     .fontWeight(.semibold)
-                                    .padding([.top, .bottom], 2.0)
+                                    .padding([.top, .bottom], 4.0)
                                     .frame(maxWidth: .infinity)
                             }
                         }

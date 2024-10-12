@@ -23,7 +23,14 @@
       }
     },
     "Browse Past Entries" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "履歴を閲覧"
+          }
+        }
+      }
     },
     "Clock In" : {
       "localizations" : {
@@ -76,7 +83,14 @@
       }
     },
     "Month" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月"
+          }
+        }
+      }
     },
     "More" : {
       "localizations" : {
@@ -84,6 +98,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "その他"
+          }
+        }
+      }
+    },
+    "Select Month" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年月を選択"
           }
         }
       }
@@ -129,7 +153,14 @@
       }
     },
     "Year" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

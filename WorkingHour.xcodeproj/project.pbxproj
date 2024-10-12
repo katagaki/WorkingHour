@@ -19,6 +19,8 @@
 		E4260FAB2CBA0B450078946D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAA2CBA0B450078946D /* Localizable.xcstrings */; };
 		E4260FAD2CBA0B520078946D /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */; };
 		E4260FB02CBA11750078946D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAF2CBA11750078946D /* PrivacyInfo.xcprivacy */; };
+		E4260FB22CBAB1AF0078946D /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FB12CBAB1AE0078946D /* MoreView.swift */; };
+		E4260FB52CBAB8C20078946D /* xlsxwriter in Frameworks */ = {isa = PBXBuildFile; productRef = E4260FB42CBAB8C20078946D /* xlsxwriter */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +38,7 @@
 		E4260FAA2CBA0B450078946D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		E4260FAF2CBA11750078946D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		E4260FB12CBAB1AE0078946D /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4260FB52CBAB8C20078946D /* xlsxwriter in Frameworks */,
 				E4260F9A2CB975F30078946D /* Komponents in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -79,9 +83,9 @@
 		E4260F9F2CB9F68B0078946D /* WorkingHour */ = {
 			isa = PBXGroup;
 			children = (
-				E4260F812CB6B0EB0078946D /* Assets.xcassets */,
-				E4260F872CB6B0EB0078946D /* Info.plist */,
 				E4260F862CB6B0EB0078946D /* WorkingHour.entitlements */,
+				E4260F872CB6B0EB0078946D /* Info.plist */,
+				E4260F812CB6B0EB0078946D /* Assets.xcassets */,
 				E4260FAA2CBA0B450078946D /* Localizable.xcstrings */,
 				E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */,
 				E4260FA02CB9F6980078946D /* Views */,
@@ -95,6 +99,7 @@
 			children = (
 				E4260F7B2CB6B0EA0078946D /* App.swift */,
 				E4260F7D2CB6B0EA0078946D /* KatsuView.swift */,
+				E4260FB12CBAB1AE0078946D /* MoreView.swift */,
 				E4260FA12CB9F7410078946D /* Shared */,
 			);
 			path = Views;
@@ -145,6 +150,7 @@
 			name = "Working Hour";
 			packageProductDependencies = (
 				E4260F992CB975F30078946D /* Komponents */,
+				E4260FB42CBAB8C20078946D /* xlsxwriter */,
 			);
 			productName = WorkingHour;
 			productReference = E4260F782CB6B0EA0078946D /* Working Hour.app */;
@@ -177,6 +183,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				E4260F982CB975F30078946D /* XCRemoteSwiftPackageReference "Komponents" */,
+				E4260FB32CBAB8C20078946D /* XCRemoteSwiftPackageReference "xlsxwriter" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E4260F792CB6B0EA0078946D /* Products */;
@@ -235,6 +242,7 @@
 				E4260F942CB887B00078946D /* Project.swift in Sources */,
 				E4260F7C2CB6B0EA0078946D /* App.swift in Sources */,
 				E4260F972CB88B940078946D /* EntryRow.swift in Sources */,
+				E4260FB22CBAB1AF0078946D /* MoreView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,6 +470,14 @@
 				kind = branch;
 			};
 		};
+		E4260FB32CBAB8C20078946D /* XCRemoteSwiftPackageReference "xlsxwriter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/damuellen/xlsxwriter.swift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -469,6 +485,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E4260F982CB975F30078946D /* XCRemoteSwiftPackageReference "Komponents" */;
 			productName = Komponents;
+		};
+		E4260FB42CBAB8C20078946D /* xlsxwriter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E4260FB32CBAB8C20078946D /* XCRemoteSwiftPackageReference "xlsxwriter" */;
+			productName = xlsxwriter;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
