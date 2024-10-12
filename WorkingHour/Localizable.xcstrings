@@ -22,6 +22,9 @@
         }
       }
     },
+    "Browse Past Entries" : {
+
+    },
     "Clock In" : {
       "localizations" : {
         "ja" : {
@@ -72,6 +75,9 @@
         }
       }
     },
+    "Month" : {
+
+    },
     "More" : {
       "localizations" : {
         "ja" : {
@@ -121,6 +127,9 @@
           }
         }
       }
+    },
+    "Year" : {
+
     }
   },
   "version" : "1.0"

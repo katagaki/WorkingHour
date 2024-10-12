@@ -19,7 +19,7 @@ struct TimeClock: View {
                     .font(.title2)
                     .fontWeight(.bold)
                 Spacer()
-                if let clockInTime = activeEntry?.clockInTime {
+                if activeEntry?.clockOutTime == nil, let clockInTime = activeEntry?.clockInTime {
                     Text(clockInTime, style: .relative)
                         .font(.body)
                         .fontWeight(.semibold)
@@ -69,34 +69,37 @@ struct TimeClock: View {
             .frame(maxWidth: .infinity)
             HStack(alignment: .center, spacing: 12.0) {
                 Group {
-                    Button {
-                        clockIn()
-                    } label: {
-                        Label("Clock In", systemImage: "ipad.and.arrow.forward")
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
+                    if let activeEntry, activeEntry.clockOutTime == nil {
+                        Button {
+                            clockOut()
+                        } label: {
+                            Label("Clock Out", systemImage: "rectangle.portrait.and.arrow.right")
+                                .fontWeight(.semibold)
+                                .padding([.top, .bottom], 2.0)
+                                .frame(maxWidth: .infinity)
+                        }
+                    } else {
+                        Button {
+                            clockIn()
+                        } label: {
+                            Label("Clock In", systemImage: "ipad.and.arrow.forward")
+                                .fontWeight(.semibold)
+                                .padding([.top, .bottom], 2.0)
+                                .frame(maxWidth: .infinity)
+                        }
                     }
-                    .disabled(activeEntry != nil)
-                    Button {
-                        clockOut()
-                    } label: {
-                        Label("Clock Out", systemImage: "rectangle.portrait.and.arrow.right")
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .disabled(activeEntry == nil)
                 }
                 .clipShape(.capsule)
                 .buttonStyle(.borderedProminent)
             }
-            Divider()
-            HStack {
+            if let activeEntry, activeEntry.clockOutTime == nil {
+                Divider()
                 VStack(alignment: .leading, spacing: 4.0) {
                     Text("Break Time")
                         .foregroundStyle(.secondary)
                         .fontWeight(.bold)
-                    if let lastBreakTime = activeEntry?.breakTimes.last,
-                       activeEntry?.isOnBreak ?? false {
+                    if let lastBreakTime = activeEntry.breakTimes.last,
+                       activeEntry.isOnBreak {
                         Text(lastBreakTime.start, style: .timer)
                             .font(.largeTitle)
                             .fontWeight(.bold)
@@ -107,56 +110,66 @@ struct TimeClock: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                VStack(alignment: .leading, spacing: 12.0) {
+                HStack(alignment: .center, spacing: 12.0) {
                     Group {
-                        Button {
-                            startBreak()
-                        } label: {
-                            Label("Start Break", systemImage: "cup.and.heat.waves.fill")
-                                .fontWeight(.semibold)
-                                .frame(maxWidth: .infinity)
+                        if !activeEntry.isOnBreak {
+                            Button {
+                                startBreak()
+                            } label: {
+                                Label("Start Break", systemImage: "cup.and.heat.waves.fill")
+                                    .fontWeight(.semibold)
+                                    .padding([.top, .bottom], 2.0)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        } else {
+                            Button {
+                                endBreak()
+                            } label: {
+                                Label("End Break", systemImage: "arrowshape.turn.up.backward.badge.clock.fill")
+                                    .fontWeight(.semibold)
+                                    .padding([.top, .bottom], 2.0)
+                                    .frame(maxWidth: .infinity)
+                            }
                         }
-                        .disabled(activeEntry == nil || (activeEntry?.isOnBreak ?? true))
-                        Button {
-                            endBreak()
-                        } label: {
-                            Label("End Break", systemImage: "arrowshape.turn.up.backward.badge.clock.fill")
-                                .fontWeight(.semibold)
-                                .frame(maxWidth: .infinity)
-                        }
-                        .disabled(activeEntry == nil || !(activeEntry?.isOnBreak ?? true))
                     }
                     .clipShape(.capsule)
                     .buttonStyle(.borderedProminent)
                 }
-                .tint(.orange)
+                .tint(.pink)
             }
         }
         .padding()
     }
 
     func clockIn() {
-        let newEntry = ClockEntry(.now)
-        modelContext.insert(newEntry)
-        activeEntry = newEntry
+        withAnimation(.smooth.speed(2.0)) {
+            let newEntry = ClockEntry(.now)
+            modelContext.insert(newEntry)
+            activeEntry = newEntry
+        }
     }
 
     func clockOut() {
-        activeEntry?.clockOutTime = .now
-        activeEntry = nil
+        withAnimation(.smooth.speed(2.0)) {
+            activeEntry?.clockOutTime = .now
+        }
     }
 
     func startBreak() {
-        activeEntry?.breakTimes.append(Break(start: .now))
-        activeEntry?.isOnBreak = true
+        withAnimation(.smooth.speed(2.0)) {
+            activeEntry?.breakTimes.append(Break(start: .now))
+            activeEntry?.isOnBreak = true
+        }
     }
 
     func endBreak() {
         if let startTime = activeEntry?.breakTimes.last?.start,
            activeEntry?.breakTimes.last?.end == nil {
-            activeEntry?.breakTimes.removeLast()
-            activeEntry?.breakTimes.append(Break(start: startTime, end: .now))
-            activeEntry?.isOnBreak = false
+            withAnimation(.smooth.speed(2.0)) {
+                activeEntry?.breakTimes.removeLast()
+                activeEntry?.breakTimes.append(Break(start: startTime, end: .now))
+                activeEntry?.isOnBreak = false
+            }
         }
     }
 }

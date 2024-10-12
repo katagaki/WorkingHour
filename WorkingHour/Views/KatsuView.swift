@@ -16,8 +16,24 @@ struct KatsuView: View {
     @Query(sort: [SortDescriptor(\ClockEntry.clockInTime, order: .reverse)]) var entries: [ClockEntry]
     @State var activeEntry: ClockEntry?
 
-    @AppStorage(wrappedValue: "", "Global.CurrentClockEntry") var currentClockEntry: String
-    @AppStorage(wrappedValue: TimeInterval.zero, "Global.WorkingHours") var workingHours: TimeInterval
+    @State var isViewingPastEntries: Bool = false
+    @State var selectedMonth: Int
+    @State var selectedYear: Int
+
+    var selectableMonths: [String] {
+        return Calendar.current.monthSymbols
+    }
+
+    var selectableYears: [Int] {
+        let startYear = 2024
+        let endYear = Calendar.current.component(.year, from: .now)
+        return Array(startYear...endYear)
+    }
+
+    init() {
+        selectedMonth = Calendar.current.component(.month, from: .now)
+        selectedYear = Calendar.current.component(.year, from: .now)
+    }
 
     var body: some View {
         NavigationStack {
@@ -37,18 +53,68 @@ struct KatsuView: View {
             .defaultScrollAnchor(.bottom)
             .navigationTitle("Timesheet")
             .toolbarTitleDisplayMode(.inline)
-            .toolbarBackgroundVisibility(.visible, for: .navigationBar)
+            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Text("Timesheet")
-                        .font(.title)
-                        .fontWeight(.bold)
+                    HStack(alignment: .center) {
+                        Text("Timesheet")
+                            .font(.title)
+                            .fontWeight(.bold)
+                        Button {
+                            withAnimation(.smooth.speed(2.0)) {
+                                isViewingPastEntries.toggle()
+                            }
+                        } label: {
+                            if !isViewingPastEntries {
+                                Image(systemName: "chevron.down.circle.fill")
+                                    .symbolRenderingMode(.hierarchical)
+                            } else {
+                                Image(systemName: "chevron.up.circle.fill")
+                                    .symbolRenderingMode(.hierarchical)
+                            }
+                        }
+                    }
                 }
                 ToolbarItem(placement: .principal) {
                     Spacer()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("More", systemImage: "ellipsis.circle") {
+                    }
+                }
+            }
+            .safeAreaInset(edge: .top, spacing: 0.0) {
+                BarAccessory(placement: .top) {
+                    HStack {
+                        if isViewingPastEntries {
+                            HStack {
+                                Text("Browse Past Entries")
+                                Spacer()
+                                HStack(alignment: .center, spacing: 8.0) {
+                                    Group {
+                                        Picker("Month", selection: $selectedMonth) {
+                                            ForEach(
+                                                Array(selectableMonths.enumerated()),
+                                                id: \.offset
+                                            ) { index, month in
+                                                Text(month)
+                                                    .tag(index + 1)
+                                            }
+                                        }
+                                        Picker("Year", selection: $selectedYear) {
+                                            ForEach(selectableYears, id: \.self) { year in
+                                                Text(String(year))
+                                                    .tag(year)
+                                            }
+                                        }
+                                    }
+                                    .background(.inlinePicker)
+                                    .clipShape(.rect(cornerRadius: 8.0))
+                                }
+                            }
+                            .padding([.leading, .trailing], 20.0)
+                            .padding([.top, .bottom], 8.0)
+                        }
                     }
                 }
             }
@@ -60,10 +126,14 @@ struct KatsuView: View {
             .navigationTitle("Working Hour")
             .navigationBarTitleDisplayMode(.inline)
             .task {
-                if !entries.isEmpty, let firstEntry = entries.first, firstEntry.clockOutTime == nil {
-                    activeEntry = firstEntry
-                }
+                setupView()
             }
+        }
+    }
+
+    func setupView() {
+        if !entries.isEmpty, let firstEntry = entries.first, firstEntry.clockOutTime == nil {
+            activeEntry = firstEntry
         }
     }
 }

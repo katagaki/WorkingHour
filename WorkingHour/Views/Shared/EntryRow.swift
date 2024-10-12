@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct EntryRow: View {
-    @Environment(\.colorScheme) var colorScheme: ColorScheme
-
     @State var entry: ClockEntry
 
     var body: some View {
@@ -52,12 +50,7 @@ struct EntryRow: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding(8.0)
-                .background(
-                    Color(
-                        uiColor: colorScheme == .dark ? .secondarySystemGroupedBackground :
-                        .systemGroupedBackground
-                    )
-                )
+                .background(.rowLabel)
                 .clipShape(.rect(cornerRadius: 8.0))
             }
             .frame(maxWidth: .infinity)

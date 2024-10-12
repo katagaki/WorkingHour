@@ -18,6 +18,7 @@
 		E4260FA72CB9FE790078946D /* TimeClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FA62CB9FE520078946D /* TimeClock.swift */; };
 		E4260FAB2CBA0B450078946D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAA2CBA0B450078946D /* Localizable.xcstrings */; };
 		E4260FAD2CBA0B520078946D /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */; };
+		E4260FB02CBA11750078946D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAF2CBA11750078946D /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		E4260FA62CB9FE520078946D /* TimeClock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeClock.swift; sourceTree = "<group>"; };
 		E4260FAA2CBA0B450078946D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		E4260FAF2CBA11750078946D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 				E4260FAA2CBA0B450078946D /* Localizable.xcstrings */,
 				E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */,
 				E4260FA02CB9F6980078946D /* Views */,
+				E4260FAF2CBA11750078946D /* PrivacyInfo.xcprivacy */,
 			);
 			path = WorkingHour;
 			sourceTree = "<group>";
@@ -192,6 +195,7 @@
 			files = (
 				E4260FAD2CBA0B520078946D /* InfoPlist.xcstrings in Resources */,
 				E4260FAB2CBA0B450078946D /* Localizable.xcstrings in Resources */,
+				E4260FB02CBA11750078946D /* PrivacyInfo.xcprivacy in Resources */,
 				E4260F822CB6B0EB0078946D /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,9 +267,11 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tsubuzaki.WorkingHour;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -295,9 +301,11 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tsubuzaki.WorkingHour;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
