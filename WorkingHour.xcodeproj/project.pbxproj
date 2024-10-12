@@ -16,10 +16,12 @@
 		E4260F9A2CB975F30078946D /* Komponents in Frameworks */ = {isa = PBXBuildFile; productRef = E4260F992CB975F30078946D /* Komponents */; };
 		E4260FA52CB9FC450078946D /* Break.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FA42CB9FC410078946D /* Break.swift */; };
 		E4260FA72CB9FE790078946D /* TimeClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FA62CB9FE520078946D /* TimeClock.swift */; };
+		E4260FAB2CBA0B450078946D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAA2CBA0B450078946D /* Localizable.xcstrings */; };
+		E4260FAD2CBA0B520078946D /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E4260F782CB6B0EA0078946D /* WorkingHour.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkingHour.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4260F782CB6B0EA0078946D /* Working Hour.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Working Hour.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4260F7B2CB6B0EA0078946D /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		E4260F7D2CB6B0EA0078946D /* KatsuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KatsuView.swift; sourceTree = "<group>"; };
 		E4260F812CB6B0EB0078946D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -30,6 +32,8 @@
 		E4260F962CB88B8C0078946D /* EntryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryRow.swift; sourceTree = "<group>"; };
 		E4260FA42CB9FC410078946D /* Break.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Break.swift; sourceTree = "<group>"; };
 		E4260FA62CB9FE520078946D /* TimeClock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeClock.swift; sourceTree = "<group>"; };
+		E4260FAA2CBA0B450078946D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,7 +60,7 @@
 		E4260F792CB6B0EA0078946D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E4260F782CB6B0EA0078946D /* WorkingHour.app */,
+				E4260F782CB6B0EA0078946D /* Working Hour.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -73,10 +77,12 @@
 		E4260F9F2CB9F68B0078946D /* WorkingHour */ = {
 			isa = PBXGroup;
 			children = (
-				E4260FA02CB9F6980078946D /* Views */,
 				E4260F812CB6B0EB0078946D /* Assets.xcassets */,
 				E4260F872CB6B0EB0078946D /* Info.plist */,
 				E4260F862CB6B0EB0078946D /* WorkingHour.entitlements */,
+				E4260FAA2CBA0B450078946D /* Localizable.xcstrings */,
+				E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */,
+				E4260FA02CB9F6980078946D /* Views */,
 			);
 			path = WorkingHour;
 			sourceTree = "<group>";
@@ -120,9 +126,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E4260F772CB6B0EA0078946D /* WorkingHour */ = {
+		E4260F772CB6B0EA0078946D /* Working Hour */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E4260F892CB6B0EB0078946D /* Build configuration list for PBXNativeTarget "WorkingHour" */;
+			buildConfigurationList = E4260F892CB6B0EB0078946D /* Build configuration list for PBXNativeTarget "Working Hour" */;
 			buildPhases = (
 				E4260F742CB6B0EA0078946D /* Sources */,
 				E4260F752CB6B0EA0078946D /* Frameworks */,
@@ -133,12 +139,12 @@
 			);
 			dependencies = (
 			);
-			name = WorkingHour;
+			name = "Working Hour";
 			packageProductDependencies = (
 				E4260F992CB975F30078946D /* Komponents */,
 			);
 			productName = WorkingHour;
-			productReference = E4260F782CB6B0EA0078946D /* WorkingHour.app */;
+			productReference = E4260F782CB6B0EA0078946D /* Working Hour.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -162,6 +168,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ja,
 			);
 			mainGroup = E4260F6F2CB6B0EA0078946D;
 			minimizedProjectReferenceProxies = 1;
@@ -173,7 +180,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E4260F772CB6B0EA0078946D /* WorkingHour */,
+				E4260F772CB6B0EA0078946D /* Working Hour */,
 			);
 		};
 /* End PBXProject section */
@@ -183,6 +190,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4260FAD2CBA0B520078946D /* InfoPlist.xcstrings in Resources */,
+				E4260FAB2CBA0B450078946D /* Localizable.xcstrings in Resources */,
 				E4260F822CB6B0EB0078946D /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -351,6 +360,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -407,6 +417,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -423,7 +434,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E4260F892CB6B0EB0078946D /* Build configuration list for PBXNativeTarget "WorkingHour" */ = {
+		E4260F892CB6B0EB0078946D /* Build configuration list for PBXNativeTarget "Working Hour" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E4260F8A2CB6B0EB0078946D /* Debug */,
