@@ -56,7 +56,7 @@ final class ClockEntry {
         if let clockInTime {
             let formatter = DateFormatter()
             formatter.dateStyle = .none
-            formatter.timeStyle = .medium
+            formatter.timeStyle = .short
             return formatter.string(from: clockInTime)
         } else {
             return nil
@@ -78,7 +78,7 @@ final class ClockEntry {
         if let clockOutTime {
             let formatter = DateFormatter()
             formatter.dateStyle = .none
-            formatter.timeStyle = .medium
+            formatter.timeStyle = .short
             return formatter.string(from: clockOutTime)
         } else {
             return nil
