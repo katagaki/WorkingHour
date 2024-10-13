@@ -32,6 +32,59 @@ final class ClockEntry {
         clockOutTime = .now
     }
 
+    func clockInDateString() -> String? {
+        if let clockInTime {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .none
+            return formatter.string(from: clockInTime)
+        } else {
+            return nil
+        }
+    }
+
+    func clockInDayString() -> String? {
+        if let clockInTime {
+            let formatter = DateFormatter()
+            return formatter.weekdaySymbols[Calendar.current.component(.weekday, from: clockInTime) - 1]
+        } else {
+            return nil
+        }
+    }
+
+    func clockInTimeString() -> String? {
+        if let clockInTime {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .none
+            formatter.timeStyle = .medium
+            return formatter.string(from: clockInTime)
+        } else {
+            return nil
+        }
+    }
+
+    func clockOutDateString() -> String? {
+        if let clockOutTime {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .none
+            return formatter.string(from: clockOutTime)
+        } else {
+            return nil
+        }
+    }
+
+    func clockOutTimeString() -> String? {
+        if let clockOutTime {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .none
+            formatter.timeStyle = .medium
+            return formatter.string(from: clockOutTime)
+        } else {
+            return nil
+        }
+    }
+
     func breakTime() -> TimeInterval {
         return breakTimes.reduce(into: .zero) { partialResult, breakTime in
             partialResult += breakTime.time()
