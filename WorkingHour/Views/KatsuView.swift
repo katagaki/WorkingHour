@@ -97,7 +97,10 @@ struct KatsuView: View {
                         if isTimesheetMenuOpen {
                             VStack(alignment: .leading, spacing: 10.0) {
                                 HStack(alignment: .center, spacing: 8.0) {
-                                    Toggle("Browse Past Entries", isOn: $isBrowsingPastEntries.animation(.smooth.speed(2.0)))
+                                    Toggle(
+                                        "Browse Past Entries",
+                                        isOn: $isBrowsingPastEntries.animation(.smooth.speed(2.0))
+                                    )
                                 }
                                 if isBrowsingPastEntries {
                                     HStack(alignment: .center, spacing: 8.0) {

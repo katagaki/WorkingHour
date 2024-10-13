@@ -15,9 +15,24 @@ struct MoreView: View {
         NavigationStack {
             MoreList(repoName: "katagaki/WorkingHour") {
                 Section {
-                    
+                    Group {
+                        Button {
+                            // TODO
+                        } label: {
+                            ListRow(image: "ListIcon.Excel", title: "Excel")
+                        }
+                        Button {
+                            // TODO
+                        } label: {
+                            ListRow(image: "ListIcon.CSV", title: "CSV")
+                        }
+                    }
+                    .tint(.primary)
+                } header: {
+                    ListSectionHeader(text: "Export")
                 }
             }
+            .navigationTitle("More")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
