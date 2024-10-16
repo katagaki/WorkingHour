@@ -23,6 +23,8 @@ struct KatsuView: View {
     @State var selectedMonth: Int
     @State var selectedYear: Int
 
+    @State var entryBeingEdited: ClockEntry?
+
     var selectableMonths: [String] {
         return Calendar.current.monthSymbols
     }
@@ -48,7 +50,7 @@ struct KatsuView: View {
                         }
                         .tint(.red)
                         Button("Edit", systemImage: "xmark") {
-                            // TODO: Open editor
+                            entryBeingEdited = entry
                         }
                     }
             }
@@ -148,6 +150,9 @@ struct KatsuView: View {
             }
             .sheet(isPresented: $isMoreMenuOpen) {
                 MoreView()
+            }
+            .sheet(item: $entryBeingEdited) { entry in
+                EntryEditor(entry)
             }
         }
     }
