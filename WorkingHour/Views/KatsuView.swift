@@ -49,7 +49,7 @@ struct KatsuView: View {
                             modelContext.delete(entry)
                         }
                         .tint(.red)
-                        Button("Edit", systemImage: "xmark") {
+                        Button("Edit", systemImage: "pencil") {
                             entryBeingEdited = entry
                         }
                     }

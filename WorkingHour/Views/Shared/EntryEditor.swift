@@ -10,6 +10,8 @@ import SwiftUI
 
 struct EntryEditor: View {
 
+    @Environment(\.dismiss) var dismiss
+
     @State var entry: ClockEntry
 
     @State var newClockInTime: Date

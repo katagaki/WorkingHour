@@ -42,6 +42,9 @@
         }
       }
     },
+    "Clock In Time" : {
+
+    },
     "Clock Out" : {
       "localizations" : {
         "ja" : {
@@ -51,6 +54,9 @@
           }
         }
       }
+    },
+    "Clock Out Time" : {
+
     },
     "Delete" : {
       "localizations" : {
