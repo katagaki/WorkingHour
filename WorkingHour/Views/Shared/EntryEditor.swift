@@ -38,6 +38,8 @@ struct EntryEditor: View {
                 )
             }
             .listStyle(.insetGrouped)
+            .navigationTitle("Edit Entry")
+            .navigationBarTitleDisplayMode(.inline)
             .onChange(of: newClockInTime) { _, _ in
                 entry.clockInTime = newClockInTime
             }
@@ -53,5 +55,6 @@ struct EntryEditor: View {
             }
         }
         .interactiveDismissDisabled(true)
+        .presentationDetents([.fraction(0.3)])
     }
 }

@@ -43,7 +43,14 @@
       }
     },
     "Clock In Time" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出勤時間"
+          }
+        }
+      }
     },
     "Clock Out" : {
       "localizations" : {
@@ -56,7 +63,14 @@
       }
     },
     "Clock Out Time" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退勤時間"
+          }
+        }
+      }
     },
     "Delete" : {
       "localizations" : {
@@ -74,6 +88,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "編集"
+          }
+        }
+      }
+    },
+    "Edit Entry" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打刻時間を編集"
           }
         }
       }
