@@ -45,12 +45,14 @@ struct KatsuView: View {
             List(entries) { entry in
                 EntryRow(entry: entry)
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button("Delete", systemImage: "xmark") {
-                            modelContext.delete(entry)
-                        }
-                        .tint(.red)
-                        Button("Edit", systemImage: "pencil") {
-                            entryBeingEdited = entry
+                        if entry.clockOutTime != nil {
+                            Button("Delete", systemImage: "xmark") {
+                                modelContext.delete(entry)
+                            }
+                            .tint(.red)
+                            Button("Edit", systemImage: "pencil") {
+                                entryBeingEdited = entry
+                            }
                         }
                     }
             }
