@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "%@ %@" : {
       "localizations" : {
         "en" : {
@@ -11,6 +14,26 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "Break Ended" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "休憩終了時間"
+          }
+        }
+      }
+    },
+    "Break Started" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "休憩開始時間"
+          }
+        }
+      }
     },
     "Break Time" : {
       "localizations" : {

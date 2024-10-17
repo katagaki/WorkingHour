@@ -31,7 +31,9 @@ struct MoreView: View {
                             dateFormatter.dateFormat = "yyyyMMdd"
                             let formattedDate = dateFormatter.string(from: .now)
                             let filename = "\(formattedDate)-Timesheet.xlsx"
-                            let exportPath = exportsFolderURL.appendingPathComponent(filename).path(percentEncoded: false)
+                            let exportPath = exportsFolderURL
+                                .appendingPathComponent(filename)
+                                .path(percentEncoded: false)
                             let workbook = Workbook(name: exportPath)
                             let worksheet = workbook.addWorksheet(name: "Timesheet")
                             worksheet.gridline(screen: false)
@@ -78,8 +80,10 @@ struct MoreView: View {
                                     worksheet.write(.string(clockInDay), [currentRow, 1], format: rowHeaderFormat)
                                     worksheet.write(.string(clockInTime), [currentRow, 2], format: rowFormat)
                                     worksheet.write(.string(clockOutTime), [currentRow, 3], format: rowFormat)
-                                    worksheet.write(.string(entry.breakTimeString()), [currentRow, 4], format: rowFormat)
-                                    worksheet.write(.string(entry.timeWorkedString()), [currentRow, 5], format: rowFormat)
+                                    worksheet.write(.string(entry.breakTimeString()), [currentRow, 4],
+                                                    format: rowFormat)
+                                    worksheet.write(.string(entry.timeWorkedString()), [currentRow, 5],
+                                                    format: rowFormat)
                                     worksheet.write(.string(""), [currentRow, 6], format: rowFormat)
                                     currentRow += 1
                                 }

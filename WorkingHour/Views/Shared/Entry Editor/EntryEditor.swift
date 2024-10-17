@@ -26,36 +26,25 @@ struct EntryEditor: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    DatePicker(
-                        "Clock In Time",
-                        selection: $newClockInTime,
-                        displayedComponents: [.date, .hourAndMinute]
-                    )
-                    DatePicker(
-                        "Clock Out Time",
-                        selection: $newClockOutTime,
-                        displayedComponents: [.date, .hourAndMinute]
-                    )
+                TimelineRow(.start, date: $newClockInTime)
+                if !entry.breakTimes.isEmpty {
+                    TimelineRow(.neutral, date: .constant(.distantPast))
                 }
-                Section {
-                    ForEach($entry.breakTimes, id: \.self) { $break in
-                        DatePicker(
-                            "Break Started",
-                            selection: $break.start,
-                            displayedComponents: [.date, .hourAndMinute]
-                        )
-                        if let breakEnd = Binding($break.end) {
-                              DatePicker(
-                                  "Break Ended",
-                                  selection: breakEnd,
-                                  displayedComponents: [.date, .hourAndMinute]
-                              )
-                        }
+                ForEach($entry.breakTimes, id: \.self) { $break in
+                    TimelineRow(.breakStart, date: $break.start, in: newClockInTime...newClockOutTime)
+                    if let breakEnd = Binding($break.end) {
+                        TimelineRow(.breakEnd, date: breakEnd, in: newClockInTime...newClockOutTime)
+                    } else {
+                        TimelineRow(.breakTime, date: .constant(.distantPast))
                     }
                 }
+                if !entry.breakTimes.isEmpty {
+                    TimelineRow(.neutral, date: .constant(.distantPast))
+                }
+                TimelineRow(.end, date: $newClockOutTime)
             }
-            .listStyle(.insetGrouped)
+            .listStyle(.plain)
+            .environment(\.defaultMinListRowHeight, 26.0)
             .navigationTitle("Edit Entry")
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: newClockInTime) { _, _ in
@@ -73,6 +62,6 @@ struct EntryEditor: View {
             }
         }
         .interactiveDismissDisabled(true)
-        .presentationDetents([.fraction(0.3), .medium, .large])
+        .presentationDetents([.medium, .large])
     }
 }
