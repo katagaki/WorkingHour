@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Break: Codable {
+struct Break: Codable, Hashable {
     var start: Date
     var end: Date?
 
@@ -26,5 +26,14 @@ struct Break: Codable {
         } else {
             return .zero
         }
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(start)
+        hasher.combine(end)
+    }
+
+    static func == (lhs: Break, rhs: Break) -> Bool {
+        return lhs.start == rhs.start && lhs.end == rhs.end
     }
 }
