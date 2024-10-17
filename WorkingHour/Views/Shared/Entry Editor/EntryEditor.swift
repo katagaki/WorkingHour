@@ -37,8 +37,6 @@ struct EntryEditor: View {
                     } else {
                         TimelineRow(.breakTime, date: .constant(.distantPast))
                     }
-                }
-                if !entry.breakTimes.isEmpty {
                     TimelineRow(.neutral, date: .constant(.distantPast))
                 }
                 TimelineRow(.end, date: $newClockOutTime)
