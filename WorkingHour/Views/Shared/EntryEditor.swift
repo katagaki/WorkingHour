@@ -45,11 +45,13 @@ struct EntryEditor: View {
                             selection: $break.start,
                             displayedComponents: [.date, .hourAndMinute]
                         )
-                        DatePicker(
-                            "Break Ended",
-                            selection: $break.end,
-                            displayedComponents: [.date, .hourAndMinute]
-                        )
+                        if let breakEnd = Binding($break.end) {
+                              DatePicker(
+                                  "Break Ended",
+                                  selection: breakEnd,
+                                  displayedComponents: [.date, .hourAndMinute]
+                              )
+                        }
                     }
                 }
             }
