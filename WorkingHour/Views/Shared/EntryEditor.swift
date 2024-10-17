@@ -26,16 +26,32 @@ struct EntryEditor: View {
     var body: some View {
         NavigationStack {
             List {
-                DatePicker(
-                    "Clock In Time",
-                    selection: $newClockInTime,
-                    displayedComponents: [.date, .hourAndMinute]
-                )
-                DatePicker(
-                    "Clock Out Time",
-                    selection: $newClockOutTime,
-                    displayedComponents: [.date, .hourAndMinute]
-                )
+                Section {
+                    DatePicker(
+                        "Clock In Time",
+                        selection: $newClockInTime,
+                        displayedComponents: [.date, .hourAndMinute]
+                    )
+                    DatePicker(
+                        "Clock Out Time",
+                        selection: $newClockOutTime,
+                        displayedComponents: [.date, .hourAndMinute]
+                    )
+                }
+                Section {
+                    ForEach($entry.breakTimes, id: \.self) { $break in
+                        DatePicker(
+                            "Break Started",
+                            selection: $break.start,
+                            displayedComponents: [.date, .hourAndMinute]
+                        )
+                        DatePicker(
+                            "Break Ended",
+                            selection: $break.end,
+                            displayedComponents: [.date, .hourAndMinute]
+                        )
+                    }
+                }
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Edit Entry")
@@ -55,6 +71,6 @@ struct EntryEditor: View {
             }
         }
         .interactiveDismissDisabled(true)
-        .presentationDetents([.fraction(0.3)])
+        .presentationDetents([.fraction(0.3), .medium, .large])
     }
 }
