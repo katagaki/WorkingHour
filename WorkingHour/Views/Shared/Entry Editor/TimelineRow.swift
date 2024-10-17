@@ -59,7 +59,7 @@ struct TimelineRow: View {
                                             .fontWeight(.heavy)
                                             .aspectRatio(contentMode: .fit)
                                             .frame(height: 9.5)
-                                            .offset(x: 0.5)
+                                            .offset(x: 1.0)
                                     default: Color.clear
                                     }
                                 }
