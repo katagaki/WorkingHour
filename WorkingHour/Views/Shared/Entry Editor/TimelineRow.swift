@@ -26,15 +26,51 @@ struct TimelineRow: View {
                     .frame(minWidth: 6.0, idealWidth: 6.0, maxWidth: 6.0, maxHeight: .infinity)
                     .overlay {
                         switch eventType {
-                        case .start, .breakStart, .breakEnd, .end:
-                            Capsule(style: .continuous)
+                        case .start, .breakStart, .end:
+                            Circle()
                                 .foregroundStyle(.white)
+                                .frame(width: 18.0, height: 18.0)
                                 .overlay {
-                                    Capsule(style: .continuous)
+                                    Circle()
                                         .stroke(.gray, lineWidth: 2.0)
                                 }
-                                .frame(width: 16.0, height: 6.0)
                                 .shadow(color: .black.opacity(0.2), radius: 3.0, x: 0.0, y: 1.5)
+                                .overlay {
+                                    switch eventType {
+                                    case .start:
+                                        Image(systemName: "ipad.and.arrow.forward")
+                                            .resizable()
+                                            .foregroundStyle(.black)
+                                            .fontWeight(.heavy)
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(height: 9.5)
+                                            .offset(x: -1.0)
+                                    case .breakStart:
+                                        Image(systemName: "cup.and.heat.waves.fill")
+                                            .resizable()
+                                            .foregroundStyle(.black)
+                                            .fontWeight(.heavy)
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(height: 9.5)
+                                    case .end:
+                                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                                            .resizable()
+                                            .foregroundStyle(.black)
+                                            .fontWeight(.heavy)
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(height: 9.5)
+                                            .offset(x: 0.5)
+                                    default: Color.clear
+                                    }
+                                }
+//                            Capsule(style: .continuous)
+//                                .foregroundStyle(.white)
+//                                .overlay {
+//                                    Capsule(style: .continuous)
+//                                        .stroke(.gray, lineWidth: 2.0)
+//                                }
+//                                .frame(width: 16.0, height: 6.0)
+//                                .shadow(color: .black.opacity(0.2), radius: 3.0, x: 0.0, y: 1.5)
                         default: Color.clear
                         }
                     }
