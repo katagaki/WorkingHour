@@ -16,16 +16,16 @@ struct TimeClock: View {
         VStack(alignment: .leading, spacing: 12.0) {
             // Title Bar
             HStack(alignment: .center) {
-                Text("Working Hours")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                Spacer()
-                if activeEntry?.clockOutTime == nil, let clockInTime = activeEntry?.clockInTime {
-                    Text(clockInTime, style: .relative)
-                        .font(.body)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.secondary)
+                Group {
+                    Text("Working Hours")
+                    if activeEntry?.clockOutTime == nil, let clockInTime = activeEntry?.clockInTime {
+                        Text(clockInTime, style: .relative)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
                 }
+                .font(.body)
+                .fontWeight(.bold)
             }
             Divider()
 
@@ -79,16 +79,17 @@ struct TimeClock: View {
                     } label: {
                         Label("Clock Out", systemImage: "rectangle.portrait.and.arrow.right")
                             .fontWeight(.semibold)
-                            .padding([.top, .bottom], 4.0)
+                            .padding([.top, .bottom], 6.0)
                             .frame(maxWidth: .infinity)
                     }
+                    .disabled(activeEntry.isOnBreak)
                 } else {
                     Button {
                         clockIn()
                     } label: {
                         Label("Clock In", systemImage: "ipad.and.arrow.forward")
                             .fontWeight(.semibold)
-                            .padding([.top, .bottom], 4.0)
+                            .padding([.top, .bottom], 6.0)
                             .frame(maxWidth: .infinity)
                     }
                 }
@@ -109,7 +110,7 @@ struct TimeClock: View {
                             .fontWeight(.bold)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding([.top], 6.0)
+                    .padding([.top], 2.0)
                 }
 
                 // Start/End Break Buttons
@@ -121,7 +122,7 @@ struct TimeClock: View {
                             } label: {
                                 Label("Start Break", systemImage: "cup.and.heat.waves.fill")
                                     .fontWeight(.semibold)
-                                    .padding([.top, .bottom], 4.0)
+                                    .padding([.top, .bottom], 6.0)
                                     .frame(maxWidth: .infinity)
                             }
                         } else {
@@ -130,7 +131,7 @@ struct TimeClock: View {
                             } label: {
                                 Label("End Break", systemImage: "arrowshape.turn.up.backward.badge.clock.fill")
                                     .fontWeight(.semibold)
-                                    .padding([.top, .bottom], 4.0)
+                                    .padding([.top, .bottom], 6.0)
                                     .frame(maxWidth: .infinity)
                             }
                         }
@@ -141,7 +142,8 @@ struct TimeClock: View {
                 .tint(.pink)
             }
         }
-        .padding()
+        .padding([.leading, .trailing], 18.0)
+        .padding([.top, .bottom], 12.0)
     }
 
     func clockIn() {
