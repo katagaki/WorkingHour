@@ -103,9 +103,10 @@ struct TimeClock: View {
                    let lastBreakTime = activeEntry.breakTimes.last {
                     VStack(alignment: .leading, spacing: 4.0) {
                         Text("Break Time")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.pink.secondary)
                             .fontWeight(.bold)
                         Text(lastBreakTime.start, style: .timer)
+                            .foregroundStyle(.pink)
                             .font(.largeTitle)
                             .fontWeight(.bold)
                     }
