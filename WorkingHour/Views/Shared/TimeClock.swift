@@ -82,6 +82,7 @@ struct TimeClock: View {
                             .padding([.top, .bottom], 6.0)
                             .frame(maxWidth: .infinity)
                     }
+                    .tint(.red)
                     .disabled(activeEntry.isOnBreak)
                 } else {
                     Button {
@@ -103,10 +104,10 @@ struct TimeClock: View {
                    let lastBreakTime = activeEntry.breakTimes.last {
                     VStack(alignment: .leading, spacing: 4.0) {
                         Text("Break Time")
-                            .foregroundStyle(.pink.secondary)
+                            .foregroundStyle(.orange.secondary)
                             .fontWeight(.bold)
                         Text(lastBreakTime.start, style: .timer)
-                            .foregroundStyle(.pink)
+                            .foregroundStyle(.orange)
                             .font(.largeTitle)
                             .fontWeight(.bold)
                     }
@@ -126,6 +127,7 @@ struct TimeClock: View {
                                     .padding([.top, .bottom], 6.0)
                                     .frame(maxWidth: .infinity)
                             }
+                            .tint(.orange)
                         } else {
                             Button {
                                 endBreak()
@@ -135,12 +137,12 @@ struct TimeClock: View {
                                     .padding([.top, .bottom], 6.0)
                                     .frame(maxWidth: .infinity)
                             }
+                            .tint(.red)
                         }
                     }
                     .clipShape(.capsule)
                     .buttonStyle(.borderedProminent)
                 }
-                .tint(.pink)
             }
         }
         .padding([.leading, .trailing], 18.0)
