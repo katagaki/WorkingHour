@@ -8,14 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		E4260F7C2CB6B0EA0078946D /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260F7B2CB6B0EA0078946D /* App.swift */; };
-		E4260F7E2CB6B0EA0078946D /* KatsuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260F7D2CB6B0EA0078946D /* KatsuView.swift */; };
+		E4260F7E2CB6B0EA0078946D /* TimesheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260F7D2CB6B0EA0078946D /* TimesheetView.swift */; };
 		E4260F822CB6B0EB0078946D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4260F812CB6B0EB0078946D /* Assets.xcassets */; };
 		E4260F912CB887A80078946D /* ClockEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260F8F2CB887A20078946D /* ClockEntry.swift */; };
 		E4260F942CB887B00078946D /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260F922CB887AA0078946D /* Project.swift */; };
 		E4260F972CB88B940078946D /* EntryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260F962CB88B8C0078946D /* EntryRow.swift */; };
 		E4260F9A2CB975F30078946D /* Komponents in Frameworks */ = {isa = PBXBuildFile; productRef = E4260F992CB975F30078946D /* Komponents */; };
 		E4260FA52CB9FC450078946D /* Break.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FA42CB9FC410078946D /* Break.swift */; };
-		E4260FA72CB9FE790078946D /* TimeClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FA62CB9FE520078946D /* TimeClock.swift */; };
 		E4260FAB2CBA0B450078946D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAA2CBA0B450078946D /* Localizable.xcstrings */; };
 		E4260FAD2CBA0B520078946D /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */; };
 		E4260FB02CBA11750078946D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAF2CBA11750078946D /* PrivacyInfo.xcprivacy */; };
@@ -23,12 +22,17 @@
 		E4260FB52CBAB8C20078946D /* xlsxwriter in Frameworks */ = {isa = PBXBuildFile; productRef = E4260FB42CBAB8C20078946D /* xlsxwriter */; };
 		E4260FB92CBFFE0E0078946D /* EntryEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FB82CBFFE0E0078946D /* EntryEditor.swift */; };
 		E4260FBE2CC14C6F0078946D /* TimelineRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FBD2CC14C6D0078946D /* TimelineRow.swift */; };
+		E4C7B17F2CD8708900C9CE13 /* ExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7B17E2CD8708700C9CE13 /* ExportView.swift */; };
+		E4C7B1812CD878C800C9CE13 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7B1802CD878C600C9CE13 /* MainTabView.swift */; };
+		E4C7B1852CD87C0000C9CE13 /* TabType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7B1842CD87C0000C9CE13 /* TabType.swift */; };
+		E4C7B1872CD87C0400C9CE13 /* ViewPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7B1862CD87C0400C9CE13 /* ViewPath.swift */; };
+		E4C7B18A2CD87EAD00C9CE13 /* TimeClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7B1892CD87EAA00C9CE13 /* TimeClockView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		E4260F782CB6B0EA0078946D /* Working Hour.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Working Hour.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4260F7B2CB6B0EA0078946D /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
-		E4260F7D2CB6B0EA0078946D /* KatsuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KatsuView.swift; sourceTree = "<group>"; };
+		E4260F7D2CB6B0EA0078946D /* TimesheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimesheetView.swift; sourceTree = "<group>"; };
 		E4260F812CB6B0EB0078946D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E4260F862CB6B0EB0078946D /* WorkingHour.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WorkingHour.entitlements; sourceTree = "<group>"; };
 		E4260F872CB6B0EB0078946D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -36,13 +40,17 @@
 		E4260F922CB887AA0078946D /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
 		E4260F962CB88B8C0078946D /* EntryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryRow.swift; sourceTree = "<group>"; };
 		E4260FA42CB9FC410078946D /* Break.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Break.swift; sourceTree = "<group>"; };
-		E4260FA62CB9FE520078946D /* TimeClock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeClock.swift; sourceTree = "<group>"; };
 		E4260FAA2CBA0B450078946D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		E4260FAF2CBA11750078946D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E4260FB12CBAB1AE0078946D /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
 		E4260FB82CBFFE0E0078946D /* EntryEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryEditor.swift; sourceTree = "<group>"; };
 		E4260FBD2CC14C6D0078946D /* TimelineRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineRow.swift; sourceTree = "<group>"; };
+		E4C7B17E2CD8708700C9CE13 /* ExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportView.swift; sourceTree = "<group>"; };
+		E4C7B1802CD878C600C9CE13 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		E4C7B1842CD87C0000C9CE13 /* TabType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabType.swift; sourceTree = "<group>"; };
+		E4C7B1862CD87C0400C9CE13 /* ViewPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPath.swift; sourceTree = "<group>"; };
+		E4C7B1892CD87EAA00C9CE13 /* TimeClockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeClockView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,8 +100,9 @@
 				E4260F812CB6B0EB0078946D /* Assets.xcassets */,
 				E4260FAA2CBA0B450078946D /* Localizable.xcstrings */,
 				E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */,
-				E4260FA02CB9F6980078946D /* Views */,
 				E4260FAF2CBA11750078946D /* PrivacyInfo.xcprivacy */,
+				E4260FA02CB9F6980078946D /* Views */,
+				E4C7B1832CD87BF400C9CE13 /* Enums */,
 			);
 			path = WorkingHour;
 			sourceTree = "<group>";
@@ -102,8 +111,11 @@
 			isa = PBXGroup;
 			children = (
 				E4260F7B2CB6B0EA0078946D /* App.swift */,
-				E4260F7D2CB6B0EA0078946D /* KatsuView.swift */,
-				E4260FB12CBAB1AE0078946D /* MoreView.swift */,
+				E4C7B1802CD878C600C9CE13 /* MainTabView.swift */,
+				E4C7B1882CD87EA000C9CE13 /* Time Clock */,
+				E4C7B18B2CD8807800C9CE13 /* History */,
+				E4C7B18C2CD881D300C9CE13 /* Export */,
+				E4C7B17D2CD8708300C9CE13 /* More */,
 				E4260FA12CB9F7410078946D /* Shared */,
 			);
 			path = Views;
@@ -113,7 +125,6 @@
 			isa = PBXGroup;
 			children = (
 				E4260FBA2CC149880078946D /* Entry Editor */,
-				E4260FA62CB9FE520078946D /* TimeClock.swift */,
 				E4260F962CB88B8C0078946D /* EntryRow.swift */,
 			);
 			path = Shared;
@@ -143,6 +154,47 @@
 				E4260FB82CBFFE0E0078946D /* EntryEditor.swift */,
 			);
 			path = "Entry Editor";
+			sourceTree = "<group>";
+		};
+		E4C7B17D2CD8708300C9CE13 /* More */ = {
+			isa = PBXGroup;
+			children = (
+				E4260FB12CBAB1AE0078946D /* MoreView.swift */,
+			);
+			path = More;
+			sourceTree = "<group>";
+		};
+		E4C7B1832CD87BF400C9CE13 /* Enums */ = {
+			isa = PBXGroup;
+			children = (
+				E4C7B1862CD87C0400C9CE13 /* ViewPath.swift */,
+				E4C7B1842CD87C0000C9CE13 /* TabType.swift */,
+			);
+			path = Enums;
+			sourceTree = "<group>";
+		};
+		E4C7B1882CD87EA000C9CE13 /* Time Clock */ = {
+			isa = PBXGroup;
+			children = (
+				E4C7B1892CD87EAA00C9CE13 /* TimeClockView.swift */,
+			);
+			path = "Time Clock";
+			sourceTree = "<group>";
+		};
+		E4C7B18B2CD8807800C9CE13 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				E4260F7D2CB6B0EA0078946D /* TimesheetView.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		E4C7B18C2CD881D300C9CE13 /* Export */ = {
+			isa = PBXGroup;
+			children = (
+				E4C7B17E2CD8708700C9CE13 /* ExportView.swift */,
+			);
+			path = Export;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -178,7 +230,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					E4260F772CB6B0EA0078946D = {
 						CreatedOnToolsVersion = 16.0;
@@ -250,15 +302,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4260FBE2CC14C6F0078946D /* TimelineRow.swift in Sources */,
-				E4260F7E2CB6B0EA0078946D /* KatsuView.swift in Sources */,
+				E4260F7E2CB6B0EA0078946D /* TimesheetView.swift in Sources */,
 				E4260FA52CB9FC450078946D /* Break.swift in Sources */,
-				E4260FA72CB9FE790078946D /* TimeClock.swift in Sources */,
+				E4C7B17F2CD8708900C9CE13 /* ExportView.swift in Sources */,
 				E4260F912CB887A80078946D /* ClockEntry.swift in Sources */,
 				E4260FB92CBFFE0E0078946D /* EntryEditor.swift in Sources */,
 				E4260F942CB887B00078946D /* Project.swift in Sources */,
 				E4260F7C2CB6B0EA0078946D /* App.swift in Sources */,
 				E4260F972CB88B940078946D /* EntryRow.swift in Sources */,
 				E4260FB22CBAB1AF0078946D /* MoreView.swift in Sources */,
+				E4C7B1812CD878C800C9CE13 /* MainTabView.swift in Sources */,
+				E4C7B1852CD87C0000C9CE13 /* TabType.swift in Sources */,
+				E4C7B18A2CD87EAD00C9CE13 /* TimeClockView.swift in Sources */,
+				E4C7B1872CD87C0400C9CE13 /* ViewPath.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,6 +394,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -402,6 +459,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

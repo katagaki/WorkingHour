@@ -79,23 +79,23 @@ struct TimelineRow: View {
             Group {
                 switch eventType {
                 case .start:
-                    Text("Clock In Time")
+                    Text("Timeline.Work.ClockIn")
                         .font(.subheadline)
                         .fontWeight(.semibold)
                 case .neutral:
                     Color.clear
                 case .breakStart:
-                    Text("Break Started")
+                    Text("Timeline.Break.Started")
                         .font(.subheadline)
                         .fontWeight(.semibold)
                 case .breakTime:
                     Color.clear
                 case .breakEnd:
-                    Text("Break Ended")
+                    Text("Timeline.Break.Ended")
                         .font(.subheadline)
                         .fontWeight(.semibold)
                 case .end:
-                    Text("Clock Out Time")
+                    Text("Timeline.Work.ClockOut")
                         .font(.subheadline)
                         .fontWeight(.semibold)
                 }

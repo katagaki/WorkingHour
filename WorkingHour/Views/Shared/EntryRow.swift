@@ -50,7 +50,7 @@ struct EntryRow: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding(8.0)
-                .background(.rowLabel)
+                .background(.groupedBackground)
                 .clipShape(.rect(cornerRadius: 8.0))
             }
             .frame(maxWidth: .infinity)

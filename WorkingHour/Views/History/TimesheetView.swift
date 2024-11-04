@@ -1,5 +1,5 @@
 //
-//  KatsuView.swift
+//  TimesheetView.swift
 //  WorkingHour
 //
 //  Created by シン・ジャスティン on 2024/10/09.
@@ -9,15 +9,15 @@ import Komponents
 import SwiftData
 import SwiftUI
 
-struct KatsuView: View {
+struct TimesheetView: View {
 
     @Environment(\.modelContext) var modelContext: ModelContext
 
     @Query(sort: [SortDescriptor(\ClockEntry.clockInTime, order: .reverse)]) var entries: [ClockEntry]
-    @State var activeEntry: ClockEntry?
 
     @State var isTimesheetMenuOpen: Bool = false
-    @State var isMoreMenuOpen: Bool = false
+    @State var isMoreViewOpen: Bool = false
+    @State var isExportViewOpen: Bool = false
 
     @State var isBrowsingPastEntries: Bool = false
     @State var selectedMonth: Int
@@ -46,19 +46,20 @@ struct KatsuView: View {
                 EntryRow(entry: entry)
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         if entry.clockOutTime != nil {
-                            Button("Delete", systemImage: "xmark") {
+                            Button("Shared.Delete", systemImage: "xmark") {
                                 modelContext.delete(entry)
                             }
                             .tint(.red)
-                            Button("Edit", systemImage: "pencil") {
+                            Button("Shared.Edit", systemImage: "pencil") {
                                 entryBeingEdited = entry
                             }
+                            .tint(.blue)
                         }
                     }
             }
             .listStyle(.plain)
             .defaultScrollAnchor(.bottom)
-            .navigationTitle("Timesheet")
+            .navigationTitle("ViewTitle.Timesheet")
             .toolbarTitleDisplayMode(.inline)
             .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
             .toolbar {
@@ -69,7 +70,7 @@ struct KatsuView: View {
                         }
                     } label: {
                         HStack(alignment: .center, spacing: 8.0) {
-                            Text("Timesheet")
+                            Text("ViewTitle.Timesheet")
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .tint(.primary)
@@ -88,11 +89,6 @@ struct KatsuView: View {
                 }
                 ToolbarItem(placement: .principal) {
                     Spacer()
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("More", systemImage: "ellipsis.circle") {
-                        isMoreMenuOpen = true
-                    }
                 }
             }
             .safeAreaInset(edge: .top, spacing: 0.0) {
@@ -140,28 +136,9 @@ struct KatsuView: View {
                     }
                 }
             }
-            .safeAreaInset(edge: .bottom, spacing: 0.0) {
-                BarAccessory(placement: .bottom) {
-                    TimeClock(activeEntry: $activeEntry)
-                }
-            }
-            .navigationTitle("Working Hour")
-            .navigationBarTitleDisplayMode(.inline)
-            .task {
-                setupView()
-            }
-            .sheet(isPresented: $isMoreMenuOpen) {
-                MoreView()
-            }
             .sheet(item: $entryBeingEdited) { entry in
                 EntryEditor(entry)
             }
-        }
-    }
-
-    func setupView() {
-        if !entries.isEmpty, let firstEntry = entries.first, firstEntry.clockOutTime == nil {
-            activeEntry = firstEntry
         }
     }
 }
