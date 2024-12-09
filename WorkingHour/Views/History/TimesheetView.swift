@@ -13,8 +13,6 @@ struct TimesheetView: View {
 
     @Environment(\.modelContext) var modelContext: ModelContext
 
-    @Query(sort: [SortDescriptor(\ClockEntry.clockInTime, order: .reverse)]) var entries: [ClockEntry]
-
     @State var isTimesheetMenuOpen: Bool = false
     @State var isMoreViewOpen: Bool = false
     @State var isExportViewOpen: Bool = false
@@ -23,7 +21,12 @@ struct TimesheetView: View {
     @State var selectedMonth: Int
     @State var selectedYear: Int
 
+    @State var entries: [ClockEntry] = []
     @State var entryBeingEdited: ClockEntry?
+
+    var selectedDate: [Int] {
+        [selectedMonth, selectedYear]
+    }
 
     var selectableMonths: [String] {
         return Calendar.current.monthSymbols
@@ -43,19 +46,20 @@ struct TimesheetView: View {
     var body: some View {
         NavigationStack {
             List(entries) { entry in
-                EntryRow(entry: entry)
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        if entry.clockOutTime != nil {
-                            Button("Shared.Delete", systemImage: "xmark") {
-                                modelContext.delete(entry)
-                            }
-                            .tint(.red)
-                            Button("Shared.Edit", systemImage: "pencil") {
-                                entryBeingEdited = entry
-                            }
-                            .tint(.blue)
+                Button {
+                    entryBeingEdited = entry
+                } label: {
+                    EntryRow(entry: entry)
+                }
+                .listRowSeparator(.hidden)
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    if entry.clockOutTime != nil {
+                        Button("Shared.Delete", systemImage: "xmark") {
+                            modelContext.delete(entry)
                         }
+                        .tint(.red)
                     }
+                }
             }
             .listStyle(.plain)
             .defaultScrollAnchor(.bottom)
@@ -138,6 +142,36 @@ struct TimesheetView: View {
             }
             .sheet(item: $entryBeingEdited) { entry in
                 EntryEditor(entry)
+            }
+            .task {
+                await loadEntries()
+            }
+            .onChange(of: selectedDate) { _, _ in
+                Task {
+                    await loadEntries()
+                }
+            }
+            .onChange(of: isBrowsingPastEntries) { oldValue, newValue in
+                if oldValue && !newValue {
+                    selectedMonth = Calendar.current.component(.month, from: .now)
+                    selectedYear = Calendar.current.component(.year, from: .now)
+                }
+            }
+        }
+    }
+
+    func loadEntries() async {
+        let actor = Auditor(modelContainer: sharedModelContainer)
+        let entryIdentifiers = await actor.entries(in: selectedMonth, selectedYear)
+        await MainActor.run {
+            var entries: [ClockEntry] = []
+            for identifier in entryIdentifiers {
+                if let entry = modelContext.model(for: identifier) as? ClockEntry {
+                    entries.append(entry)
+                }
+            }
+            withAnimation(.snappy.speed(2.0)) {
+                self.entries = entries
             }
         }
     }

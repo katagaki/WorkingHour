@@ -191,6 +191,7 @@
       }
     },
     "Shared.Edit" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
