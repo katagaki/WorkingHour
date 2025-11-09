@@ -11,8 +11,9 @@ import Komponents
 enum TabType: Int, TabTypeProtocol {
     case timesheet = 0
     case history = 1
-    case export = 2
-    case more = 3
+    case projects = 2
+    case export = 3
+    case more = 4
 
     static var defaultTab: TabType = .timesheet
 }

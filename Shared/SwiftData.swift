@@ -8,7 +8,7 @@
 import SwiftData
 
 let sharedModelContainer: ModelContainer = {
-    let schema = Schema([ClockEntry.self])
+    let schema = Schema([ClockEntry.self, AppSettings.self, Project.self])
     let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
     do {

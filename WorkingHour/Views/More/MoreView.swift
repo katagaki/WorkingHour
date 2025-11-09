@@ -9,10 +9,21 @@ import Komponents
 import SwiftUI
 
 struct MoreView: View {
+    @State var isSettingsViewOpen: Bool = false
+    
     var body: some View {
         NavigationStack {
             MoreList(repoName: "katagaki/WorkingHour") {
-                // TODO: Implement settings
+                Section {
+                    Button {
+                        isSettingsViewOpen = true
+                    } label: {
+                        ListRow(image: "ListIcon.Settings", title: "Settings")
+                    }
+                    .tint(.primary)
+                } header: {
+                    ListSectionHeader(text: "App Settings")
+                }
             }
             .navigationTitle("ViewTitle.More")
             .navigationBarTitleDisplayMode(.inline)
@@ -25,6 +36,9 @@ struct MoreView: View {
                 ToolbarItem(placement: .principal) {
                     Spacer()
                 }
+            }
+            .sheet(isPresented: $isSettingsViewOpen) {
+                SettingsView()
             }
         }
     }

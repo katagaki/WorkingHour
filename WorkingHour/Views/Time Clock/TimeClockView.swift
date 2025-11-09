@@ -13,7 +13,11 @@ struct TimeClockView: View {
     @Environment(\.modelContext) var modelContext: ModelContext
 
     @Query(sort: [SortDescriptor(\ClockEntry.clockInTime, order: .reverse)]) var entries: [ClockEntry]
+    @Query var settings: [AppSettings]
     @State var activeEntry: ClockEntry?
+    @State var currentWorkingTime: TimeInterval = 0
+    @State var currentOvertime: TimeInterval = 0
+    @State var timer: Timer?
 
     var body: some View {
         NavigationStack {
@@ -161,6 +165,40 @@ struct TimeClockView: View {
                     .background(.groupedBackground)
                     .clipShape(.rect(cornerRadius: 12.0))
                 }
+                
+                // Current Working Hours and Overtime
+                if let activeEntry, activeEntry.clockOutTime == nil {
+                    VStack(alignment: .leading, spacing: 12.0) {
+                        HStack(alignment: .top, spacing: 16.0) {
+                            VStack(alignment: .leading, spacing: 4.0) {
+                                Text("Working Time")
+                                    .foregroundStyle(.secondary)
+                                    .fontWeight(.bold)
+                                Text(formatTimeInterval(currentWorkingTime))
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            if currentOvertime > 0 {
+                                VStack(alignment: .leading, spacing: 4.0) {
+                                    Text("Overtime")
+                                        .foregroundStyle(.secondary)
+                                        .fontWeight(.bold)
+                                    Text(formatTimeInterval(currentOvertime))
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(.orange)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .background(.groupedBackground)
+                    .clipShape(.rect(cornerRadius: 12.0))
+                }
             }
             .padding([.leading, .trailing], 18.0)
             .padding([.top, .bottom], 12.0)
@@ -178,6 +216,10 @@ struct TimeClockView: View {
             }
             .task {
                 setupView()
+                startTimer()
+            }
+            .onDisappear {
+                stopTimer()
             }
         }
     }
@@ -186,6 +228,40 @@ struct TimeClockView: View {
         if !entries.isEmpty, let firstEntry = entries.first, firstEntry.clockOutTime == nil {
             activeEntry = firstEntry
         }
+        updateWorkingTime()
+    }
+    
+    func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            updateWorkingTime()
+        }
+    }
+    
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    func updateWorkingTime() {
+        guard let activeEntry, activeEntry.clockOutTime == nil, let clockInTime = activeEntry.clockInTime else {
+            currentWorkingTime = 0
+            currentOvertime = 0
+            return
+        }
+        
+        let elapsedTime = Date.now.timeIntervalSince(clockInTime)
+        let breakTime = activeEntry.breakTime()
+        currentWorkingTime = elapsedTime - breakTime
+        
+        let standardWorkingTime = settings.first?.standardWorkingTimeInSeconds ?? 28800.0
+        currentOvertime = max(0, currentWorkingTime - standardWorkingTime)
+    }
+    
+    func formatTimeInterval(_ interval: TimeInterval) -> String {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute]
+        formatter.unitsStyle = .abbreviated
+        return formatter.string(from: interval) ?? "0h 0m"
     }
 
     func clockIn() {

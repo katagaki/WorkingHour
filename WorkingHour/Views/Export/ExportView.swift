@@ -56,7 +56,27 @@ struct ExportView: View {
                             ListRow(image: "ListIcon.Excel", title: "Excel")
                         }
                         Button {
-                            // TODO
+                            createIfNotExists(exportsFolderURL)
+                            let filename = exportCSVFilename()
+                            let exportPath = exportsFolderURL
+                                .appendingPathComponent(filename)
+                            let fetchDescriptor = FetchDescriptor<ClockEntry>(
+                                sortBy: [SortDescriptor(\.clockInTime, order: .forward)]
+                            )
+                            var entries: [ClockEntry] = (try? modelContext.fetch(fetchDescriptor)) ?? []
+                            let dateNow = Date.now
+                            let calendar = Calendar.current
+                            entries.removeAll(where: { entry in
+                                if let clockInTime = entry.clockInTime {
+                                    return !calendar.isDate(clockInTime,
+                                                            equalTo: dateNow,
+                                                            toGranularity: .month)
+                                } else {
+                                    return true
+                                }
+                            })
+                            exportToCSV(entries: entries, to: exportPath)
+                            openURL(URL(string: "shareddocuments://\(exportPath.path(percentEncoded: false))")!)
                         } label: {
                             ListRow(image: "ListIcon.CSV", title: "CSV")
                         }
@@ -144,6 +164,13 @@ struct ExportView: View {
         let formattedDate = dateFormatter.string(from: .now)
         return "\(formattedDate)-Timesheet.xlsx"
     }
+    
+    func exportCSVFilename() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd"
+        let formattedDate = dateFormatter.string(from: .now)
+        return "\(formattedDate)-Timesheet.csv"
+    }
 
     func createIfNotExists(_ url: URL?) {
         if let url, !directoryExistsAtPath(url) {
@@ -155,5 +182,30 @@ struct ExportView: View {
         var isDirectory: ObjCBool = true
         let exists = FileManager.default.fileExists(atPath: url.path(percentEncoded: false), isDirectory: &isDirectory)
         return exists && isDirectory.boolValue
+    }
+    
+    // MARK: CSV
+    
+    func exportToCSV(entries: [ClockEntry], to path: URL) {
+        var csvString = "\(String(localized: "Header.Date")),\(String(localized: "Header.Day")),\(String(localized: "Header.StartTime")),\(String(localized: "Header.EndTime")),\(String(localized: "Header.BreakTime")),\(String(localized: "Header.WorkingTime")),\(String(localized: "Header.Remarks"))\n"
+        
+        for entry in entries {
+            if let clockInDate = entry.clockInDateString(),
+               let clockInDay = entry.clockInDayString(),
+               let clockInTime = entry.clockInTimeString(),
+               let clockOutTime = entry.clockOutTimeString() {
+                let row = "\(escapeCSV(clockInDate)),\(escapeCSV(clockInDay)),\(escapeCSV(clockInTime)),\(escapeCSV(clockOutTime)),\(escapeCSV(entry.breakTimeString())),\(escapeCSV(entry.timeWorkedString())),"
+                csvString.append(row + "\n")
+            }
+        }
+        
+        try? csvString.write(to: path, atomically: true, encoding: .utf8)
+    }
+    
+    func escapeCSV(_ field: String) -> String {
+        if field.contains(",") || field.contains("\"") || field.contains("\n") {
+            return "\"\(field.replacingOccurrences(of: "\"", with: "\"\""))\""
+        }
+        return field
     }
 }
