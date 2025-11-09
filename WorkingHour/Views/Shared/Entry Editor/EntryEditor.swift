@@ -12,10 +12,11 @@ struct EntryEditor: View {
 
     @Environment(\.dismiss) var dismiss
 
-    @State var entry: ClockEntry
+    @Bindable var entry: ClockEntry
 
     @State var newClockInTime: Date
     @State var newClockOutTime: Date
+    @State var isTaskEditorOpen: Bool = false
 
     init(_ entry: ClockEntry) {
         self.entry = entry
@@ -26,20 +27,47 @@ struct EntryEditor: View {
     var body: some View {
         NavigationStack {
             List {
-                TimelineRow(.start, date: $newClockInTime)
-                if !entry.breakTimes.isEmpty {
-                    TimelineRow(.neutral, date: .constant(.distantPast))
-                }
-                ForEach($entry.breakTimes, id: \.self) { $break in
-                    TimelineRow(.breakStart, date: $break.start, in: newClockInTime...newClockOutTime)
-                    if let breakEnd = Binding($break.end) {
-                        TimelineRow(.breakEnd, date: breakEnd, in: newClockInTime...newClockOutTime)
-                    } else {
-                        TimelineRow(.breakTime, date: .constant(.distantPast))
+                Section {
+                    Button {
+                        isTaskEditorOpen = true
+                    } label: {
+                        HStack {
+                            Label("Report Tasks", systemImage: "list.clipboard")
+                            Spacer()
+                            if !entry.projectTasks.isEmpty {
+                                Text("\(entry.projectTasks.count)")
+                                    .foregroundStyle(.secondary)
+                                    .font(.caption)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(.secondary.opacity(0.2))
+                                    .clipShape(.capsule)
+                            }
+                        }
                     }
-                    TimelineRow(.neutral, date: .constant(.distantPast))
+                    .tint(.primary)
+                } header: {
+                    ListSectionHeader(text: "Tasks")
                 }
-                TimelineRow(.end, date: $newClockOutTime)
+                
+                Section {
+                    TimelineRow(.start, date: $newClockInTime)
+                    if !entry.breakTimes.isEmpty {
+                        TimelineRow(.neutral, date: .constant(.distantPast))
+                    }
+                    ForEach($entry.breakTimes, id: \.self) { $break in
+                        TimelineRow(.breakStart, date: $break.start, in: newClockInTime...newClockOutTime)
+                        if let breakEnd = Binding($break.end) {
+                            TimelineRow(.breakEnd, date: breakEnd, in: newClockInTime...newClockOutTime)
+                        } else {
+                            TimelineRow(.breakTime, date: .constant(.distantPast))
+                        }
+                        TimelineRow(.neutral, date: .constant(.distantPast))
+                    }
+                    TimelineRow(.end, date: $newClockOutTime)
+                } header: {
+                    ListSectionHeader(text: "Timeline")
+                }
             }
             .listStyle(.plain)
             .environment(\.defaultMinListRowHeight, 26.0)
@@ -57,6 +85,9 @@ struct EntryEditor: View {
                         dismiss()
                     }
                 }
+            }
+            .sheet(isPresented: $isTaskEditorOpen) {
+                TaskEditorView(entry: entry)
             }
         }
         .interactiveDismissDisabled(true)
