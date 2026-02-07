@@ -84,6 +84,11 @@ public final class LiveActivityManager {
         )
 
         Task {
+            // Try to find the activity if we don't have a reference
+            if currentActivity == nil {
+                currentActivity = Activity<UshioAttributes>.activities.first(where: { $0.attributes.entryId == data.entryId })
+            }
+            
             await currentActivity?.update(
                 .init(state: contentState, staleDate: nil)
             )
@@ -101,6 +106,11 @@ public final class LiveActivityManager {
         )
 
         Task {
+            // Try to find the activity if we don't have a reference
+            if currentActivity == nil {
+                currentActivity = Activity<UshioAttributes>.activities.first(where: { $0.attributes.entryId == data.entryId })
+            }
+            
             await currentActivity?.end(
                 .init(state: contentState, staleDate: nil),
                 dismissalPolicy: .default
@@ -135,7 +145,8 @@ struct UshioLiveActivity: Widget {
                             .font(.headline)
                             .fontWeight(.semibold)
                     }
-                    .padding()
+                    .padding(.leading, 4.0)
+                    .padding(.top, 2.0)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     VStack(alignment: .trailing, spacing: 2) {
@@ -143,46 +154,64 @@ struct UshioLiveActivity: Widget {
                             Text("Break")
                                 .font(.caption2)
                                 .foregroundStyle(.orange)
+                                .multilineTextAlignment(.trailing)
                             if let breakStartTime = context.state.breakStartTime {
                                 Text(breakStartTime, style: .relative)
                                     .font(.headline)
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.orange)
+                                    .multilineTextAlignment(.trailing)
                             }
                         } else {
                             Text("Working")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.trailing)
                             Text(context.state.clockInTime, style: .relative)
                                 .font(.headline)
                                 .fontWeight(.semibold)
+                                .multilineTextAlignment(.trailing)
                         }
                     }
-                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.trailing, 4.0)
+                    .padding(.top, 2.0)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     HStack(spacing: 8) {
                         if context.state.isOnBreak {
                             Button(intent: EndBreakIntent(entryId: context.attributes.entryId)) {
-                                Label("End Break", systemImage: "arrowshape.turn.up.backward.badge.clock.fill")
-                                    .font(.caption)
-                                    .fontWeight(.semibold)
+                                Label {
+                                    Text("End Break")
+                                } icon: {
+                                    Image(systemName: "arrowshape.turn.up.backward.badge.clock.fill")
+                                }
+                                .font(.caption)
+                                .fontWeight(.semibold)
                             }
                             .tint(.red)
                             .buttonStyle(.borderedProminent)
                         } else {
                             Button(intent: StartBreakIntent(entryId: context.attributes.entryId)) {
-                                Label("Break", systemImage: "cup.and.heat.waves.fill")
-                                    .font(.caption)
-                                    .fontWeight(.semibold)
+                                Label {
+                                    Text("Break")
+                                } icon: {
+                                    Image(systemName: "cup.and.heat.waves.fill")
+                                }
+                                .font(.caption)
+                                .fontWeight(.semibold)
                             }
                             .tint(.orange)
                             .buttonStyle(.borderedProminent)
 
                             Button(intent: ClockOutIntent(entryId: context.attributes.entryId)) {
-                                Label("Clock Out", systemImage: "rectangle.portrait.and.arrow.right")
-                                    .font(.caption)
-                                    .fontWeight(.semibold)
+                                Label {
+                                    Text("Clock Out")
+                                } icon: {
+                                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                                }
+                                .font(.caption)
+                                .fontWeight(.semibold)
                             }
                             .tint(.red)
                             .buttonStyle(.borderedProminent)
@@ -310,28 +339,40 @@ struct LiveActivityView: View {
             HStack(spacing: 8) {
                 if context.state.isOnBreak {
                     Button(intent: EndBreakIntent(entryId: context.attributes.entryId)) {
-                        Label("End Break", systemImage: "arrowshape.turn.up.backward.badge.clock.fill")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
+                        Label {
+                            Text("End Break")
+                        } icon: {
+                            Image(systemName: "arrowshape.turn.up.backward.badge.clock.fill")
+                        }
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
                     }
                     .tint(.red)
                     .buttonStyle(.borderedProminent)
                 } else {
                     Button(intent: StartBreakIntent(entryId: context.attributes.entryId)) {
-                        Label("Break", systemImage: "cup.and.heat.waves.fill")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
+                        Label {
+                            Text("Break")
+                        } icon: {
+                            Image(systemName: "cup.and.heat.waves.fill")
+                        }
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
                     }
                     .tint(.orange)
                     .buttonStyle(.borderedProminent)
 
                     Button(intent: ClockOutIntent(entryId: context.attributes.entryId)) {
-                        Label("Clock Out", systemImage: "rectangle.portrait.and.arrow.right")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
+                        Label {
+                            Text("Clock Out")
+                        } icon: {
+                            Image(systemName: "rectangle.portrait.and.arrow.right")
+                        }
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
                     }
                     .tint(.red)
                     .buttonStyle(.borderedProminent)

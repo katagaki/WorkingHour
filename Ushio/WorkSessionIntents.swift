@@ -17,11 +17,7 @@ class SharedModelContainer {
     let container: ModelContainer
 
     private init() {
-        do {
-            container = try ModelContainer(for: ClockEntry.self, Project.self)
-        } catch {
-            fatalError("Failed to create ModelContainer: \(error)")
-        }
+        container = SharedModelConfiguration.createModelContainer()
     }
 }
 
@@ -36,6 +32,7 @@ public struct BreakData: Codable, Hashable {
 struct StartBreakIntent: AppIntent {
     static var title: LocalizedStringResource = "Start Break"
     static var description = IntentDescription("Start a break during the work session")
+    static var openAppWhenRun: Bool = false
 
     @Parameter(title: "Entry ID")
     var entryId: String
@@ -80,6 +77,7 @@ struct StartBreakIntent: AppIntent {
 struct EndBreakIntent: AppIntent {
     static var title: LocalizedStringResource = "End Break"
     static var description = IntentDescription("End the current break")
+    static var openAppWhenRun: Bool = false
 
     @Parameter(title: "Entry ID")
     var entryId: String
@@ -127,6 +125,7 @@ struct EndBreakIntent: AppIntent {
 struct ClockOutIntent: AppIntent {
     static var title: LocalizedStringResource = "Clock Out"
     static var description = IntentDescription("End the work session")
+    static var openAppWhenRun: Bool = false
 
     @Parameter(title: "Entry ID")
     var entryId: String

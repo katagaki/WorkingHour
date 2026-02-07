@@ -18,11 +18,7 @@ struct WorkingHourApp: App {
     let container: ModelContainer
 
     init() {
-        do {
-            container = try ModelContainer(for: ClockEntry.self, Project.self)
-        } catch {
-            fatalError("Failed to create ModelContainer for ClockEntry and Project.")
-        }
+        container = SharedModelConfiguration.createModelContainer()
     }
 
     var body: some Scene {

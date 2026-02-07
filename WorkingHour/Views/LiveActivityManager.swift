@@ -53,6 +53,11 @@ public final class LiveActivityManager {
         )
 
         Task {
+            // Try to find the activity if we don't have a reference
+            if currentActivity == nil {
+                currentActivity = Activity<UshioAttributes>.activities.first(where: { $0.attributes.entryId == data.entryId })
+            }
+            
             await currentActivity?.update(
                 .init(state: contentState, staleDate: nil)
             )
@@ -70,6 +75,11 @@ public final class LiveActivityManager {
         )
 
         Task {
+            // Try to find the activity if we don't have a reference
+            if currentActivity == nil {
+                currentActivity = Activity<UshioAttributes>.activities.first(where: { $0.attributes.entryId == data.entryId })
+            }
+            
             await currentActivity?.end(
                 .init(state: contentState, staleDate: nil),
                 dismissalPolicy: .default
