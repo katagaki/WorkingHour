@@ -23,10 +23,10 @@ struct MainTabView: View {
                 value: .history) {
                 TimesheetView()
             }
-            Tab("Tab.Export",
-                systemImage: "square.and.arrow.up.fill",
-                value: .export) {
-                ExportView()
+            Tab("Tab.Projects",
+                systemImage: "folder.fill",
+                value: .projects) {
+                ProjectsView()
             }
             Tab("Tab.More",
                 systemImage: "ellipsis",

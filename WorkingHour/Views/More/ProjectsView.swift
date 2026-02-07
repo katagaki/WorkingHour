@@ -169,7 +169,7 @@ struct ProjectEditorView: View {
                 }
             }
             .navigationTitle("Projects.Edit")
-            .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(role: .cancel) {
