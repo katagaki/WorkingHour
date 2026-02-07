@@ -22,7 +22,7 @@
           "fill-specializations" : [
             {
               "value" : {
-                "solid" : "gray:0.39113,1.00000"
+                "solid" : "gray:1.00000,1.00000"
               }
             },
             {
@@ -32,16 +32,20 @@
               }
             }
           ],
-          "glass" : true,
+          "glass" : false,
           "image-name" : "WorkingHour.009 3.png",
           "name" : "WH",
           "opacity-specializations" : [
             {
-              "value" : 0.6
+              "value" : 0.25
             },
             {
               "appearance" : "dark",
-              "value" : 0.5
+              "value" : 0.6
+            },
+            {
+              "appearance" : "tinted",
+              "value" : 0.4
             }
           ],
           "position" : {

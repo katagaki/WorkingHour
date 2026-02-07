@@ -26,6 +26,8 @@ struct TimeClockView: View {
         settingsManager.standardWorkingHours
     }
 
+    let cornerRadius = 32.0
+
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 12.0) {
@@ -88,7 +90,7 @@ struct TimeClockView: View {
                 .frame(maxWidth: .infinity)
                 .padding()
                 .background(.groupedBackground)
-                .clipShape(.rect(cornerRadius: 12.0))
+                .clipShape(.rect(cornerRadius: cornerRadius))
 
                 // Working Hours with Overtime Info
                 if let activeEntry, activeEntry.clockOutTime == nil,
@@ -146,7 +148,7 @@ struct TimeClockView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
                     .background(.groupedBackground)
-                    .clipShape(.rect(cornerRadius: 12.0))
+                    .clipShape(.rect(cornerRadius: cornerRadius))
                 }
 
                 // Break Time
@@ -199,7 +201,7 @@ struct TimeClockView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
                     .background(.groupedBackground)
-                    .clipShape(.rect(cornerRadius: 12.0))
+                    .clipShape(.rect(cornerRadius: cornerRadius))
                 }
             }
             .padding([.leading, .trailing], 18.0)
