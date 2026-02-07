@@ -7,41 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E4260F7C2CB6B0EA0078946D /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260F7B2CB6B0EA0078946D /* App.swift */; };
-		E4260F7E2CB6B0EA0078946D /* TimesheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260F7D2CB6B0EA0078946D /* TimesheetView.swift */; };
-		E4260F822CB6B0EB0078946D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4260F812CB6B0EB0078946D /* Assets.xcassets */; };
-		E4260F912CB887A80078946D /* ClockEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260F8F2CB887A20078946D /* ClockEntry.swift */; };
-		E4260F972CB88B940078946D /* EntryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260F962CB88B8C0078946D /* EntryRow.swift */; };
 		E4260F9A2CB975F30078946D /* Komponents in Frameworks */ = {isa = PBXBuildFile; productRef = E4260F992CB975F30078946D /* Komponents */; };
-		E4260FA52CB9FC450078946D /* Break.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FA42CB9FC410078946D /* Break.swift */; };
-		E4260FAB2CBA0B450078946D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAA2CBA0B450078946D /* Localizable.xcstrings */; };
-		E4260FAD2CBA0B520078946D /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */; };
-		E4260FB02CBA11750078946D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E4260FAF2CBA11750078946D /* PrivacyInfo.xcprivacy */; };
-		E4260FB22CBAB1AF0078946D /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FB12CBAB1AE0078946D /* MoreView.swift */; };
 		E4260FB52CBAB8C20078946D /* xlsxwriter in Frameworks */ = {isa = PBXBuildFile; productRef = E4260FB42CBAB8C20078946D /* xlsxwriter */; };
-		E4260FB92CBFFE0E0078946D /* EntryEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FB82CBFFE0E0078946D /* EntryEditor.swift */; };
-		E4260FBE2CC14C6F0078946D /* TimelineRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FBD2CC14C6D0078946D /* TimelineRow.swift */; };
 		E44D37EA2D06EF5F006C9F1F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E44D37E92D06EF5E006C9F1F /* WidgetKit.framework */; };
 		E44D37EC2D06EF5F006C9F1F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E44D37EB2D06EF5F006C9F1F /* SwiftUI.framework */; };
 		E44D37FB2D06EF60006C9F1F /* UshioExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E44D37E72D06EF5E006C9F1F /* UshioExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		E44D38082D06EF6C006C9F1F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E44D38012D06EF6C006C9F1F /* Assets.xcassets */; };
-		E44D380A2D06EF6C006C9F1F /* Ushio.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D38032D06EF6C006C9F1F /* Ushio.swift */; };
-		E44D380B2D06EF6C006C9F1F /* UshioBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D38042D06EF6C006C9F1F /* UshioBundle.swift */; };
-		E44D380C2D06EF6C006C9F1F /* UshioControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D38052D06EF6C006C9F1F /* UshioControl.swift */; };
-		E44D380D2D06EF6C006C9F1F /* UshioLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D38062D06EF6C006C9F1F /* UshioLiveActivity.swift */; };
-		E44D38112D06F2A8006C9F1F /* SwiftData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D38102D06F2A6006C9F1F /* SwiftData.swift */; };
-		E44D38122D06F2BB006C9F1F /* SwiftData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D38102D06F2A6006C9F1F /* SwiftData.swift */; };
-		E44D38132D06F2C1006C9F1F /* ClockEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260F8F2CB887A20078946D /* ClockEntry.swift */; };
-		E44D38152D06F2C9006C9F1F /* Break.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4260FA42CB9FC410078946D /* Break.swift */; };
-		E44D38172D06F2DF006C9F1F /* Clocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D38162D06F2CF006C9F1F /* Clocker.swift */; };
-		E44D38182D06F2DF006C9F1F /* Clocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D38162D06F2CF006C9F1F /* Clocker.swift */; };
-		E44D381A2D06F52F006C9F1F /* Auditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D38192D06F52D006C9F1F /* Auditor.swift */; };
-		E44D381B2D06F52F006C9F1F /* Auditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44D38192D06F52D006C9F1F /* Auditor.swift */; };
-		E4C7B17F2CD8708900C9CE13 /* ExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7B17E2CD8708700C9CE13 /* ExportView.swift */; };
-		E4C7B1812CD878C800C9CE13 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7B1802CD878C600C9CE13 /* MainTabView.swift */; };
-		E4C7B1852CD87C0000C9CE13 /* TabType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7B1842CD87C0000C9CE13 /* TabType.swift */; };
-		E4C7B1872CD87C0400C9CE13 /* ViewPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7B1862CD87C0400C9CE13 /* ViewPath.swift */; };
-		E4C7B18A2CD87EAD00C9CE13 /* TimeClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7B1892CD87EAA00C9CE13 /* TimeClockView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,38 +40,51 @@
 
 /* Begin PBXFileReference section */
 		E4260F782CB6B0EA0078946D /* Working Hour.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Working Hour.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E4260F7B2CB6B0EA0078946D /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
-		E4260F7D2CB6B0EA0078946D /* TimesheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimesheetView.swift; sourceTree = "<group>"; };
-		E4260F812CB6B0EB0078946D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		E4260F862CB6B0EB0078946D /* WorkingHour.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WorkingHour.entitlements; sourceTree = "<group>"; };
-		E4260F872CB6B0EB0078946D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E4260F8F2CB887A20078946D /* ClockEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockEntry.swift; sourceTree = "<group>"; };
-		E4260F962CB88B8C0078946D /* EntryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryRow.swift; sourceTree = "<group>"; };
-		E4260FA42CB9FC410078946D /* Break.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Break.swift; sourceTree = "<group>"; };
-		E4260FAA2CBA0B450078946D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
-		E4260FAF2CBA11750078946D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		E4260FB12CBAB1AE0078946D /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
-		E4260FB82CBFFE0E0078946D /* EntryEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryEditor.swift; sourceTree = "<group>"; };
-		E4260FBD2CC14C6D0078946D /* TimelineRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineRow.swift; sourceTree = "<group>"; };
 		E44D37E72D06EF5E006C9F1F /* UshioExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UshioExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		E44D37E92D06EF5E006C9F1F /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		E44D37EB2D06EF5F006C9F1F /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		E44D38012D06EF6C006C9F1F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		E44D38022D06EF6C006C9F1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E44D38032D06EF6C006C9F1F /* Ushio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ushio.swift; sourceTree = "<group>"; };
-		E44D38042D06EF6C006C9F1F /* UshioBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UshioBundle.swift; sourceTree = "<group>"; };
-		E44D38052D06EF6C006C9F1F /* UshioControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UshioControl.swift; sourceTree = "<group>"; };
-		E44D38062D06EF6C006C9F1F /* UshioLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UshioLiveActivity.swift; sourceTree = "<group>"; };
-		E44D38102D06F2A6006C9F1F /* SwiftData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftData.swift; sourceTree = "<group>"; };
-		E44D38162D06F2CF006C9F1F /* Clocker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Clocker.swift; sourceTree = "<group>"; };
-		E44D38192D06F52D006C9F1F /* Auditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auditor.swift; sourceTree = "<group>"; };
-		E4C7B17E2CD8708700C9CE13 /* ExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportView.swift; sourceTree = "<group>"; };
-		E4C7B1802CD878C600C9CE13 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
-		E4C7B1842CD87C0000C9CE13 /* TabType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabType.swift; sourceTree = "<group>"; };
-		E4C7B1862CD87C0400C9CE13 /* ViewPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPath.swift; sourceTree = "<group>"; };
-		E4C7B1892CD87EAA00C9CE13 /* TimeClockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeClockView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E4C25B902F373EC700F3BADF /* Exceptions for "Ushio" folder in "UshioExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E44D37E62D06EF5E006C9F1F /* UshioExtension */;
+		};
+		E4C25BE52F373EE800F3BADF /* Exceptions for "WorkingHour" folder in "Working Hour" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E4260F772CB6B0EA0078946D /* Working Hour */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		E4C25B742F373EBE00F3BADF /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		E4C25B892F373EC700F3BADF /* Ushio */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E4C25B902F373EC700F3BADF /* Exceptions for "Ushio" folder in "UshioExtension" target */,
+			);
+			path = Ushio;
+			sourceTree = "<group>";
+		};
+		E4C25BD12F373EE800F3BADF /* WorkingHour */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E4C25BE52F373EE800F3BADF /* Exceptions for "WorkingHour" folder in "Working Hour" target */,
+			);
+			path = WorkingHour;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		E4260F752CB6B0EA0078946D /* Frameworks */ = {
@@ -128,9 +111,9 @@
 		E4260F6F2CB6B0EA0078946D = {
 			isa = PBXGroup;
 			children = (
-				E4260F9E2CB9F66C0078946D /* Shared */,
-				E4260F9F2CB9F68B0078946D /* WorkingHour */,
-				E44D38072D06EF6C006C9F1F /* Ushio */,
+				E4C25B742F373EBE00F3BADF /* Shared */,
+				E4C25BD12F373EE800F3BADF /* WorkingHour */,
+				E4C25B892F373EC700F3BADF /* Ushio */,
 				E44D37E82D06EF5E006C9F1F /* Frameworks */,
 				E4260F792CB6B0EA0078946D /* Products */,
 			);
@@ -145,80 +128,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E4260F9E2CB9F66C0078946D /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				E44D38102D06F2A6006C9F1F /* SwiftData.swift */,
-				E44D380E2D06F29D006C9F1F /* Actors */,
-				E4260FA32CB9FC3E0078946D /* Structs */,
-				E4260FA22CB9FC370078946D /* Data Models */,
-			);
-			path = Shared;
-			sourceTree = "<group>";
-		};
-		E4260F9F2CB9F68B0078946D /* WorkingHour */ = {
-			isa = PBXGroup;
-			children = (
-				E4260F862CB6B0EB0078946D /* WorkingHour.entitlements */,
-				E4260F872CB6B0EB0078946D /* Info.plist */,
-				E4260F812CB6B0EB0078946D /* Assets.xcassets */,
-				E4260FAA2CBA0B450078946D /* Localizable.xcstrings */,
-				E4260FAC2CBA0B520078946D /* InfoPlist.xcstrings */,
-				E4260FAF2CBA11750078946D /* PrivacyInfo.xcprivacy */,
-				E4260FA02CB9F6980078946D /* Views */,
-				E4C7B1832CD87BF400C9CE13 /* Enums */,
-			);
-			path = WorkingHour;
-			sourceTree = "<group>";
-		};
-		E4260FA02CB9F6980078946D /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				E4260F7B2CB6B0EA0078946D /* App.swift */,
-				E4C7B1802CD878C600C9CE13 /* MainTabView.swift */,
-				E4C7B1882CD87EA000C9CE13 /* Time Clock */,
-				E4C7B18B2CD8807800C9CE13 /* History */,
-				E4C7B18C2CD881D300C9CE13 /* Export */,
-				E4C7B17D2CD8708300C9CE13 /* More */,
-				E4260FA12CB9F7410078946D /* Shared */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		E4260FA12CB9F7410078946D /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				E4260FBA2CC149880078946D /* Entry Editor */,
-				E4260F962CB88B8C0078946D /* EntryRow.swift */,
-			);
-			path = Shared;
-			sourceTree = "<group>";
-		};
-		E4260FA22CB9FC370078946D /* Data Models */ = {
-			isa = PBXGroup;
-			children = (
-				E4260F8F2CB887A20078946D /* ClockEntry.swift */,
-			);
-			path = "Data Models";
-			sourceTree = "<group>";
-		};
-		E4260FA32CB9FC3E0078946D /* Structs */ = {
-			isa = PBXGroup;
-			children = (
-				E4260FA42CB9FC410078946D /* Break.swift */,
-			);
-			path = Structs;
-			sourceTree = "<group>";
-		};
-		E4260FBA2CC149880078946D /* Entry Editor */ = {
-			isa = PBXGroup;
-			children = (
-				E4260FBD2CC14C6D0078946D /* TimelineRow.swift */,
-				E4260FB82CBFFE0E0078946D /* EntryEditor.swift */,
-			);
-			path = "Entry Editor";
-			sourceTree = "<group>";
-		};
 		E44D37E82D06EF5E006C9F1F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -226,69 +135,6 @@
 				E44D37EB2D06EF5F006C9F1F /* SwiftUI.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		E44D38072D06EF6C006C9F1F /* Ushio */ = {
-			isa = PBXGroup;
-			children = (
-				E44D38012D06EF6C006C9F1F /* Assets.xcassets */,
-				E44D38022D06EF6C006C9F1F /* Info.plist */,
-				E44D38032D06EF6C006C9F1F /* Ushio.swift */,
-				E44D38042D06EF6C006C9F1F /* UshioBundle.swift */,
-				E44D38052D06EF6C006C9F1F /* UshioControl.swift */,
-				E44D38062D06EF6C006C9F1F /* UshioLiveActivity.swift */,
-			);
-			path = Ushio;
-			sourceTree = "<group>";
-		};
-		E44D380E2D06F29D006C9F1F /* Actors */ = {
-			isa = PBXGroup;
-			children = (
-				E44D38192D06F52D006C9F1F /* Auditor.swift */,
-				E44D38162D06F2CF006C9F1F /* Clocker.swift */,
-			);
-			path = Actors;
-			sourceTree = "<group>";
-		};
-		E4C7B17D2CD8708300C9CE13 /* More */ = {
-			isa = PBXGroup;
-			children = (
-				E4260FB12CBAB1AE0078946D /* MoreView.swift */,
-			);
-			path = More;
-			sourceTree = "<group>";
-		};
-		E4C7B1832CD87BF400C9CE13 /* Enums */ = {
-			isa = PBXGroup;
-			children = (
-				E4C7B1862CD87C0400C9CE13 /* ViewPath.swift */,
-				E4C7B1842CD87C0000C9CE13 /* TabType.swift */,
-			);
-			path = Enums;
-			sourceTree = "<group>";
-		};
-		E4C7B1882CD87EA000C9CE13 /* Time Clock */ = {
-			isa = PBXGroup;
-			children = (
-				E4C7B1892CD87EAA00C9CE13 /* TimeClockView.swift */,
-			);
-			path = "Time Clock";
-			sourceTree = "<group>";
-		};
-		E4C7B18B2CD8807800C9CE13 /* History */ = {
-			isa = PBXGroup;
-			children = (
-				E4260F7D2CB6B0EA0078946D /* TimesheetView.swift */,
-			);
-			path = History;
-			sourceTree = "<group>";
-		};
-		E4C7B18C2CD881D300C9CE13 /* Export */ = {
-			isa = PBXGroup;
-			children = (
-				E4C7B17E2CD8708700C9CE13 /* ExportView.swift */,
-			);
-			path = Export;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -308,6 +154,10 @@
 			);
 			dependencies = (
 				E44D37FA2D06EF60006C9F1F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				E4C25B742F373EBE00F3BADF /* Shared */,
+				E4C25BD12F373EE800F3BADF /* WorkingHour */,
 			);
 			name = "Working Hour";
 			packageProductDependencies = (
@@ -330,6 +180,10 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				E4C25B742F373EBE00F3BADF /* Shared */,
+				E4C25B892F373EC700F3BADF /* Ushio */,
+			);
 			name = UshioExtension;
 			packageProductDependencies = (
 			);
@@ -345,7 +199,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1610;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					E4260F772CB6B0EA0078946D = {
 						CreatedOnToolsVersion = 16.0;
@@ -385,10 +239,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4260FAD2CBA0B520078946D /* InfoPlist.xcstrings in Resources */,
-				E4260FAB2CBA0B450078946D /* Localizable.xcstrings in Resources */,
-				E4260FB02CBA11750078946D /* PrivacyInfo.xcprivacy in Resources */,
-				E4260F822CB6B0EB0078946D /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,7 +246,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E44D38082D06EF6C006C9F1F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,22 +277,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E44D381B2D06F52F006C9F1F /* Auditor.swift in Sources */,
-				E4260FBE2CC14C6F0078946D /* TimelineRow.swift in Sources */,
-				E4260F7E2CB6B0EA0078946D /* TimesheetView.swift in Sources */,
-				E4260FA52CB9FC450078946D /* Break.swift in Sources */,
-				E4C7B17F2CD8708900C9CE13 /* ExportView.swift in Sources */,
-				E44D38112D06F2A8006C9F1F /* SwiftData.swift in Sources */,
-				E4260F912CB887A80078946D /* ClockEntry.swift in Sources */,
-				E4260FB92CBFFE0E0078946D /* EntryEditor.swift in Sources */,
-				E4260F7C2CB6B0EA0078946D /* App.swift in Sources */,
-				E4260F972CB88B940078946D /* EntryRow.swift in Sources */,
-				E4260FB22CBAB1AF0078946D /* MoreView.swift in Sources */,
-				E44D38172D06F2DF006C9F1F /* Clocker.swift in Sources */,
-				E4C7B1812CD878C800C9CE13 /* MainTabView.swift in Sources */,
-				E4C7B1852CD87C0000C9CE13 /* TabType.swift in Sources */,
-				E4C7B18A2CD87EAD00C9CE13 /* TimeClockView.swift in Sources */,
-				E4C7B1872CD87C0400C9CE13 /* ViewPath.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -451,15 +284,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E44D380A2D06EF6C006C9F1F /* Ushio.swift in Sources */,
-				E44D380B2D06EF6C006C9F1F /* UshioBundle.swift in Sources */,
-				E44D38182D06F2DF006C9F1F /* Clocker.swift in Sources */,
-				E44D380C2D06EF6C006C9F1F /* UshioControl.swift in Sources */,
-				E44D38152D06F2C9006C9F1F /* Break.swift in Sources */,
-				E44D380D2D06EF6C006C9F1F /* UshioLiveActivity.swift in Sources */,
-				E44D381A2D06F52F006C9F1F /* Auditor.swift in Sources */,
-				E44D38132D06F2C1006C9F1F /* ClockEntry.swift in Sources */,
-				E44D38122D06F2BB006C9F1F /* SwiftData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -482,9 +306,10 @@
 				CODE_SIGN_ENTITLEMENTS = WorkingHour/WorkingHour.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = YYM4Z6MU8F;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WorkingHour/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Timesheet;
@@ -493,6 +318,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -516,9 +342,10 @@
 				CODE_SIGN_ENTITLEMENTS = WorkingHour/WorkingHour.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = YYM4Z6MU8F;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WorkingHour/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Timesheet;
@@ -527,6 +354,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -578,6 +406,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = YYM4Z6MU8F;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -601,6 +430,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -643,6 +473,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = YYM4Z6MU8F;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -659,6 +490,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
@@ -672,12 +504,11 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = YYM4Z6MU8F;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Ushio/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Ushio;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -700,12 +531,11 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = YYM4Z6MU8F;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Ushio/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Ushio;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

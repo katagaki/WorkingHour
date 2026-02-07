@@ -10,10 +10,21 @@ import SwiftUI
 
 struct TimeClockView: View {
 
-    @Environment(\.modelContext) var modelContext: ModelContext
+    @Environment(\.modelContext) private var modelContext
+    @Query(filter: #Predicate<ClockEntry> { $0.clockOutTime == nil }, sort: \.clockInTime, order: .reverse) private var activeEntries: [ClockEntry]
 
-    @Query(sort: [SortDescriptor(\ClockEntry.clockInTime, order: .reverse)]) var entries: [ClockEntry]
-    @State var activeEntry: ClockEntry?
+    @State private var settingsManager = SettingsManager.shared
+
+    var activeEntry: ClockEntry? {
+        activeEntries.first
+    }
+
+    @State var currentWorkingTime: TimeInterval = 0
+    @State var timer: Timer?
+
+    var standardWorkingHours: TimeInterval {
+        settingsManager.standardWorkingHours
+    }
 
     var body: some View {
         NavigationStack {
@@ -79,7 +90,7 @@ struct TimeClockView: View {
                 .background(.groupedBackground)
                 .clipShape(.rect(cornerRadius: 12.0))
 
-                // Working Hours
+                // Working Hours with Overtime Info
                 if let activeEntry, activeEntry.clockOutTime == nil,
                    let clockInTime = activeEntry.clockInTime {
                     VStack(alignment: .leading, spacing: 6.0) {
@@ -89,6 +100,35 @@ struct TimeClockView: View {
                         Text(clockInTime, style: .relative)
                             .font(.largeTitle)
                             .fontWeight(.bold)
+
+                        // Overtime indicator
+                        if currentWorkingTime > 0 {
+                            if currentWorkingTime > standardWorkingHours {
+                                HStack(spacing: 6.0) {
+                                    Image(systemName: "exclamationmark.triangle.fill")
+                                        .foregroundStyle(.red)
+                                    Text("TimeClock.Overtime")
+                                        .fontWeight(.semibold)
+                                    Text(formatTimeInterval(currentWorkingTime - standardWorkingHours))
+                                }
+                                .foregroundStyle(.red)
+                                .font(.subheadline)
+                                .padding(.top, 4.0)
+                            } else {
+                                let remaining = standardWorkingHours - currentWorkingTime
+                                HStack(spacing: 6.0) {
+                                    Image(systemName: "clock.badge.checkmark.fill")
+                                        .foregroundStyle(.accent)
+                                    Text("TimeClock.Remaining")
+                                        .fontWeight(.semibold)
+                                    Text(formatTimeInterval(remaining))
+                                }
+                                .foregroundStyle(.secondary)
+                                .font(.subheadline)
+                                .padding(.top, 4.0)
+                            }
+                        }
+
                         Button {
                             clockOut()
                         } label: {
@@ -165,42 +205,65 @@ struct TimeClockView: View {
             .padding([.leading, .trailing], 18.0)
             .padding([.top, .bottom], 12.0)
             .navigationTitle("ViewTitle.TimeClock")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Text("ViewTitle.TimeClock")
-                        .font(.title)
-                        .fontWeight(.bold)
-                }
-                ToolbarItem(placement: .principal) {
-                    Spacer()
-                }
-            }
+            .toolbarTitleDisplayMode(.inlineLarge)
             .task {
                 setupView()
+            }
+            .onDisappear {
+                timer?.invalidate()
+                timer = nil
             }
         }
     }
 
     func setupView() {
-        if !entries.isEmpty, let firstEntry = entries.first, firstEntry.clockOutTime == nil {
-            activeEntry = firstEntry
+        if activeEntry != nil {
+            startTimer()
         }
+    }
+
+    func startTimer() {
+        updateWorkingTime()
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            updateWorkingTime()
+        }
+    }
+
+    func updateWorkingTime() {
+        guard let activeEntry, let clockInTime = activeEntry.clockInTime else {
+            currentWorkingTime = 0
+            return
+        }
+        let totalTime = Date.now.timeIntervalSince(clockInTime)
+        let breakTime = activeEntry.breakTime()
+        currentWorkingTime = totalTime - breakTime
     }
 
     func clockIn() {
         withAnimation(.smooth.speed(2.0)) {
             let newEntry = ClockEntry(.now)
+
+            // Auto-add break if enabled
+            if settingsManager.autoAddBreakTime && settingsManager.defaultBreakDuration > 0 {
+                let breakStart = Date.now
+                let breakEnd = breakStart.addingTimeInterval(settingsManager.defaultBreakDuration)
+                newEntry.breakTimes.append(Break(start: breakStart, end: breakEnd))
+            }
+
             modelContext.insert(newEntry)
-            activeEntry = newEntry
-            try? modelContext.save()
+            startTimer()
         }
     }
 
     func clockOut() {
         withAnimation(.smooth.speed(2.0)) {
             activeEntry?.clockOutTime = .now
-            try? modelContext.save()
+            if let activeEntry {
+                // dataManager.updateClockEntry(activeEntry)
+            }
+            timer?.invalidate()
+            timer = nil
         }
     }
 
@@ -208,7 +271,9 @@ struct TimeClockView: View {
         withAnimation(.smooth.speed(2.0)) {
             activeEntry?.breakTimes.append(Break(start: .now))
             activeEntry?.isOnBreak = true
-            try? modelContext.save()
+            if let activeEntry {
+                // dataManager.updateClockEntry(activeEntry)
+            }
         }
     }
 
@@ -219,8 +284,17 @@ struct TimeClockView: View {
                 activeEntry?.breakTimes.removeLast()
                 activeEntry?.breakTimes.append(Break(start: startTime, end: .now))
                 activeEntry?.isOnBreak = false
-                try? modelContext.save()
+                if let activeEntry {
+                    // dataManager.updateClockEntry(activeEntry)
+                }
             }
         }
+    }
+
+    func formatTimeInterval(_ interval: TimeInterval) -> String {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute]
+        formatter.unitsStyle = .abbreviated
+        return formatter.string(from: interval) ?? ""
     }
 }

@@ -11,9 +11,9 @@ import SwiftUI
 
 struct TimesheetView: View {
 
-    @Environment(\.modelContext) var modelContext: ModelContext
+    @State private var modelContext: ModelContext?
+    @Environment(\.modelContext) private var context
 
-    @State var isTimesheetMenuOpen: Bool = false
     @State var isMoreViewOpen: Bool = false
     @State var isExportViewOpen: Bool = false
 
@@ -21,8 +21,11 @@ struct TimesheetView: View {
     @State var selectedMonth: Int
     @State var selectedYear: Int
 
-    @State var entries: [ClockEntry] = []
     @State var entryBeingEdited: ClockEntry?
+
+    // var entries: [ClockEntry] {
+    //     dataManager.entries(in: selectedMonth, year: selectedYear)
+    // }
 
     var selectedDate: [Int] {
         [selectedMonth, selectedYear]
@@ -39,117 +42,68 @@ struct TimesheetView: View {
     }
 
     init() {
-        selectedMonth = Calendar.current.component(.month, from: .now)
-        selectedYear = Calendar.current.component(.year, from: .now)
+        _selectedMonth = State(initialValue: Calendar.current.component(.month, from: .now))
+        _selectedYear = State(initialValue: Calendar.current.component(.year, from: .now))
     }
 
     var body: some View {
         NavigationStack {
-            List(entries) { entry in
-                Button {
-                    entryBeingEdited = entry
-                } label: {
-                    EntryRow(entry: entry)
-                }
-                .listRowSeparator(.hidden)
-                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                    if entry.clockOutTime != nil {
-                        Button("Shared.Delete", systemImage: "xmark") {
-                            modelContext.delete(entry)
-                        }
-                        .tint(.red)
-                    }
-                }
-            }
+            TimesheetList(month: selectedMonth, year: selectedYear, entryBeingEdited: $entryBeingEdited)
             .listStyle(.plain)
             .defaultScrollAnchor(.bottom)
             .navigationTitle("ViewTitle.Timesheet")
-            .toolbarTitleDisplayMode(.inline)
-            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+            .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        withAnimation(.smooth.speed(2.0)) {
-                            isTimesheetMenuOpen.toggle()
-                        }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Toggle(
+                            "Browse Past Entries",
+                            isOn: $isBrowsingPastEntries.animation(.smooth.speed(2.0))
+                        )
                     } label: {
-                        HStack(alignment: .center, spacing: 8.0) {
-                            Text("ViewTitle.Timesheet")
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .tint(.primary)
-                            Group {
-                                if !isTimesheetMenuOpen {
-                                    Image(systemName: "chevron.down.circle.fill")
-                                        .symbolRenderingMode(.hierarchical)
-                                } else {
-                                    Image(systemName: "chevron.up.circle.fill")
-                                        .symbolRenderingMode(.hierarchical)
-                                }
-                            }
-                            .font(.system(size: 14.0))
-                        }
+                        Image(systemName: "ellipsis")
                     }
-                }
-                ToolbarItem(placement: .principal) {
-                    Spacer()
                 }
             }
             .safeAreaInset(edge: .top, spacing: 0.0) {
-                BarAccessory(placement: .top) {
+                if isBrowsingPastEntries {
                     HStack {
-                        if isTimesheetMenuOpen {
-                            VStack(alignment: .leading, spacing: 10.0) {
+                        VStack(alignment: .leading, spacing: 10.0) {
+                            HStack(alignment: .center, spacing: 8.0) {
+                                Text("Select Month")
+                                Spacer()
                                 HStack(alignment: .center, spacing: 8.0) {
-                                    Toggle(
-                                        "Browse Past Entries",
-                                        isOn: $isBrowsingPastEntries.animation(.smooth.speed(2.0))
-                                    )
-                                }
-                                if isBrowsingPastEntries {
-                                    HStack(alignment: .center, spacing: 8.0) {
-                                        Text("Select Month")
-                                        Spacer()
-                                        HStack(alignment: .center, spacing: 8.0) {
-                                            Group {
-                                                Picker("Month", selection: $selectedMonth) {
-                                                    ForEach(
-                                                        Array(selectableMonths.enumerated()),
-                                                        id: \.offset
-                                                    ) { index, month in
-                                                        Text(month)
-                                                            .tag(index + 1)
-                                                    }
-                                                }
-                                                Picker("Year", selection: $selectedYear) {
-                                                    ForEach(selectableYears, id: \.self) { year in
-                                                        Text(String(year))
-                                                            .tag(year)
-                                                    }
-                                                }
+                                    Group {
+                                        Picker("Month", selection: $selectedMonth) {
+                                            ForEach(
+                                                Array(selectableMonths.enumerated()),
+                                                id: \.offset
+                                            ) { index, month in
+                                                Text(month)
+                                                    .tag(index + 1)
                                             }
-                                            .background(.inlinePicker)
-                                            .clipShape(.rect(cornerRadius: 8.0))
+                                        }
+                                        Picker("Year", selection: $selectedYear) {
+                                            ForEach(selectableYears, id: \.self) { year in
+                                                Text(String(year))
+                                                    .tag(year)
+                                            }
                                         }
                                     }
+                                    .background(.inlinePicker)
+                                    .clipShape(.rect(cornerRadius: 8.0))
                                 }
                             }
-                            .padding([.leading, .trailing], 20.0)
-                            .padding([.top, .bottom], 8.0)
                         }
+                        .padding([.leading, .trailing], 20.0)
+                        .padding([.top, .bottom], 8.0)
                     }
                 }
             }
             .sheet(item: $entryBeingEdited) { entry in
-                EntryEditor(entry)
-            }
-            .task {
-                await loadEntries()
-            }
-            .onChange(of: selectedDate) { _, _ in
-                Task {
-                    await loadEntries()
-                }
+                EntryEditor(entry, onSave: {
+                    // Refresh handled by SwiftData
+                })
             }
             .onChange(of: isBrowsingPastEntries) { oldValue, newValue in
                 if oldValue && !newValue {
@@ -159,19 +113,56 @@ struct TimesheetView: View {
             }
         }
     }
+}
 
-    func loadEntries() async {
-        let actor = Auditor(modelContainer: sharedModelContainer)
-        let entryIdentifiers = await actor.entries(in: selectedMonth, selectedYear)
-        await MainActor.run {
-            var entries: [ClockEntry] = []
-            for identifier in entryIdentifiers {
-                if let entry = modelContext.model(for: identifier) as? ClockEntry {
-                    entries.append(entry)
-                }
+struct TimesheetList: View {
+    @Environment(\.modelContext) var modelContext
+    @Query var entries: [ClockEntry]
+    @Binding var entryBeingEdited: ClockEntry?
+
+    init(month: Int, year: Int, entryBeingEdited: Binding<ClockEntry?>) {
+        self._entryBeingEdited = entryBeingEdited
+
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = year
+        components.month = month
+        components.day = 1
+        components.hour = 0
+        components.minute = 0
+        components.second = 0
+
+        let startDate = calendar.date(from: components) ?? .distantPast
+        let endDate = calendar.date(byAdding: .month, value: 1, to: startDate)?.addingTimeInterval(-1) ?? .distantFuture
+
+        // Predicate: clockInTime between start and end
+        // CloudKit-compatible predicate without force unwrap
+        let predicate = #Predicate<ClockEntry> { entry in
+            if let clockInTime = entry.clockInTime {
+                clockInTime >= startDate && clockInTime <= endDate
+            } else {
+                false
             }
-            withAnimation(.snappy.speed(2.0)) {
-                self.entries = entries
+        }
+
+        _entries = Query(filter: predicate, sort: [SortDescriptor(\.clockInTime, order: .forward)])
+    }
+
+    var body: some View {
+        List(entries) { entry in
+            Button {
+                entryBeingEdited = entry
+            } label: {
+                EntryRow(entry: entry)
+            }
+            .listRowSeparator(.hidden)
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                if entry.clockOutTime != nil {
+                    Button("Shared.Delete", systemImage: "xmark") {
+                        modelContext.delete(entry)
+                    }
+                    .tint(.red)
+                }
             }
         }
     }

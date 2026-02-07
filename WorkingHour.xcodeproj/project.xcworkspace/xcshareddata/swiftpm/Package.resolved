@@ -7,7 +7,7 @@
       "location" : "https://github.com/katagaki/Komponents",
       "state" : {
         "branch" : "main",
-        "revision" : "12e15fb878abe570856f42db79cdc378af805c58"
+        "revision" : "93f484d6f2cef9c179387fcca2b2048413f9f0a6"
       }
     },
     {
@@ -16,7 +16,7 @@
       "location" : "https://github.com/jmcnamara/libxlsxwriter",
       "state" : {
         "branch" : "main",
-        "revision" : "6f2ac4af23879c3d660b0fe689f423c19f8457d1"
+        "revision" : "2894634d65cee6021901a165bfc2bb0fad6da193"
       }
     },
     {
