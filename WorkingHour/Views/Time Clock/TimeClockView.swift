@@ -255,14 +255,23 @@ struct TimeClockView: View {
 
             modelContext.insert(newEntry)
             startTimer()
+
+            // Start Live Activity
+            if let sessionData = newEntry.toWorkSessionData(standardWorkingHours: standardWorkingHours) {
+                LiveActivityManager.shared.startActivity(with: sessionData)
+            }
         }
     }
 
     func clockOut() {
         withAnimation(.smooth.speed(2.0)) {
             activeEntry?.clockOutTime = .now
-            if let activeEntry {
+            if let activeEntry,
+               let sessionData = activeEntry.toWorkSessionData(standardWorkingHours: standardWorkingHours) {
                 // dataManager.updateClockEntry(activeEntry)
+
+                // End Live Activity
+                LiveActivityManager.shared.endActivity(with: sessionData)
             }
             timer?.invalidate()
             timer = nil
@@ -273,8 +282,12 @@ struct TimeClockView: View {
         withAnimation(.smooth.speed(2.0)) {
             activeEntry?.breakTimes.append(Break(start: .now))
             activeEntry?.isOnBreak = true
-            if let activeEntry {
+            if let activeEntry,
+               let sessionData = activeEntry.toWorkSessionData(standardWorkingHours: standardWorkingHours) {
                 // dataManager.updateClockEntry(activeEntry)
+
+                // Update Live Activity
+                LiveActivityManager.shared.updateActivity(with: sessionData)
             }
         }
     }
@@ -286,8 +299,12 @@ struct TimeClockView: View {
                 activeEntry?.breakTimes.removeLast()
                 activeEntry?.breakTimes.append(Break(start: startTime, end: .now))
                 activeEntry?.isOnBreak = false
-                if let activeEntry {
+                if let activeEntry,
+                   let sessionData = activeEntry.toWorkSessionData(standardWorkingHours: standardWorkingHours) {
                     // dataManager.updateClockEntry(activeEntry)
+
+                    // Update Live Activity
+                    LiveActivityManager.shared.updateActivity(with: sessionData)
                 }
             }
         }

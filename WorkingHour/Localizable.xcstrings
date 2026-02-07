@@ -4,6 +4,9 @@
     "" : {
       "shouldTranslate" : false
     },
+    "-" : {
+
+    },
     "%@ %@" : {
       "localizations" : {
         "en" : {
@@ -18,6 +21,12 @@
     "%lld" : {
 
     },
+    "A an example control that runs a timer." : {
+
+    },
+    "Break" : {
+
+    },
     "Browse Past Entries" : {
       "localizations" : {
         "ja" : {
@@ -28,6 +37,12 @@
         }
       }
     },
+    "Clock In" : {
+
+    },
+    "Clock Out" : {
+
+    },
     "Edit Entry" : {
       "localizations" : {
         "ja" : {
@@ -37,6 +52,21 @@
           }
         }
       }
+    },
+    "Emoji:" : {
+
+    },
+    "End Break" : {
+
+    },
+    "End the current break" : {
+
+    },
+    "End the work session" : {
+
+    },
+    "Entry ID" : {
+
     },
     "EntryEditor.Section.Tasks" : {
       "localizations" : {
@@ -332,6 +362,21 @@
         }
       }
     },
+    "My Widget" : {
+
+    },
+    "Off" : {
+
+    },
+    "On" : {
+
+    },
+    "On Break" : {
+
+    },
+    "Overtime" : {
+
+    },
     "Projects.Active" : {
       "localizations" : {
         "en" : {
@@ -509,6 +554,9 @@
           }
         }
       }
+    },
+    "Remaining" : {
+
     },
     "Select Month" : {
       "localizations" : {
@@ -910,6 +958,18 @@
         }
       }
     },
+    "Start a break during the work session" : {
+
+    },
+    "Start a timer" : {
+
+    },
+    "Start Break" : {
+
+    },
+    "Start Timer" : {
+
+    },
     "Tab.Export" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1103,6 +1163,12 @@
         }
       }
     },
+    "This is an example widget." : {
+
+    },
+    "Time:" : {
+
+    },
     "TimeClock.Break.End" : {
       "localizations" : {
         "en" : {
@@ -1295,6 +1361,12 @@
         }
       }
     },
+    "Timer" : {
+
+    },
+    "Timer is running" : {
+
+    },
     "ViewTitle.Export" : {
       "localizations" : {
         "en" : {
@@ -1358,6 +1430,9 @@
           }
         }
       }
+    },
+    "Working" : {
+
     },
     "Year" : {
       "localizations" : {

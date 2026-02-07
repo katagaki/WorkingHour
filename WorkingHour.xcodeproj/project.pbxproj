@@ -60,6 +60,13 @@
 			);
 			target = E4260F772CB6B0EA0078946D /* Working Hour */;
 		};
+		E4E09E5B2F378385009E9215 /* Exceptions for "WorkingHour" folder in "UshioExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Localizable.xcstrings,
+			);
+			target = E44D37E62D06EF5E006C9F1F /* UshioExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -80,6 +87,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				E4C25BE52F373EE800F3BADF /* Exceptions for "WorkingHour" folder in "Working Hour" target */,
+				E4E09E5B2F378385009E9215 /* Exceptions for "WorkingHour" folder in "UshioExtension" target */,
 			);
 			path = WorkingHour;
 			sourceTree = "<group>";
