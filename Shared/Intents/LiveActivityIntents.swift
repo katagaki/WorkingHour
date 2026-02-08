@@ -1,6 +1,6 @@
 //
-//  Intents.swift
-//  Ushio
+//  LiveActivityIntents.swift
+//  WorkingHour
 //
 //  Created by Assistant on 2026/02/07.
 //

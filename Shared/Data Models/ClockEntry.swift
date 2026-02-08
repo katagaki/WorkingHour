@@ -148,6 +148,7 @@ final class ClockEntry: Identifiable {
         return WorkSessionData(
             entryId: self.id,
             clockInTime: clockInTime,
+            clockOutTime: self.clockOutTime,
             isOnBreak: self.isOnBreak,
             breakStartTime: self.isOnBreak ? self.breakTimes.last?.start : nil,
             totalBreakTime: totalBreakTime,

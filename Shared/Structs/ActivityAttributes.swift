@@ -13,6 +13,7 @@ struct UshioAttributes: ActivityAttributes {
 
     struct ContentState: Decodable, Encodable, Hashable {
         var clockInTime: Date
+        var clockOutTime: Date?
         var isOnBreak: Bool
         var breakStartTime: Date?
         var totalBreakTime: TimeInterval
@@ -21,6 +22,7 @@ struct UshioAttributes: ActivityAttributes {
         static var working: UshioAttributes.ContentState {
             UshioAttributes.ContentState(
                 clockInTime: Date.now.addingTimeInterval(-3600),
+                clockOutTime: nil,
                 isOnBreak: false,
                 breakStartTime: nil,
                 totalBreakTime: 0,
@@ -31,6 +33,7 @@ struct UshioAttributes: ActivityAttributes {
         static var onBreak: UshioAttributes.ContentState {
             UshioAttributes.ContentState(
                 clockInTime: Date.now.addingTimeInterval(-7200),
+                clockOutTime: nil,
                 isOnBreak: true,
                 breakStartTime: Date.now.addingTimeInterval(-600),
                 totalBreakTime: 0,

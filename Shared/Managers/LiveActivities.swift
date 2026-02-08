@@ -6,6 +6,7 @@
 //
 
 import ActivityKit
+import Foundation
 
 class LiveActivities {
     public static func startActivity(with data: WorkSessionData) async {
@@ -17,6 +18,7 @@ class LiveActivities {
         let attributes = UshioAttributes(entryId: data.entryId)
         let contentState = UshioAttributes.ContentState(
             clockInTime: data.clockInTime,
+            clockOutTime: data.clockOutTime,
             isOnBreak: data.isOnBreak,
             breakStartTime: data.breakStartTime,
             totalBreakTime: data.totalBreakTime,
@@ -36,6 +38,7 @@ class LiveActivities {
     public static func updateActivity(with data: WorkSessionData) async {
         let contentState = UshioAttributes.ContentState(
             clockInTime: data.clockInTime,
+            clockOutTime: data.clockOutTime,
             isOnBreak: data.isOnBreak,
             breakStartTime: data.breakStartTime,
             totalBreakTime: data.totalBreakTime,
@@ -57,6 +60,7 @@ class LiveActivities {
     public static func endActivity(with data: WorkSessionData) async {
         let contentState = UshioAttributes.ContentState(
             clockInTime: data.clockInTime,
+            clockOutTime: data.clockOutTime,
             isOnBreak: false,
             breakStartTime: nil,
             totalBreakTime: data.totalBreakTime,
@@ -66,6 +70,7 @@ class LiveActivities {
         let activities = Activity<UshioAttributes>.activities
         if let activity = activities.first(where: { $0.attributes.entryId == data.entryId }) {
             log("LiveActivityManager: Ending activity \(activity.attributes.entryId)")
+            let staleDate = Date(timeIntervalSinceNow: 1800)
             await activity.end(
                 .init(state: contentState, staleDate: nil),
                 dismissalPolicy: .default

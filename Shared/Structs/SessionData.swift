@@ -10,6 +10,7 @@ import Foundation
 struct WorkSessionData {
     let entryId: String
     let clockInTime: Date
+    let clockOutTime: Date?
     let isOnBreak: Bool
     let breakStartTime: Date?
     let totalBreakTime: TimeInterval

@@ -5,7 +5,14 @@
       "shouldTranslate" : false
     },
     "-" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "-"
+          }
+        }
+      }
     },
     "%@ %@" : {
       "localizations" : {
@@ -19,10 +26,24 @@
       "shouldTranslate" : false
     },
     "%lld" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
     },
     "Break" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "休憩"
+          }
+        }
+      }
     },
     "Browse Past Entries" : {
       "localizations" : {
@@ -35,10 +56,24 @@
       }
     },
     "Clock In" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出勤"
+          }
+        }
+      }
     },
     "Clock Out" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退勤"
+          }
+        }
+      }
     },
     "Edit Entry" : {
       "localizations" : {
@@ -51,13 +86,34 @@
       }
     },
     "End Break" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "休憩を終了"
+          }
+        }
+      }
     },
     "End the current work session" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッションを終了"
+          }
+        }
+      }
     },
     "Entry ID" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エントリーID"
+          }
+        }
+      }
     },
     "EntryEditor.Section.Tasks" : {
       "localizations" : {
@@ -354,10 +410,24 @@
       }
     },
     "On Break" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "休憩中"
+          }
+        }
+      }
     },
     "Overtime" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "残業"
+          }
+        }
+      }
     },
     "Projects.Active" : {
       "localizations" : {
@@ -538,7 +608,14 @@
       }
     },
     "Remaining" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "残り時間"
+          }
+        }
+      }
     },
     "Select Month" : {
       "localizations" : {
@@ -948,10 +1025,24 @@
       }
     },
     "Start a new work session" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新規セッション"
+          }
+        }
+      }
     },
     "Start Break" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "休憩を開始"
+          }
+        }
+      }
     },
     "Tab.Export" : {
       "extractionState" : "stale",
@@ -1338,6 +1429,16 @@
         }
       }
     },
+    "Total Time Worked" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "勤務時間"
+          }
+        }
+      }
+    },
     "ViewTitle.Export" : {
       "localizations" : {
         "en" : {
@@ -1403,7 +1504,14 @@
       }
     },
     "Working" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仕事中"
+          }
+        }
+      }
     },
     "Year" : {
       "localizations" : {
