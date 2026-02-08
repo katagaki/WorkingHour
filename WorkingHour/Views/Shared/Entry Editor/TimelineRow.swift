@@ -38,13 +38,12 @@ struct TimelineRow: View {
                                 .overlay {
                                     switch eventType {
                                     case .start:
-                                        Image(systemName: "play.fill")
+                                        Image(systemName: "figure.walk.arrival")
                                             .resizable()
                                             .foregroundStyle(.black)
                                             .fontWeight(.heavy)
                                             .aspectRatio(contentMode: .fit)
-                                            .frame(height: 9.5)
-                                            .offset(x: -1.0)
+                                            .frame(height: 9.0)
                                     case .breakStart:
                                         Image(systemName: "cup.and.heat.waves.fill")
                                             .resizable()
@@ -53,13 +52,12 @@ struct TimelineRow: View {
                                             .aspectRatio(contentMode: .fit)
                                             .frame(height: 9.5)
                                     case .end:
-                                        Image(systemName: "stop.fill")
+                                        Image(systemName: "figure.walk.departure")
                                             .resizable()
                                             .foregroundStyle(.black)
                                             .fontWeight(.heavy)
                                             .aspectRatio(contentMode: .fit)
-                                            .frame(height: 9.5)
-                                            .offset(x: 1.0)
+                                            .frame(height: 9.0)
                                     default: Color.clear
                                     }
                                 }

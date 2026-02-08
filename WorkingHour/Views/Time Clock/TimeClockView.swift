@@ -82,7 +82,7 @@ struct TimeClockView: View {
                         Button {
                             clockIn()
                         } label: {
-                            Label("TimeClock.Work.ClockIn", systemImage: "play.fill")
+                            Label("TimeClock.Work.ClockIn", systemImage: "figure.walk.arrival")
                                 .fontWeight(.semibold)
                                 .padding([.top, .bottom], 6.0)
                                 .frame(maxWidth: .infinity)
@@ -139,7 +139,7 @@ struct TimeClockView: View {
                         Button {
                             clockOut()
                         } label: {
-                            Label("TimeClock.Work.ClockOut", systemImage: "stop.fill")
+                            Label("TimeClock.Work.ClockOut", systemImage: "figure.walk.departure")
                                 .fontWeight(.semibold)
                                 .padding([.top, .bottom], 6.0)
                                 .frame(maxWidth: .infinity)

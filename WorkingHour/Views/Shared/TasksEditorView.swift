@@ -70,7 +70,7 @@ struct TasksEditorView: View {
                 }
             }
             .navigationTitle("Tasks.Title")
-            .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(role: .cancel) {

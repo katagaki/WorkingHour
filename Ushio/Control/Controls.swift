@@ -14,7 +14,7 @@ struct StartWorkSessionControl: ControlWidget {
             kind: "com.tsubuzaki.WorkingHour.Ushio.Start"
         ) {
             ControlWidgetButton(action: StartWorkSessionIntent()) {
-                Label("Clock In", image: .clockIn)
+                Label("Clock In", systemImage: "figure.walk.arrival")
             }
         }
         .displayName("Clock In")
@@ -28,7 +28,7 @@ struct EndWorkSessionControl: ControlWidget {
             kind: "com.tsubuzaki.WorkingHour.Ushio.End"
         ) {
             ControlWidgetButton(action: EndWorkSessionIntent()) {
-                Label("Clock Out", image: .clockOut)
+                Label("Clock Out", systemImage: "figure.walk.departure")
             }
         }
         .displayName("Clock Out")
