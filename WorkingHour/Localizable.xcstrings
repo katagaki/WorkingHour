@@ -421,6 +421,26 @@
         }
       }
     },
+    "No clock entries found for this period" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この期間に打刻記録がありません"
+          }
+        }
+      }
+    },
+    "No Entries" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "記録なし"
+          }
+        }
+      }
+    },
     "On Break" : {
       "localizations" : {
         "ja" : {

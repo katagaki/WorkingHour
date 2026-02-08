@@ -148,19 +148,27 @@ struct TimesheetList: View {
     }
 
     var body: some View {
-        List(entries) { entry in
-            Button {
-                entryBeingEdited = entry
-            } label: {
-                EntryRow(entry: entry)
-            }
-            .listRowSeparator(.hidden)
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                if entry.clockOutTime != nil {
-                    Button("Shared.Delete", systemImage: "xmark") {
-                        modelContext.delete(entry)
+        if entries.isEmpty {
+            ContentUnavailableView(
+                LocalizedStringKey("No Entries"),
+                systemImage: "clock.badge.xmark",
+                description: Text(LocalizedStringKey("No clock entries found for this period"))
+            )
+        } else {
+            List(entries) { entry in
+                Button {
+                    entryBeingEdited = entry
+                } label: {
+                    EntryRow(entry: entry)
+                }
+                .listRowSeparator(.hidden)
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    if entry.clockOutTime != nil {
+                        Button("Shared.Delete", systemImage: "xmark") {
+                            modelContext.delete(entry)
+                        }
+                        .tint(.red)
                     }
-                    .tint(.red)
                 }
             }
         }
