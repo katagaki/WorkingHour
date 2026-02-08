@@ -10,8 +10,6 @@ import SwiftData
 import SwiftUI
 
 struct ProjectsView: View {
-    @Environment(\.dismiss) var dismiss
-
     @Environment(\.modelContext) private var modelContext
     @Query(filter: #Predicate<Project> { $0.isActive }, sort: [SortDescriptor(\.name)])
     private var activeProjects: [Project]
@@ -116,13 +114,6 @@ struct ProjectsView: View {
             }
             .navigationTitle("Projects.Title")
             .toolbarTitleDisplayMode(.inlineLarge)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(role: .confirm) {
-                        dismiss()
-                    }
-                }
-            }
             .alert("Projects.Add", isPresented: $showingAddProject) {
                 TextField("Projects.Name.Placeholder", text: $newProjectName)
                 Button("Shared.Cancel", role: .cancel) {
