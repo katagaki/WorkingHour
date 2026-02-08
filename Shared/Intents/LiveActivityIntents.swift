@@ -20,11 +20,11 @@ struct BreakData: Codable, Hashable {
 }
 
 struct StartBreakIntent: LiveActivityIntent {
-    static var title: LocalizedStringResource = "Start Break"
+    static var title: LocalizedStringResource = "TimeClock.Break.Start"
     static var openAppWhenRun: Bool = false
     static var isDiscoverable: Bool = false
 
-    @Parameter(title: "Entry ID")
+    @Parameter(title: "EntryEditor.EntryID")
     var entryId: String
 
     init() {
@@ -70,11 +70,11 @@ struct StartBreakIntent: LiveActivityIntent {
 }
 
 struct EndBreakIntent: LiveActivityIntent {
-    static var title: LocalizedStringResource = "End Break"
+    static var title: LocalizedStringResource = "TimeClock.Break.End"
     static var openAppWhenRun: Bool = false
     static var isDiscoverable: Bool = false
 
-    @Parameter(title: "Entry ID")
+    @Parameter(title: "EntryEditor.EntryID")
     var entryId: String
 
     init() {
@@ -127,11 +127,11 @@ struct EndBreakIntent: LiveActivityIntent {
 }
 
 struct ClockOutIntent: LiveActivityIntent {
-    static var title: LocalizedStringResource = "Clock Out"
+    static var title: LocalizedStringResource = "TimeClock.Work.ClockOut"
     static var openAppWhenRun: Bool = false
     static var isDiscoverable: Bool = false
 
-    @Parameter(title: "Entry ID")
+    @Parameter(title: "EntryEditor.EntryID")
     var entryId: String
 
     init() {

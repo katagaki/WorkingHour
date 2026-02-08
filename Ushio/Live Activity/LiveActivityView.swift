@@ -69,7 +69,7 @@ struct LiveActivityView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     if let clockOutTime = context.state.clockOutTime {
                         // Show total time worked when clocked out
-                        Text("Total Time Worked")
+                        Text("Timesheet.TotalTimeWorked")
                             .foregroundStyle(.secondary)
                             .font(.caption)
                             .fontWeight(.bold)
@@ -80,7 +80,7 @@ struct LiveActivityView: View {
                             .fontWeight(.bold)
                     } else {
                         HStack(spacing: 6) {
-                            Text(context.state.isOnBreak ? "On Break" : "Working")
+                            Text(context.state.isOnBreak ? "TimeClock.Break.OnBreak" : "TimeClock.Work.Working")
                                 .foregroundStyle(context.state.isOnBreak ? .orange : .secondary)
                                 .font(.caption)
                                 .fontWeight(.bold)
@@ -91,7 +91,7 @@ struct LiveActivityView: View {
                                     HStack(spacing: 3) {
                                         Image(systemName: "exclamationmark.triangle.fill")
                                             .font(.caption2)
-                                        Text("Overtime")
+                                        Text("Shared.Overtime")
                                             .font(.caption2)
                                             .fontWeight(.semibold)
                                         Text(formatTimeInterval(currentWorkingTime - context.state.standardWorkingHours))
@@ -103,7 +103,7 @@ struct LiveActivityView: View {
                                     HStack(spacing: 3) {
                                         Image(systemName: "clock.badge.checkmark.fill")
                                             .font(.caption2)
-                                        Text("Remaining")
+                                        Text("Shared.Remaining")
                                             .font(.caption2)
                                             .fontWeight(.semibold)
                                         Text(formatTimeInterval(remaining))
@@ -135,7 +135,7 @@ struct LiveActivityView: View {
                     if context.state.isOnBreak {
                         Button(intent: EndBreakIntent(entryId: context.attributes.entryId)) {
                             Label {
-                                Text("End Break")
+                                Text("TimeClock.Break.End")
                             } icon: {
                                 Image(systemName: "arrowshape.turn.up.backward.badge.clock.fill")
                             }
@@ -148,7 +148,7 @@ struct LiveActivityView: View {
                     } else {
                         Button(intent: StartBreakIntent(entryId: context.attributes.entryId)) {
                             Label {
-                                Text("Break")
+                                Text("Shared.Break")
                             } icon: {
                                 Image(systemName: "cup.and.heat.waves.fill")
                             }
@@ -161,7 +161,7 @@ struct LiveActivityView: View {
 
                         Button(intent: ClockOutIntent(entryId: context.attributes.entryId)) {
                             Label {
-                                Text("Clock Out")
+                                Text("TimeClock.Work.ClockOut")
                             } icon: {
                                 Image(systemName: "stop.fill")
                             }

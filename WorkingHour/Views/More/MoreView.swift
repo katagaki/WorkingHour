@@ -113,17 +113,17 @@ struct MoreView: View {
                 #if DEBUG
                 // Debug Section
                 Section {
-                    Button("Populate Sample Data") {
+                    Button("Debug.PopulateSampleData") {
                         dataManager.populateSampleData()
                     }
 
-                    Button("Clear All Data", role: .destructive) {
+                    Button("Debug.ClearAllData", role: .destructive) {
                         showingClearDataAlert = true
                     }
                 } header: {
                     ListSectionHeader(text: "Debug")
                 } footer: {
-                    Text("Populate 30 days of sample clock entries with breaks. Today's entry will be ongoing (9am start).")
+                    Text("Debug.PopulateSampleData.Description")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -145,13 +145,13 @@ struct MoreView: View {
                 saveSettings()
             }
             #if DEBUG
-            .alert("Clear All Data?", isPresented: $showingClearDataAlert) {
-                Button("Cancel", role: .cancel) { }
-                Button("Clear", role: .destructive) {
+            .alert("Debug.ClearAllData.Confirmation", isPresented: $showingClearDataAlert) {
+                Button("Shared.Cancel", role: .cancel) { }
+                Button("Shared.Clear", role: .destructive) {
                     dataManager.clearAllData()
                 }
             } message: {
-                Text("This will permanently delete all clock entries and projects.")
+                Text("Debug.ClearAllData.Message")
             }
             #endif
         }

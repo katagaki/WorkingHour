@@ -56,7 +56,7 @@ struct TimesheetView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Toggle(
-                            "Browse Past Entries",
+                            "EntryEditor.BrowsePastEntries",
                             isOn: $isBrowsingPastEntries.animation(.smooth.speed(2.0))
                         )
                     } label: {
@@ -69,11 +69,11 @@ struct TimesheetView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 10.0) {
                             HStack(alignment: .center, spacing: 8.0) {
-                                Text("Select Month")
+                                Text("Timesheet.SelectMonth")
                                 Spacer()
                                 HStack(alignment: .center, spacing: 8.0) {
                                     Group {
-                                        Picker("Month", selection: $selectedMonth) {
+                                        Picker("Shared.Month", selection: $selectedMonth) {
                                             ForEach(
                                                 Array(selectableMonths.enumerated()),
                                                 id: \.offset
@@ -82,7 +82,7 @@ struct TimesheetView: View {
                                                     .tag(index + 1)
                                             }
                                         }
-                                        Picker("Year", selection: $selectedYear) {
+                                        Picker("Shared.Year", selection: $selectedYear) {
                                             ForEach(selectableYears, id: \.self) { year in
                                                 Text(String(year))
                                                     .tag(year)
@@ -150,9 +150,9 @@ struct TimesheetList: View {
     var body: some View {
         if entries.isEmpty {
             ContentUnavailableView(
-                LocalizedStringKey("No Entries"),
+                LocalizedStringKey("Timesheet.NoEntries"),
                 systemImage: "clock.badge.xmark",
-                description: Text(LocalizedStringKey("No clock entries found for this period"))
+                description: Text(LocalizedStringKey("Timesheet.NoEntriesMessage"))
             )
         } else {
             List(entries) { entry in

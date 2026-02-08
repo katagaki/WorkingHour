@@ -27,42 +27,30 @@ struct TasksEditorView: View {
             List {
                 // Projects
                 if !activeProjects.isEmpty {
-                    Section {
-                        ForEach(activeProjects) { project in
-                            VStack(alignment: .leading, spacing: 8.0) {
-                                Label(project.name, systemImage: "folder.fill")
-                                    .font(.headline)
-                                    .foregroundStyle(.accent)
-
-                                TextField("Tasks.Description.Placeholder",
-                                          text: binding(for: project.id),
-                                          axis: .vertical)
-                                    .lineLimit(3...6)
-                                    .textFieldStyle(.roundedBorder)
-                            }
-                            .padding(.vertical, 4)
+                    ForEach(activeProjects) { project in
+                        Section {
+                            TextField("Tasks.Description.Placeholder",
+                                      text: binding(for: project.id),
+                                      axis: .vertical)
+                            .lineLimit(3...6)
+                        } header: {
+                            Label(project.name, systemImage: "folder.fill")
+                                .font(.headline)
+                                .foregroundStyle(.accent)
                         }
-                    } header: {
-                        Text("Tasks.Section.Projects")
                     }
                 }
 
                 // Others
                 Section {
-                    VStack(alignment: .leading, spacing: 8.0) {
-                        Label("Tasks.Others", systemImage: "ellipsis.circle.fill")
-                            .font(.headline)
-                            .foregroundStyle(.orange)
-
-                        TextField("Tasks.Others.Placeholder",
-                                  text: $othersDescription,
-                                  axis: .vertical)
-                            .lineLimit(3...6)
-                            .textFieldStyle(.roundedBorder)
-                    }
-                    .padding(.vertical, 4)
+                    TextField("Tasks.Others.Placeholder",
+                              text: $othersDescription,
+                              axis: .vertical)
+                        .lineLimit(3...6)
                 } header: {
-                    Text("Tasks.Section.Others")
+                    Label("Tasks.Others", systemImage: "ellipsis.circle.fill")
+                        .font(.headline)
+                        .foregroundStyle(.orange)
                 } footer: {
                     Text("Tasks.Others.Footer")
                         .font(.caption)

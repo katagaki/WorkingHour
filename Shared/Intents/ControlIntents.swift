@@ -9,8 +9,8 @@ import AppIntents
 import SwiftData
 
 struct StartWorkSessionIntent: AppIntent {
-    static var title: LocalizedStringResource = "Clock In"
-    static var description = IntentDescription("Start a new work session")
+    static var title: LocalizedStringResource = "TimeClock.Work.ClockIn"
+    static var description = IntentDescription("TimeClock.Work.StartSession")
     static var openAppWhenRun: Bool = true
 
     @MainActor
@@ -44,8 +44,8 @@ struct StartWorkSessionIntent: AppIntent {
 }
 
 struct EndWorkSessionIntent: AppIntent {
-    static var title: LocalizedStringResource = "Clock Out"
-    static var description = IntentDescription("End the current work session")
+    static var title: LocalizedStringResource = "TimeClock.Work.ClockOut"
+    static var description = IntentDescription("TimeClock.Work.ClockOutSession")
     static var openAppWhenRun: Bool = true
 
     @MainActor

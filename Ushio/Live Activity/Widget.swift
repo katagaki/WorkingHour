@@ -18,7 +18,7 @@ struct UshioLiveActivity: Widget {
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
                     VStack(alignment: .leading, spacing: 2.0) {
-                        Text("Clock In")
+                        Text("TimeClock.Work.ClockIn")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                         Text(context.state.clockInTime, style: .time)
@@ -31,7 +31,7 @@ struct UshioLiveActivity: Widget {
                 DynamicIslandExpandedRegion(.trailing) {
                     VStack(alignment: .trailing, spacing: 2) {
                         if context.state.isOnBreak {
-                            Text("Break")
+                            Text("Shared.Break")
                                 .font(.caption2)
                                 .foregroundStyle(.orange)
                                 .multilineTextAlignment(.trailing)
@@ -43,7 +43,7 @@ struct UshioLiveActivity: Widget {
                                     .multilineTextAlignment(.trailing)
                             }
                         } else {
-                            Text("Working")
+                            Text("TimeClock.Work.Working")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                                 .multilineTextAlignment(.trailing)
@@ -62,7 +62,7 @@ struct UshioLiveActivity: Widget {
                         if context.state.isOnBreak {
                             Button(intent: EndBreakIntent(entryId: context.attributes.entryId)) {
                                 Label {
-                                    Text("End Break")
+                                    Text("TimeClock.Break.End")
                                 } icon: {
                                     Image(systemName: "arrowshape.turn.up.backward.badge.clock.fill")
                                 }
@@ -74,7 +74,7 @@ struct UshioLiveActivity: Widget {
                         } else {
                             Button(intent: StartBreakIntent(entryId: context.attributes.entryId)) {
                                 Label {
-                                    Text("Break")
+                                    Text("Shared.Break")
                                 } icon: {
                                     Image(systemName: "cup.and.heat.waves.fill")
                                 }
@@ -86,7 +86,7 @@ struct UshioLiveActivity: Widget {
 
                             Button(intent: ClockOutIntent(entryId: context.attributes.entryId)) {
                                 Label {
-                                    Text("Clock Out")
+                                    Text("TimeClock.Work.ClockOut")
                                 } icon: {
                                     Image(systemName: "stop.fill")
                                 }

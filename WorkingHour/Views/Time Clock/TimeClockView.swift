@@ -17,11 +17,22 @@ struct TimeClockView: View {
         order: .reverse
     )
     private var activeEntries: [ClockEntry]
+    
+    @Query(
+        filter: #Predicate<ClockEntry> { $0.clockOutTime != nil },
+        sort: \.clockInTime,
+        order: .reverse
+    )
+    private var completedEntries: [ClockEntry]
 
     @State private var settingsManager = SettingsManager.shared
 
     var activeEntry: ClockEntry? {
         activeEntries.first
+    }
+    
+    var lastCompletedEntry: ClockEntry? {
+        completedEntries.first
     }
 
     @State var currentWorkingTime: TimeInterval = 0
@@ -47,6 +58,14 @@ struct TimeClockView: View {
                                 Text(clockInTime, style: .time)
                                     .font(.largeTitle)
                                     .fontWeight(.bold)
+                            } else if let lastEntry = lastCompletedEntry,
+                                      let clockInTime = lastEntry.clockInTime {
+                                Text(clockInTime, style: .date)
+                                    .foregroundStyle(.secondary)
+                                    .fontWeight(.bold)
+                                Text(clockInTime, style: .time)
+                                    .font(.largeTitle)
+                                    .fontWeight(.bold)
                             } else {
                                 Text(Date.now, style: .date)
                                     .foregroundStyle(.secondary)
@@ -59,14 +78,34 @@ struct TimeClockView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         Image(systemName: "arrow.right")
                         VStack(alignment: .trailing, spacing: 4.0) {
-                            if let clockOutTime = activeEntry?.clockOutTime {
-                                Text(Date.now, style: .date)
+                            if activeEntry != nil {
+                                // Show active entry's clock out time (or "-" if still clocked in)
+                                if let clockOutTime = activeEntry?.clockOutTime {
+                                    Text(clockOutTime, style: .date)
+                                        .foregroundStyle(.secondary)
+                                        .fontWeight(.bold)
+                                    Text(clockOutTime, style: .time)
+                                        .font(.largeTitle)
+                                        .fontWeight(.bold)
+                                } else {
+                                    Text(verbatim: "-")
+                                        .foregroundStyle(.secondary)
+                                        .fontWeight(.bold)
+                                    Text(verbatim: "-")
+                                        .font(.largeTitle)
+                                        .fontWeight(.bold)
+                                }
+                            } else if let lastEntry = lastCompletedEntry,
+                                      let clockOutTime = lastEntry.clockOutTime {
+                                // Show last completed entry's clock out time
+                                Text(clockOutTime, style: .date)
                                     .foregroundStyle(.secondary)
                                     .fontWeight(.bold)
                                 Text(clockOutTime, style: .time)
                                     .font(.largeTitle)
                                     .fontWeight(.bold)
                             } else {
+                                // No entries at all
                                 Text(verbatim: "-")
                                     .foregroundStyle(.secondary)
                                     .fontWeight(.bold)

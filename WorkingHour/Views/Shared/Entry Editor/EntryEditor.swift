@@ -78,7 +78,7 @@ struct EntryEditor: View {
             }
             .listStyle(.plain)
             .environment(\.defaultMinListRowHeight, 26.0)
-            .navigationTitle("Edit Entry")
+            .navigationTitle("EntryEditor.Edit")
             .toolbarTitleDisplayMode(.inline)
             .onChange(of: newClockInTime) { _, _ in
                 entry.clockInTime = newClockInTime

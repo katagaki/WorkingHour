@@ -35,18 +35,100 @@
         }
       }
     },
-    "Break" : {
+    "Debug.ClearAllData" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear All Data"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "休憩"
+            "value" : "すべてのデータを消去"
           }
         }
       }
     },
-    "Browse Past Entries" : {
+    "Debug.ClearAllData.Confirmation" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear All Data?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのデータを消去しますか？"
+          }
+        }
+      }
+    },
+    "Debug.ClearAllData.Message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This will permanently delete all clock entries and projects."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これにより、すべての打刻記録とプロジェクトが完全に削除されます。"
+          }
+        }
+      }
+    },
+    "Debug.PopulateSampleData" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Populate Sample Data"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サンプルデータを投入"
+          }
+        }
+      }
+    },
+    "Debug.PopulateSampleData.Description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Populate 30 days of sample clock entries with breaks. Today's entry will be ongoing (9am start)."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30日分の休憩を含むサンプル打刻記録を投入します。本日の記録は進行中（午前9時開始）になります。"
+          }
+        }
+      }
+    },
+    "EntryEditor.BrowsePastEntries" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Browse Past Entries"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -55,40 +137,15 @@
         }
       }
     },
-    "Cancel" : {
-
-    },
-    "Clear" : {
-
-    },
-    "Clear All Data" : {
-
-    },
-    "Clear All Data?" : {
-
-    },
-    "Clock In" : {
+    "EntryEditor.Edit" : {
+      "extractionState" : "manual",
       "localizations" : {
-        "ja" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "出勤"
+            "value" : "Edit Entry"
           }
-        }
-      }
-    },
-    "Clock Out" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "退勤"
-          }
-        }
-      }
-    },
-    "Edit Entry" : {
-      "localizations" : {
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -97,28 +154,15 @@
         }
       }
     },
-    "End Break" : {
+    "EntryEditor.EntryID" : {
+      "extractionState" : "manual",
       "localizations" : {
-        "ja" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "休憩を終了"
+            "value" : "Entry ID"
           }
-        }
-      }
-    },
-    "End the current work session" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "セッションを終了"
-          }
-        }
-      }
-    },
-    "Entry ID" : {
-      "localizations" : {
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -360,16 +404,6 @@
         }
       }
     },
-    "Month" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "月"
-          }
-        }
-      }
-    },
     "More.Projects" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -420,52 +454,6 @@
           }
         }
       }
-    },
-    "No clock entries found for this period" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "この期間に打刻記録がありません"
-          }
-        }
-      }
-    },
-    "No Entries" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "記録なし"
-          }
-        }
-      }
-    },
-    "On Break" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "休憩中"
-          }
-        }
-      }
-    },
-    "Overtime" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "残業"
-          }
-        }
-      }
-    },
-    "Populate 30 days of sample clock entries with breaks. Today's entry will be ongoing (9am start)." : {
-
-    },
-    "Populate Sample Data" : {
-
     },
     "Projects.Active" : {
       "localizations" : {
@@ -641,26 +629,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "プロジェクト"
-          }
-        }
-      }
-    },
-    "Remaining" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "残り時間"
-          }
-        }
-      }
-    },
-    "Select Month" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "年月を選択"
           }
         }
       }
@@ -945,6 +913,23 @@
         }
       }
     },
+    "Shared.Break" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Break"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "休憩"
+          }
+        }
+      }
+    },
     "Shared.Cancel" : {
       "localizations" : {
         "en" : {
@@ -957,6 +942,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "キャンセル"
+          }
+        }
+      }
+    },
+    "Shared.Clear" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "消去"
           }
         }
       }
@@ -1028,6 +1030,23 @@
         }
       }
     },
+    "Shared.Month" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Month"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月"
+          }
+        }
+      }
+    },
     "Shared.OK" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1041,6 +1060,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "Shared.Overtime" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overtime"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "残業"
+          }
+        }
+      }
+    },
+    "Shared.Remaining" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remaining"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "残り時間"
           }
         }
       }
@@ -1062,22 +1115,19 @@
         }
       }
     },
-    "Start a new work session" : {
+    "Shared.Year" : {
+      "extractionState" : "manual",
       "localizations" : {
-        "ja" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新規セッション"
+            "value" : "Year"
           }
-        }
-      }
-    },
-    "Start Break" : {
-      "localizations" : {
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "休憩を開始"
+            "value" : "年"
           }
         }
       }
@@ -1227,38 +1277,6 @@
         }
       }
     },
-    "Tasks.Section.Others" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Other Tasks"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "その他のタスク"
-          }
-        }
-      }
-    },
-    "Tasks.Section.Projects" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Project Tasks"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "プロジェクトタスク"
-          }
-        }
-      }
-    },
     "Tasks.Title" : {
       "localizations" : {
         "en" : {
@@ -1275,9 +1293,6 @@
         }
       }
     },
-    "This will permanently delete all clock entries and projects." : {
-
-    },
     "TimeClock.Break.End" : {
       "localizations" : {
         "en" : {
@@ -1290,6 +1305,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "休憩終了"
+          }
+        }
+      }
+    },
+    "TimeClock.Break.OnBreak" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On Break"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "休憩中"
           }
         }
       }
@@ -1390,6 +1422,40 @@
         }
       }
     },
+    "TimeClock.Work.ClockOutSession" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End the current work session"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッションを終了"
+          }
+        }
+      }
+    },
+    "TimeClock.Work.StartSession" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a new work session"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新規セッション"
+          }
+        }
+      }
+    },
     "TimeClock.Work.Title" : {
       "localizations" : {
         "en" : {
@@ -1402,6 +1468,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "勤務時間"
+          }
+        }
+      }
+    },
+    "TimeClock.Work.Working" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Working"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仕事中"
           }
         }
       }
@@ -1470,8 +1553,66 @@
         }
       }
     },
-    "Total Time Worked" : {
+    "Timesheet.NoEntries" : {
+      "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Entries"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "記録なし"
+          }
+        }
+      }
+    },
+    "Timesheet.NoEntriesMessage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No clock entries found for this period"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この期間に打刻記録がありません"
+          }
+        }
+      }
+    },
+    "Timesheet.SelectMonth" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Month"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年月を選択"
+          }
+        }
+      }
+    },
+    "Timesheet.TotalTimeWorked" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Time Worked"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1540,26 +1681,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "タイムシート"
-          }
-        }
-      }
-    },
-    "Working" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "仕事中"
-          }
-        }
-      }
-    },
-    "Year" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "年"
           }
         }
       }
