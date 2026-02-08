@@ -11,7 +11,7 @@
 		E4260FB52CBAB8C20078946D /* xlsxwriter in Frameworks */ = {isa = PBXBuildFile; productRef = E4260FB42CBAB8C20078946D /* xlsxwriter */; };
 		E44D37EA2D06EF5F006C9F1F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E44D37E92D06EF5E006C9F1F /* WidgetKit.framework */; };
 		E44D37EC2D06EF5F006C9F1F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E44D37EB2D06EF5F006C9F1F /* SwiftUI.framework */; };
-		E44D37FB2D06EF60006C9F1F /* UshioExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E44D37E72D06EF5E006C9F1F /* UshioExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E44D37FB2D06EF60006C9F1F /* Ushio.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E44D37E72D06EF5E006C9F1F /* Ushio.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,7 +31,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				E44D37FB2D06EF60006C9F1F /* UshioExtension.appex in Embed Foundation Extensions */,
+				E44D37FB2D06EF60006C9F1F /* Ushio.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -40,18 +40,18 @@
 
 /* Begin PBXFileReference section */
 		E4260F782CB6B0EA0078946D /* Working Hour.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Working Hour.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E44D37E72D06EF5E006C9F1F /* UshioExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UshioExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E44D37E72D06EF5E006C9F1F /* Ushio.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Ushio.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		E44D37E92D06EF5E006C9F1F /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		E44D37EB2D06EF5F006C9F1F /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E4C25B902F373EC700F3BADF /* Exceptions for "Ushio" folder in "UshioExtension" target */ = {
+		E4C25B902F373EC700F3BADF /* Exceptions for "Ushio" folder in "Ushio" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = E44D37E62D06EF5E006C9F1F /* UshioExtension */;
+			target = E44D37E62D06EF5E006C9F1F /* Ushio */;
 		};
 		E4C25BE52F373EE800F3BADF /* Exceptions for "WorkingHour" folder in "Working Hour" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -60,22 +60,13 @@
 			);
 			target = E4260F772CB6B0EA0078946D /* Working Hour */;
 		};
-		E4E09E5B2F378385009E9215 /* Exceptions for "WorkingHour" folder in "UshioExtension" target */ = {
+		E4E09E5B2F378385009E9215 /* Exceptions for "WorkingHour" folder in "Ushio" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Assets.xcassets,
 				Localizable.xcstrings,
 			);
-			target = E44D37E62D06EF5E006C9F1F /* UshioExtension */;
-		};
-		E4E09E842F384A8D009E9215 /* Exceptions for "Ushio" folder in "Working Hour" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Live Activity/Attributes.swift",
-				"Live Activity/Manager.swift",
-				"Live Activity/SessionData.swift",
-			);
-			target = E4260F772CB6B0EA0078946D /* Working Hour */;
+			target = E44D37E62D06EF5E006C9F1F /* Ushio */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -88,8 +79,7 @@
 		E4C25B892F373EC700F3BADF /* Ushio */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				E4E09E842F384A8D009E9215 /* Exceptions for "Ushio" folder in "Working Hour" target */,
-				E4C25B902F373EC700F3BADF /* Exceptions for "Ushio" folder in "UshioExtension" target */,
+				E4C25B902F373EC700F3BADF /* Exceptions for "Ushio" folder in "Ushio" target */,
 			);
 			path = Ushio;
 			sourceTree = "<group>";
@@ -98,7 +88,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				E4C25BE52F373EE800F3BADF /* Exceptions for "WorkingHour" folder in "Working Hour" target */,
-				E4E09E5B2F378385009E9215 /* Exceptions for "WorkingHour" folder in "UshioExtension" target */,
+				E4E09E5B2F378385009E9215 /* Exceptions for "WorkingHour" folder in "Ushio" target */,
 			);
 			path = WorkingHour;
 			sourceTree = "<group>";
@@ -142,7 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				E4260F782CB6B0EA0078946D /* Working Hour.app */,
-				E44D37E72D06EF5E006C9F1F /* UshioExtension.appex */,
+				E44D37E72D06EF5E006C9F1F /* Ushio.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -187,9 +177,9 @@
 			productReference = E4260F782CB6B0EA0078946D /* Working Hour.app */;
 			productType = "com.apple.product-type.application";
 		};
-		E44D37E62D06EF5E006C9F1F /* UshioExtension */ = {
+		E44D37E62D06EF5E006C9F1F /* Ushio */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E44D37FD2D06EF60006C9F1F /* Build configuration list for PBXNativeTarget "UshioExtension" */;
+			buildConfigurationList = E44D37FD2D06EF60006C9F1F /* Build configuration list for PBXNativeTarget "Ushio" */;
 			buildPhases = (
 				E44D37E32D06EF5E006C9F1F /* Sources */,
 				E44D37E42D06EF5E006C9F1F /* Frameworks */,
@@ -203,11 +193,11 @@
 				E4C25B742F373EBE00F3BADF /* Shared */,
 				E4C25B892F373EC700F3BADF /* Ushio */,
 			);
-			name = UshioExtension;
+			name = Ushio;
 			packageProductDependencies = (
 			);
 			productName = UshioExtension;
-			productReference = E44D37E72D06EF5E006C9F1F /* UshioExtension.appex */;
+			productReference = E44D37E72D06EF5E006C9F1F /* Ushio.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -248,7 +238,7 @@
 			projectRoot = "";
 			targets = (
 				E4260F772CB6B0EA0078946D /* Working Hour */,
-				E44D37E62D06EF5E006C9F1F /* UshioExtension */,
+				E44D37E62D06EF5E006C9F1F /* Ushio */,
 			);
 		};
 /* End PBXProject section */
@@ -311,7 +301,7 @@
 /* Begin PBXTargetDependency section */
 		E44D37FA2D06EF60006C9F1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E44D37E62D06EF5E006C9F1F /* UshioExtension */;
+			target = E44D37E62D06EF5E006C9F1F /* Ushio */;
 			targetProxy = E44D37F92D06EF60006C9F1F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -324,7 +314,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = WorkingHour/WorkingHour.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -332,6 +322,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WorkingHour/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Timesheet;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -360,7 +353,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = WorkingHour/WorkingHour.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -368,6 +361,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WorkingHour/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Timesheet;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -523,7 +519,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = UshioExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Ushio/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Ushio;
@@ -551,7 +547,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = UshioExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Ushio/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Ushio;
@@ -593,7 +589,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E44D37FD2D06EF60006C9F1F /* Build configuration list for PBXNativeTarget "UshioExtension" */ = {
+		E44D37FD2D06EF60006C9F1F /* Build configuration list for PBXNativeTarget "Ushio" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E44D37FE2D06EF60006C9F1F /* Debug */,

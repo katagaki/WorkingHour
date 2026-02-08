@@ -1,5 +1,5 @@
 //
-//  Attributes.swift
+//  ActivityAttributes.swift
 //  WorkingHour
 //
 //  Created by シン・ジャスティン on 2026/02/08.
@@ -9,9 +9,9 @@ import ActivityKit
 import Foundation
 
 struct UshioAttributes: ActivityAttributes {
-    var entryId: String
+    let entryId: String
 
-    public struct ContentState: Codable, Hashable {
+    struct ContentState: Codable, Hashable {
         var clockInTime: Date
         var isOnBreak: Bool
         var breakStartTime: Date?

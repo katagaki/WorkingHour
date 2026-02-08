@@ -5,19 +5,19 @@
 //  Created by Assistant on 2026/02/07.
 //
 
+import ActivityKit
 import AppIntents
-import SwiftData
 import Foundation
+import SwiftData
 import WidgetKit
 
-public struct BreakData: Codable, Hashable {
+struct BreakData: Codable, Hashable {
     let start: Date
     let end: Date?
 }
 
-struct StartBreakIntent: AppIntent, LiveActivityIntent, Sendable {
+struct StartBreakIntent: LiveActivityIntent {
     static var title: LocalizedStringResource = "Start Break"
-    static var description = IntentDescription("Start a break during the work session")
     static var openAppWhenRun: Bool = false
     static var isDiscoverable: Bool = false
 
@@ -25,7 +25,7 @@ struct StartBreakIntent: AppIntent, LiveActivityIntent, Sendable {
     var entryId: String
 
     init() {
-        self.entryId = ""
+        // Not implemented
     }
 
     init(entryId: String) {
@@ -56,9 +56,6 @@ struct StartBreakIntent: AppIntent, LiveActivityIntent, Sendable {
         }
         modelContext.processPendingChanges()
 
-        WidgetCenter.shared.reloadAllTimelines()
-        log("StartBreakIntent: Reloaded widget timelines")
-
         if let sessionData = entry.toWorkSessionData() {
             log("StartBreakIntent: Updating live activity \(sessionData.entryId)")
             await LiveActivities.updateActivity(with: sessionData)
@@ -69,9 +66,8 @@ struct StartBreakIntent: AppIntent, LiveActivityIntent, Sendable {
     }
 }
 
-struct EndBreakIntent: AppIntent, LiveActivityIntent, Sendable {
+struct EndBreakIntent: LiveActivityIntent {
     static var title: LocalizedStringResource = "End Break"
-    static var description = IntentDescription("End the current break")
     static var openAppWhenRun: Bool = false
     static var isDiscoverable: Bool = false
 
@@ -79,7 +75,7 @@ struct EndBreakIntent: AppIntent, LiveActivityIntent, Sendable {
     var entryId: String
 
     init() {
-        self.entryId = ""
+        // Not implemented
     }
 
     init(entryId: String) {
@@ -121,10 +117,6 @@ struct EndBreakIntent: AppIntent, LiveActivityIntent, Sendable {
         // Small delay to ensure data is saved
         try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
 
-        // Reload widgets
-        WidgetCenter.shared.reloadAllTimelines()
-        log("EndBreakIntent: Reloaded widget timelines")
-
         // Update Live Activity
         if let sessionData = entry.toWorkSessionData() {
             log("EndBreakIntent: Updating live activity")
@@ -136,9 +128,8 @@ struct EndBreakIntent: AppIntent, LiveActivityIntent, Sendable {
     }
 }
 
-struct ClockOutIntent: AppIntent, LiveActivityIntent, Sendable {
+struct ClockOutIntent: LiveActivityIntent {
     static var title: LocalizedStringResource = "Clock Out"
-    static var description = IntentDescription("End the work session")
     static var openAppWhenRun: Bool = false
     static var isDiscoverable: Bool = false
 
@@ -146,7 +137,7 @@ struct ClockOutIntent: AppIntent, LiveActivityIntent, Sendable {
     var entryId: String
 
     init() {
-        self.entryId = ""
+        // Not implemented
     }
 
     init(entryId: String) {
@@ -184,10 +175,6 @@ struct ClockOutIntent: AppIntent, LiveActivityIntent, Sendable {
 
         // Small delay to ensure data is saved
         try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
-
-        // Reload widgets
-        WidgetCenter.shared.reloadAllTimelines()
-        log("ClockOutIntent: Reloaded widget timelines")
 
         // End Live Activity
         if let sessionData = entry.toWorkSessionData() {

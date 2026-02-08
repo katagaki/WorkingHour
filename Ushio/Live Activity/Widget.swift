@@ -14,7 +14,6 @@ struct UshioLiveActivity: Widget {
             LiveActivityView(context: context)
                 .activityBackgroundTint(Color.clear)
                 .activitySystemActionForegroundColor(Color.primary)
-
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {

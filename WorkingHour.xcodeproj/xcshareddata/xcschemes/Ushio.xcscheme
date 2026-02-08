@@ -17,8 +17,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E44D37E62D06EF5E006C9F1F"
-               BuildableName = "UshioExtension.appex"
-               BlueprintName = "UshioExtension"
+               BuildableName = "Ushio.appex"
+               BlueprintName = "Ushio"
                ReferencedContainer = "container:WorkingHour.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

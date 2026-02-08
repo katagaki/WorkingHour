@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct WorkSessionData {
+struct WorkSessionData {
     let entryId: String
     let clockInTime: Date
     let isOnBreak: Bool

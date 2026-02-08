@@ -50,19 +50,10 @@
         }
       }
     },
-    "Emoji:" : {
-
-    },
     "End Break" : {
 
     },
-    "End the current break" : {
-
-    },
     "End the current work session" : {
-
-    },
-    "End the work session" : {
 
     },
     "Entry ID" : {
@@ -361,9 +352,6 @@
           }
         }
       }
-    },
-    "My Widget" : {
-
     },
     "On Break" : {
 
@@ -959,9 +947,6 @@
         }
       }
     },
-    "Start a break during the work session" : {
-
-    },
     "Start a new work session" : {
 
     },
@@ -1160,12 +1145,6 @@
           }
         }
       }
-    },
-    "This is an example widget." : {
-
-    },
-    "Time:" : {
-
     },
     "TimeClock.Break.End" : {
       "localizations" : {

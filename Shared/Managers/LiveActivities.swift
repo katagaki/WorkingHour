@@ -1,5 +1,5 @@
 //
-//  Manager.swift
+//  LiveActivities.swift
 //  WorkingHour
 //
 //  Created by シン・ジャスティン on 2026/02/08.
@@ -7,8 +7,7 @@
 
 import ActivityKit
 
-@MainActor
-public class LiveActivities {
+class LiveActivities {
     public static func startActivity(with data: WorkSessionData) async {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
             log("LiveActivityManager: Activities are disabled for this app on this device")
@@ -46,11 +45,12 @@ public class LiveActivities {
         let content = ActivityContent(state: contentState, staleDate: staleDate)
 
         let activities = Activity<UshioAttributes>.activities
+        log("LiveActivityManager: Looking for activity with entryId: \(data.entryId) in \(activities.count) activities")
         if let activity = activities.first(where: { $0.attributes.entryId == data.entryId }) {
             log("LiveActivityManager: Updating activity content for \(activity.attributes.entryId)")
             await activity.update(content)
         } else {
-            log("LiveActivityManager: No matching activity found in \(activities.count) activities")
+            log("LiveActivityManager: No matching activity found")
         }
     }
 
