@@ -1,5 +1,5 @@
 //
-//  WorkSessionIntents.swift
+//  Intents.swift
 //  Ushio
 //
 //  Created by Assistant on 2026/02/07.
@@ -8,14 +8,12 @@
 import AppIntents
 import SwiftData
 import Foundation
+import WidgetKit
 
-// MARK: - Break data structure for cross-target use
 public struct BreakData: Codable, Hashable {
     let start: Date
     let end: Date?
 }
-
-// MARK: - Start Break Intent
 
 struct StartBreakIntent: AppIntent, LiveActivityIntent, Sendable {
     static var title: LocalizedStringResource = "Start Break"
@@ -36,39 +34,40 @@ struct StartBreakIntent: AppIntent, LiveActivityIntent, Sendable {
 
     @MainActor
     func perform() async throws -> some IntentResult {
+        log("StartBreakIntent: Starting for entry ID: \(entryId)")
         let modelContext = SharedModelContainer.shared.container.mainContext
-
         let descriptor = FetchDescriptor<ClockEntry>(
             predicate: #Predicate { $0.id == entryId && $0.clockOutTime == nil }
         )
-
         guard let entries = try? modelContext.fetch(descriptor),
               let entry = entries.first else {
+            log("StartBreakIntent: No matching entry found for ID: \(entryId)")
             return .result()
         }
 
+        log("StartBreakIntent: Found entry, adding break")
         entry.breakTimes.append(Break(start: .now))
         entry.isOnBreak = true
-
         do {
             try modelContext.save()
+            log("StartBreakIntent: Successfully saved changes")
         } catch {
-            // Handle error silently
+            log("StartBreakIntent: Failed to save changes: \(error.localizedDescription)")
         }
+        modelContext.processPendingChanges()
 
-        // Small delay to ensure data is saved
-        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        WidgetCenter.shared.reloadAllTimelines()
+        log("StartBreakIntent: Reloaded widget timelines")
 
-        // Update Live Activity
         if let sessionData = entry.toWorkSessionData() {
-            await LiveActivityManager.shared.updateActivity(with: sessionData)
+            log("StartBreakIntent: Updating live activity \(sessionData.entryId)")
+            await LiveActivities.updateActivity(with: sessionData)
         }
 
+        log("StartBreakIntent: Completed successfully")
         return .result()
     }
 }
-
-// MARK: - End Break Intent
 
 struct EndBreakIntent: AppIntent, LiveActivityIntent, Sendable {
     static var title: LocalizedStringResource = "End Break"
@@ -89,6 +88,7 @@ struct EndBreakIntent: AppIntent, LiveActivityIntent, Sendable {
 
     @MainActor
     func perform() async throws -> some IntentResult {
+        log("EndBreakIntent: Starting for entry ID: \(entryId)")
         let modelContext = SharedModelContainer.shared.container.mainContext
 
         let descriptor = FetchDescriptor<ClockEntry>(
@@ -99,32 +99,42 @@ struct EndBreakIntent: AppIntent, LiveActivityIntent, Sendable {
               let entry = entries.first,
               let startTime = entry.breakTimes.last?.start,
               entry.breakTimes.last?.end == nil else {
+            log("EndBreakIntent: No matching entry or active break found for ID: \(entryId)")
             return .result()
         }
 
+        log("EndBreakIntent: Found active break, ending it")
         entry.breakTimes.removeLast()
         entry.breakTimes.append(Break(start: startTime, end: .now))
         entry.isOnBreak = false
 
         do {
             try modelContext.save()
+            log("EndBreakIntent: Successfully saved changes")
         } catch {
-            // Handle error silently
+            log("EndBreakIntent: Failed to save changes: \(error.localizedDescription)")
         }
 
+        // Ensure changes are processed
+        modelContext.processPendingChanges()
+
         // Small delay to ensure data is saved
-        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+
+        // Reload widgets
+        WidgetCenter.shared.reloadAllTimelines()
+        log("EndBreakIntent: Reloaded widget timelines")
 
         // Update Live Activity
         if let sessionData = entry.toWorkSessionData() {
-            await LiveActivityManager.shared.updateActivity(with: sessionData)
+            log("EndBreakIntent: Updating live activity")
+            await LiveActivities.updateActivity(with: sessionData)
         }
 
+        log("EndBreakIntent: Completed successfully")
         return .result()
     }
 }
-
-// MARK: - Clock Out Intent
 
 struct ClockOutIntent: AppIntent, LiveActivityIntent, Sendable {
     static var title: LocalizedStringResource = "Clock Out"
@@ -145,6 +155,7 @@ struct ClockOutIntent: AppIntent, LiveActivityIntent, Sendable {
 
     @MainActor
     func perform() async throws -> some IntentResult {
+        log("ClockOutIntent: Starting for entry ID: \(entryId)")
         let modelContext = SharedModelContainer.shared.container.mainContext
 
         let descriptor = FetchDescriptor<ClockEntry>(
@@ -153,54 +164,38 @@ struct ClockOutIntent: AppIntent, LiveActivityIntent, Sendable {
 
         guard let entries = try? modelContext.fetch(descriptor),
               let entry = entries.first else {
+            log("ClockOutIntent: No matching entry found for ID: \(entryId)")
             return .result()
         }
 
+        log("ClockOutIntent: Found entry, clocking out")
         entry.clockOutTime = .now
         entry.isOnBreak = false
 
         do {
             try modelContext.save()
+            log("ClockOutIntent: Successfully saved changes")
         } catch {
-            // Handle error silently
+            log("ClockOutIntent: Failed to save changes: \(error.localizedDescription)")
         }
 
+        // Ensure changes are processed
+        modelContext.processPendingChanges()
+
         // Small delay to ensure data is saved
-        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+
+        // Reload widgets
+        WidgetCenter.shared.reloadAllTimelines()
+        log("ClockOutIntent: Reloaded widget timelines")
 
         // End Live Activity
         if let sessionData = entry.toWorkSessionData() {
-            await LiveActivityManager.shared.endActivity(with: sessionData)
+            log("ClockOutIntent: Ending live activity")
+            await LiveActivities.endActivity(with: sessionData)
         }
 
+        log("ClockOutIntent: Completed successfully")
         return .result()
-    }
-}
-// Extension to convert ClockEntry to WorkSessionData in the Ushio target
-extension ClockEntry {
-    @MainActor
-    func toWorkSessionData() -> WorkSessionData? {
-        guard let clockInTime = self.clockInTime else {
-            return nil
-        }
-
-        // Calculate total break time
-        let totalBreakTime = self.breakTimes.reduce(into: 0.0) { partialResult, breakTime in
-            if let end = breakTime.end {
-                partialResult += end.timeIntervalSince(breakTime.start)
-            }
-        }
-
-        // Get standard working hours from settings
-        let standardWorkingHours = SettingsManager.shared.standardWorkingHours
-
-        return WorkSessionData(
-            entryId: self.id,
-            clockInTime: clockInTime,
-            isOnBreak: self.isOnBreak,
-            breakStartTime: self.isOnBreak ? self.breakTimes.last?.start : nil,
-            totalBreakTime: totalBreakTime,
-            standardWorkingHours: standardWorkingHours
-        )
     }
 }

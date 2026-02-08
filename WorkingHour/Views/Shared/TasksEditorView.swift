@@ -12,7 +12,8 @@ struct TasksEditorView: View {
     @Environment(\.dismiss) var dismiss
 
     @Environment(\.modelContext) private var modelContext
-    @Query(filter: #Predicate<Project> { $0.isActive }, sort: [SortDescriptor(\.name)]) private var activeProjects: [Project]
+    @Query(filter: #Predicate<Project> { $0.isActive }, sort: [SortDescriptor(\.name)])
+    private var activeProjects: [Project]
 
     var entry: ClockEntry
 

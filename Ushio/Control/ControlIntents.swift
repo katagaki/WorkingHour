@@ -1,48 +1,12 @@
 //
-//  UshioControl.swift
-//  Ushio
+//  ControlIntents.swift
+//  WorkingHour
 //
-//  Created by シン・ジャスティン on 2024/12/09.
+//  Created by シン・ジャスティン on 2026/02/08.
 //
 
 import AppIntents
-import SwiftUI
 import SwiftData
-import WidgetKit
-
-// MARK: - Start Work Session Control
-
-struct StartWorkSessionControl: ControlWidget {
-    var body: some ControlWidgetConfiguration {
-        StaticControlConfiguration(
-            kind: "com.tsubuzaki.WorkingHour.Ushio.Start"
-        ) {
-            ControlWidgetButton(action: StartWorkSessionIntent()) {
-                Label("Clock In", systemImage: "play.fill")
-            }
-        }
-        .displayName("Clock In")
-        .description("Start a new work session")
-    }
-}
-
-// MARK: - End Work Session Control
-
-struct EndWorkSessionControl: ControlWidget {
-    var body: some ControlWidgetConfiguration {
-        StaticControlConfiguration(
-            kind: "com.tsubuzaki.WorkingHour.Ushio.End"
-        ) {
-            ControlWidgetButton(action: EndWorkSessionIntent()) {
-                Label("Clock Out", systemImage: "stop.fill")
-            }
-        }
-        .displayName("Clock Out")
-        .description("End the current work session")
-    }
-}
-
-// MARK: - Start Work Session Intent
 
 struct StartWorkSessionIntent: AppIntent {
     static var title: LocalizedStringResource = "Clock In"
@@ -72,14 +36,12 @@ struct StartWorkSessionIntent: AppIntent {
 
         // Start Live Activity
         if let sessionData = newEntry.toWorkSessionData() {
-            await LiveActivityManager.shared.startActivity(with: sessionData)
+            await LiveActivities.startActivity(with: sessionData)
         }
 
         return .result()
     }
 }
-
-// MARK: - End Work Session Intent
 
 struct EndWorkSessionIntent: AppIntent {
     static var title: LocalizedStringResource = "Clock Out"
@@ -115,7 +77,7 @@ struct EndWorkSessionIntent: AppIntent {
 
         // End Live Activity
         if let sessionData = entry.toWorkSessionData() {
-            await LiveActivityManager.shared.endActivity(with: sessionData)
+            await LiveActivities.endActivity(with: sessionData)
         }
 
         return .result()

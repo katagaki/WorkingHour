@@ -63,9 +63,19 @@
 		E4E09E5B2F378385009E9215 /* Exceptions for "WorkingHour" folder in "UshioExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Assets.xcassets,
 				Localizable.xcstrings,
 			);
 			target = E44D37E62D06EF5E006C9F1F /* UshioExtension */;
+		};
+		E4E09E842F384A8D009E9215 /* Exceptions for "Ushio" folder in "Working Hour" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Live Activity/Attributes.swift",
+				"Live Activity/Manager.swift",
+				"Live Activity/SessionData.swift",
+			);
+			target = E4260F772CB6B0EA0078946D /* Working Hour */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -78,6 +88,7 @@
 		E4C25B892F373EC700F3BADF /* Ushio */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				E4E09E842F384A8D009E9215 /* Exceptions for "Ushio" folder in "Working Hour" target */,
 				E4C25B902F373EC700F3BADF /* Exceptions for "Ushio" folder in "UshioExtension" target */,
 			);
 			path = Ushio;

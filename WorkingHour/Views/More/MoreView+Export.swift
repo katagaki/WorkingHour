@@ -223,7 +223,7 @@ extension MoreView {
         for entry in entries {
             if let clockInDate = entry.clockInDateString(),
                let clockInDay = entry.clockInDayString(),
-               let _ = entry.timeWorked() {
+               entry.timeWorked() != nil {
                 let overtime = entry.overtime(standardWorkingTime: standardHours) ?? 0
                 totalOvertime += overtime
 

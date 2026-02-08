@@ -11,7 +11,12 @@ import SwiftUI
 struct TimeClockView: View {
 
     @Environment(\.modelContext) private var modelContext
-    @Query(filter: #Predicate<ClockEntry> { $0.clockOutTime == nil }, sort: \.clockInTime, order: .reverse) private var activeEntries: [ClockEntry]
+    @Query(
+        filter: #Predicate<ClockEntry> { $0.clockOutTime == nil },
+        sort: \.clockInTime,
+        order: .reverse
+    )
+    private var activeEntries: [ClockEntry]
 
     @State private var settingsManager = SettingsManager.shared
 
@@ -245,21 +250,17 @@ struct TimeClockView: View {
     func clockIn() {
         withAnimation(.smooth.speed(2.0)) {
             let newEntry = ClockEntry(.now)
-
-            // Auto-add break if enabled
             if settingsManager.autoAddBreakTime && settingsManager.defaultBreakDuration > 0 {
                 let breakStart = Date.now
                 let breakEnd = breakStart.addingTimeInterval(settingsManager.defaultBreakDuration)
                 newEntry.breakTimes.append(Break(start: breakStart, end: breakEnd))
             }
-
             modelContext.insert(newEntry)
             startTimer()
-
-            // Start Live Activity
-            if let sessionData = newEntry.toWorkSessionData(standardWorkingHours: standardWorkingHours) {
+            modelContext.processPendingChanges()
+            if let sessionData = newEntry.toWorkSessionData() {
                 Task {
-                    await LiveActivityManager.shared.startActivity(with: sessionData)
+                    await LiveActivities.startActivity(with: sessionData)
                 }
             }
         }
@@ -268,13 +269,11 @@ struct TimeClockView: View {
     func clockOut() {
         withAnimation(.smooth.speed(2.0)) {
             activeEntry?.clockOutTime = .now
+            modelContext.processPendingChanges()
             if let activeEntry,
-               let sessionData = activeEntry.toWorkSessionData(standardWorkingHours: standardWorkingHours) {
-                // dataManager.updateClockEntry(activeEntry)
-
-                // End Live Activity
+               let sessionData = activeEntry.toWorkSessionData() {
                 Task {
-                    await LiveActivityManager.shared.endActivity(with: sessionData)
+                    await LiveActivities.endActivity(with: sessionData)
                 }
             }
             timer?.invalidate()
@@ -286,13 +285,11 @@ struct TimeClockView: View {
         withAnimation(.smooth.speed(2.0)) {
             activeEntry?.breakTimes.append(Break(start: .now))
             activeEntry?.isOnBreak = true
+            modelContext.processPendingChanges()
             if let activeEntry,
-               let sessionData = activeEntry.toWorkSessionData(standardWorkingHours: standardWorkingHours) {
-                // dataManager.updateClockEntry(activeEntry)
-
-                // Update Live Activity
+               let sessionData = activeEntry.toWorkSessionData() {
                 Task {
-                    await LiveActivityManager.shared.updateActivity(with: sessionData)
+                    await LiveActivities.updateActivity(with: sessionData)
                 }
             }
         }
@@ -305,13 +302,11 @@ struct TimeClockView: View {
                 activeEntry?.breakTimes.removeLast()
                 activeEntry?.breakTimes.append(Break(start: startTime, end: .now))
                 activeEntry?.isOnBreak = false
+                modelContext.processPendingChanges()
                 if let activeEntry,
-                   let sessionData = activeEntry.toWorkSessionData(standardWorkingHours: standardWorkingHours) {
-                    // dataManager.updateClockEntry(activeEntry)
-
-                    // Update Live Activity
+                   let sessionData = activeEntry.toWorkSessionData() {
                     Task {
-                        await LiveActivityManager.shared.updateActivity(with: sessionData)
+                        await LiveActivities.updateActivity(with: sessionData)
                     }
                 }
             }

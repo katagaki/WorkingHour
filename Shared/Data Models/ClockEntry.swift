@@ -17,7 +17,6 @@ final class ClockEntry: Identifiable {
     var breakTimes: [Break] = []
     var isOnBreak: Bool = false
 
-    // Project ID : Task Information
     var projectTasks: [String: String] = [:]
 
     init(_ clockInTime: Date? = nil) {
@@ -132,6 +131,27 @@ final class ClockEntry: Identifiable {
         return formatter.string(from: overtime(standardWorkingTime: standardWorkingTime) ?? .zero) ?? ""
     }
 
-    // MARK: - Equatable & Hashable
-    // implied by @Model
+    @MainActor
+    func toWorkSessionData() -> WorkSessionData? {
+        guard let clockInTime = self.clockInTime else {
+            return nil
+        }
+
+        let totalBreakTime = self.breakTimes.reduce(into: 0.0) { partialResult, breakTime in
+            if let end = breakTime.end {
+                partialResult += end.timeIntervalSince(breakTime.start)
+            }
+        }
+
+        let standardWorkingHours = SettingsManager.shared.standardWorkingHours
+
+        return WorkSessionData(
+            entryId: self.id,
+            clockInTime: clockInTime,
+            isOnBreak: self.isOnBreak,
+            breakStartTime: self.isOnBreak ? self.breakTimes.last?.start : nil,
+            totalBreakTime: totalBreakTime,
+            standardWorkingHours: standardWorkingHours
+        )
+    }
 }
