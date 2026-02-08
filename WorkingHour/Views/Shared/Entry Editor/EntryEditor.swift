@@ -36,7 +36,7 @@ struct EntryEditor: View {
                 if !entry.breakTimes.isEmpty {
                     TimelineRow(.neutral, date: .constant(.distantPast))
                 }
-                ForEach($entry.breakTimes, id: \.self) { $break in
+                ForEach($entry.breakTimes) { $break in
                     TimelineRow(.breakStart, date: $break.start, in: newClockInTime...newClockOutTime)
                     if let breakEnd = Binding($break.end) {
                         TimelineRow(.breakEnd, date: breakEnd, in: newClockInTime...newClockOutTime)
@@ -80,17 +80,11 @@ struct EntryEditor: View {
             .environment(\.defaultMinListRowHeight, 26.0)
             .navigationTitle("EntryEditor.Edit")
             .toolbarTitleDisplayMode(.inline)
-            .onChange(of: newClockInTime) { _, _ in
-                entry.clockInTime = newClockInTime
-                saveEntry()
-            }
-            .onChange(of: newClockOutTime) { _, _ in
-                entry.clockOutTime = newClockOutTime
-                saveEntry()
-            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(role: .confirm) {
+                        entry.clockInTime = newClockInTime
+                        entry.clockOutTime = newClockOutTime
                         saveEntry()
                         onSave?()
                         dismiss()

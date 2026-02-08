@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Break: Codable, Hashable {
+struct Break: Codable, Hashable, Identifiable {
+    var id = UUID()
     var start: Date
     var end: Date?
 
@@ -29,11 +30,10 @@ struct Break: Codable, Hashable {
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(start)
-        hasher.combine(end)
+        hasher.combine(id)
     }
 
     static func == (lhs: Break, rhs: Break) -> Bool {
-        return lhs.start == rhs.start && lhs.end == rhs.end
+        return lhs.id == rhs.id
     }
 }
