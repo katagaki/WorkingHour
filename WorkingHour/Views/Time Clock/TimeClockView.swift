@@ -17,7 +17,7 @@ struct TimeClockView: View {
         order: .reverse
     )
     private var activeEntries: [ClockEntry]
-    
+
     @Query(
         filter: #Predicate<ClockEntry> { $0.clockOutTime != nil },
         sort: \.clockInTime,
@@ -30,7 +30,7 @@ struct TimeClockView: View {
     var activeEntry: ClockEntry? {
         activeEntries.first
     }
-    
+
     var lastCompletedEntry: ClockEntry? {
         completedEntries.first
     }

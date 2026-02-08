@@ -18,7 +18,4 @@ final class Project: Identifiable {
     init(name: String = "") {
         self.name = name
     }
-
-    // MARK: - Equatable & Hashable
-    // implied by @Model
 }

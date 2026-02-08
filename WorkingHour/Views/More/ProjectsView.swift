@@ -140,8 +140,6 @@ struct ProjectsView: View {
 struct ProjectEditorView: View {
     @Environment(\.dismiss) var dismiss
 
-    // @State private var dataManager = DataManager.shared
-
     var project: Project
     @State private var editedName: String = ""
     @State private var isActive: Bool = true

@@ -23,9 +23,7 @@ struct TimesheetView: View {
 
     @State var entryBeingEdited: ClockEntry?
 
-    // var entries: [ClockEntry] {
-    //     dataManager.entries(in: selectedMonth, year: selectedYear)
-    // }
+    @Namespace var namespace
 
     var selectedDate: [Int] {
         [selectedMonth, selectedYear]
@@ -48,7 +46,12 @@ struct TimesheetView: View {
 
     var body: some View {
         NavigationStack {
-            TimesheetList(month: selectedMonth, year: selectedYear, entryBeingEdited: $entryBeingEdited)
+            TimesheetList(
+                month: selectedMonth,
+                year: selectedYear,
+                entryBeingEdited: $entryBeingEdited,
+                namespace: namespace
+            )
             .listStyle(.plain)
             .navigationTitle("ViewTitle.Timesheet")
             .toolbarTitleDisplayMode(.inlineLarge)
@@ -66,43 +69,32 @@ struct TimesheetView: View {
             }
             .safeAreaInset(edge: .top, spacing: 0.0) {
                 if isBrowsingPastEntries {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 10.0) {
-                            HStack(alignment: .center, spacing: 8.0) {
-                                Text("Timesheet.SelectMonth")
-                                Spacer()
-                                HStack(alignment: .center, spacing: 8.0) {
-                                    Group {
-                                        Picker("Shared.Month", selection: $selectedMonth) {
-                                            ForEach(
-                                                Array(selectableMonths.enumerated()),
-                                                id: \.offset
-                                            ) { index, month in
-                                                Text(month)
-                                                    .tag(index + 1)
-                                            }
-                                        }
-                                        Picker("Shared.Year", selection: $selectedYear) {
-                                            ForEach(selectableYears, id: \.self) { year in
-                                                Text(String(year))
-                                                    .tag(year)
-                                            }
-                                        }
-                                    }
-                                    .background(.inlinePicker)
-                                    .clipShape(.rect(cornerRadius: 8.0))
-                                }
+                    HStack(alignment: .center, spacing: 8.0) {
+                        Picker("Shared.Month", selection: $selectedMonth) {
+                            ForEach(
+                                Array(selectableMonths.enumerated()),
+                                id: \.offset
+                            ) { index, month in
+                                Text(month)
+                                    .tag(index + 1)
                             }
                         }
-                        .padding([.leading, .trailing], 20.0)
-                        .padding([.top, .bottom], 8.0)
+                        Picker("Shared.Year", selection: $selectedYear) {
+                            ForEach(selectableYears, id: \.self) { year in
+                                Text(String(year))
+                                    .tag(year)
+                            }
+                        }
                     }
+                    .padding(.horizontal, 20.0)
+                    .padding(.vertical, 8.0)
+                    .glassEffect(.regular, in: .rect(cornerRadius: 28.0))
+                    .padding(.horizontal, 20.0)
                 }
             }
             .sheet(item: $entryBeingEdited) { entry in
-                EntryEditor(entry, onSave: {
-                    // Refresh handled by SwiftData
-                })
+                EntryEditor(entry)
+                    .navigationTransition(.zoom(sourceID: entry.id, in: namespace))
             }
             .onChange(of: isBrowsingPastEntries) { oldValue, newValue in
                 if oldValue && !newValue {
@@ -119,7 +111,9 @@ struct TimesheetList: View {
     @Query var entries: [ClockEntry]
     @Binding var entryBeingEdited: ClockEntry?
 
-    init(month: Int, year: Int, entryBeingEdited: Binding<ClockEntry?>) {
+    var namespace: Namespace.ID
+
+    init(month: Int, year: Int, entryBeingEdited: Binding<ClockEntry?>, namespace: Namespace.ID) {
         self._entryBeingEdited = entryBeingEdited
 
         let calendar = Calendar.current
@@ -134,8 +128,6 @@ struct TimesheetList: View {
         let startDate = calendar.date(from: components) ?? .distantPast
         let endDate = calendar.date(byAdding: .month, value: 1, to: startDate)?.addingTimeInterval(-1) ?? .distantFuture
 
-        // Predicate: clockInTime between start and end
-        // CloudKit-compatible predicate without force unwrap
         let predicate = #Predicate<ClockEntry> { entry in
             if let clockInTime = entry.clockInTime {
                 clockInTime >= startDate && clockInTime <= endDate
@@ -145,6 +137,8 @@ struct TimesheetList: View {
         }
 
         _entries = Query(filter: predicate, sort: [SortDescriptor(\.clockInTime, order: .reverse)])
+
+        self.namespace = namespace
     }
 
     var body: some View {
@@ -160,6 +154,7 @@ struct TimesheetList: View {
                     entryBeingEdited = entry
                 } label: {
                     EntryRow(entry: entry)
+                        .matchedTransitionSource(id: entry.id, in: namespace)
                 }
                 .listRowSeparator(.hidden)
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {

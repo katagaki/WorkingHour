@@ -28,7 +28,7 @@ final class SettingsManager {
     var standardWorkingHours: TimeInterval {
         get {
             let value = defaults.double(forKey: Keys.standardWorkingHours)
-            return value > 0 ? value : 8 * 3600 // Default: 8 hours
+            return value > 0 ? value : 8 * 3600
         }
         set {
             defaults.set(newValue, forKey: Keys.standardWorkingHours)
@@ -38,10 +38,8 @@ final class SettingsManager {
     var defaultBreakDuration: TimeInterval {
         get {
             let value = defaults.double(forKey: Keys.defaultBreakDuration)
-            // Return stored value even if it's 0 (no default break)
-            // Only set default on first launch when key doesn't exist
             if defaults.object(forKey: Keys.defaultBreakDuration) == nil {
-                return 3600 // Default: 1 hour
+                return 3600
             }
             return value
         }

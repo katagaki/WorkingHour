@@ -61,14 +61,6 @@ struct TimelineRow: View {
                                     default: Color.clear
                                     }
                                 }
-//                            Capsule(style: .continuous)
-//                                .foregroundStyle(.white)
-//                                .overlay {
-//                                    Capsule(style: .continuous)
-//                                        .stroke(.gray, lineWidth: 2.0)
-//                                }
-//                                .frame(width: 16.0, height: 6.0)
-//                                .shadow(color: .black.opacity(0.2), radius: 3.0, x: 0.0, y: 1.5)
                         default: Color.clear
                         }
                     }
