@@ -136,4 +136,97 @@ final class DataManager {
     var archivedProjects: [Project] {
         projects.filter { !$0.isActive }
     }
+
+    // MARK: - Debug Operations
+
+    #if DEBUG
+    func populateSampleData() {
+        guard let modelContext else { return }
+
+        let calendar = Calendar.current
+        let now = Date.now
+
+        // Create today's ongoing entry (clock in only at 9am with random variation)
+        var todayClockInComponents = calendar.dateComponents([.year, .month, .day], from: now)
+        todayClockInComponents.hour = 9
+        todayClockInComponents.minute = 0
+        todayClockInComponents.second = 0
+
+        if let baseTodayClockIn = calendar.date(from: todayClockInComponents) {
+            let todayVariation = Int.random(in: -5...5)
+            if let todayClockIn = calendar.date(byAdding: .minute, value: todayVariation, to: baseTodayClockIn) {
+                let todayEntry = ClockEntry(todayClockIn)
+                modelContext.insert(todayEntry)
+            }
+        }
+
+        // Create sample data for the past 29 days (excluding today)
+        for daysAgo in 1..<30 {
+            guard let dayDate = calendar.date(byAdding: .day, value: -daysAgo, to: now) else { continue }
+
+            // Skip weekends (Saturday = 7, Sunday = 1)
+            let weekday = calendar.component(.weekday, from: dayDate)
+            if weekday == 1 || weekday == 7 { continue }
+
+            // Random variation between -5 and +5 minutes
+            let clockInVariation = Int.random(in: -10...15)
+            let clockOutVariation = Int.random(in: -5...85)
+
+            // Set clock in time to 9:00 AM with random variation
+            var clockInComponents = calendar.dateComponents([.year, .month, .day], from: dayDate)
+            clockInComponents.hour = 9
+            clockInComponents.minute = 0
+            clockInComponents.second = 0
+
+            guard let baseClockInTime = calendar.date(from: clockInComponents),
+                  let clockInTime = calendar.date(byAdding: .minute, value: clockInVariation, to: baseClockInTime) else { continue }
+
+            let entry = ClockEntry(clockInTime)
+
+            // Add clock out at 6:00 PM with random variation
+            var clockOutComponents = calendar.dateComponents([.year, .month, .day], from: dayDate)
+            clockOutComponents.hour = 18
+            clockOutComponents.minute = 0
+            clockOutComponents.second = 0
+
+            if let baseClockOutTime = calendar.date(from: clockOutComponents),
+               let clockOutTime = calendar.date(byAdding: .minute, value: clockOutVariation, to: baseClockOutTime) {
+                entry.clockOutTime = clockOutTime
+
+                // Add 1 hour break starting at 12:00 PM
+                var breakStartComponents = calendar.dateComponents([.year, .month, .day], from: dayDate)
+                breakStartComponents.hour = 12
+                breakStartComponents.minute = 0
+                breakStartComponents.second = 0
+
+                if let breakStart = calendar.date(from: breakStartComponents),
+                   let breakEnd = calendar.date(byAdding: .hour, value: 1, to: breakStart) {
+                    entry.breakTimes.append(Break(start: breakStart, end: breakEnd))
+                }
+
+                modelContext.insert(entry)
+            }
+        }
+
+        save()
+        loadAll()
+    }
+
+    func clearAllData() {
+        guard let modelContext else { return }
+
+        // Delete all clock entries
+        for entry in clockEntries {
+            modelContext.delete(entry)
+        }
+
+        // Delete all projects
+        for project in projects {
+            modelContext.delete(project)
+        }
+
+        save()
+        loadAll()
+    }
+    #endif
 }

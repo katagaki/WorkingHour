@@ -55,6 +55,18 @@
         }
       }
     },
+    "Cancel" : {
+
+    },
+    "Clear" : {
+
+    },
+    "Clear All Data" : {
+
+    },
+    "Clear All Data?" : {
+
+    },
     "Clock In" : {
       "localizations" : {
         "ja" : {
@@ -428,6 +440,12 @@
           }
         }
       }
+    },
+    "Populate 30 days of sample clock entries with breaks. Today's entry will be ongoing (9am start)." : {
+
+    },
+    "Populate Sample Data" : {
+
     },
     "Projects.Active" : {
       "localizations" : {
@@ -1236,6 +1254,9 @@
           }
         }
       }
+    },
+    "This will permanently delete all clock entries and projects." : {
+
     },
     "TimeClock.Break.End" : {
       "localizations" : {

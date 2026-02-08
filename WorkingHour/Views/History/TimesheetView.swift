@@ -50,7 +50,6 @@ struct TimesheetView: View {
         NavigationStack {
             TimesheetList(month: selectedMonth, year: selectedYear, entryBeingEdited: $entryBeingEdited)
             .listStyle(.plain)
-            .defaultScrollAnchor(.bottom)
             .navigationTitle("ViewTitle.Timesheet")
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
@@ -145,7 +144,7 @@ struct TimesheetList: View {
             }
         }
 
-        _entries = Query(filter: predicate, sort: [SortDescriptor(\.clockInTime, order: .forward)])
+        _entries = Query(filter: predicate, sort: [SortDescriptor(\.clockInTime, order: .reverse)])
     }
 
     var body: some View {

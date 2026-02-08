@@ -15,10 +15,15 @@ struct MoreView: View {
     @Environment(\.openURL) var openURL
     @Query var projects: [Project]
     @State var settingsManager = SettingsManager.shared
+    @State var dataManager = DataManager.shared
 
     @State private var workingHours: Double = 8.0
     @State private var breakMinutes: Double = 60.0
     @State private var autoAddBreak: Bool = false
+
+    #if DEBUG
+    @State private var showingClearDataAlert = false
+    #endif
 
     var body: some View {
         NavigationStack {
@@ -105,6 +110,25 @@ struct MoreView: View {
                         .foregroundStyle(.secondary)
                 }
 
+                #if DEBUG
+                // Debug Section
+                Section {
+                    Button("Populate Sample Data") {
+                        dataManager.populateSampleData()
+                    }
+
+                    Button("Clear All Data", role: .destructive) {
+                        showingClearDataAlert = true
+                    }
+                } header: {
+                    ListSectionHeader(text: "Debug")
+                } footer: {
+                    Text("Populate 30 days of sample clock entries with breaks. Today's entry will be ongoing (9am start).")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                #endif
+
             }
             .navigationTitle("ViewTitle.More")
             .toolbarTitleDisplayMode(.inlineLarge)
@@ -120,6 +144,16 @@ struct MoreView: View {
             .onChange(of: autoAddBreak) { _, _ in
                 saveSettings()
             }
+            #if DEBUG
+            .alert("Clear All Data?", isPresented: $showingClearDataAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Clear", role: .destructive) {
+                    dataManager.clearAllData()
+                }
+            } message: {
+                Text("This will permanently delete all clock entries and projects.")
+            }
+            #endif
         }
     }
 
