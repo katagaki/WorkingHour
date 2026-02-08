@@ -268,12 +268,12 @@ struct TimeClockView: View {
 
     func clockOut() {
         withAnimation(.smooth.speed(2.0)) {
-            activeEntry?.clockOutTime = .now
-            modelContext.processPendingChanges()
             if let activeEntry,
                let sessionData = activeEntry.toWorkSessionData() {
+                activeEntry.clockOutTime = .now
+                modelContext.processPendingChanges()
                 Task {
-                    await LiveActivities.endActivity(with: sessionData)
+                    await LiveActivities.endActivity(with: sessionData, immediately: true)
                 }
             }
             timer?.invalidate()

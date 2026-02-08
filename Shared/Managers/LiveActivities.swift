@@ -9,27 +9,22 @@ import ActivityKit
 import Foundation
 
 class LiveActivities {
-    // Check if a live activity exists for a given entry ID
     public static func hasActivity(for entryId: String) -> Bool {
         let activities = Activity<UshioAttributes>.activities
         return activities.contains(where: { $0.attributes.entryId == entryId })
     }
 
-    // Ensure a live activity exists for the given entry, starting one if needed
     public static func ensureActivity(with data: WorkSessionData) async {
-        // Only ensure activity for entries that haven't been clocked out
         guard data.clockOutTime == nil else {
             log("LiveActivityManager: Entry is already clocked out, not starting activity")
             return
         }
 
-        // Check if activity already exists
         if hasActivity(for: data.entryId) {
             log("LiveActivityManager: Activity already exists for entryId \(data.entryId)")
             return
         }
 
-        // Start a new activity
         log("LiveActivityManager: No activity found for entryId \(data.entryId), starting new one")
         await startActivity(with: data)
     }
@@ -82,7 +77,7 @@ class LiveActivities {
         }
     }
 
-    public static func endActivity(with data: WorkSessionData) async {
+    public static func endActivity(with data: WorkSessionData, immediately: Bool = false) async {
         let contentState = UshioAttributes.ContentState(
             clockInTime: data.clockInTime,
             clockOutTime: data.clockOutTime,
@@ -91,15 +86,18 @@ class LiveActivities {
             totalBreakTime: data.totalBreakTime,
             standardWorkingHours: data.standardWorkingHours
         )
+        let dismissDate = Date(timeIntervalSinceNow: 1800)
+        let content = ActivityContent(state: contentState, staleDate: immediately ? nil : dismissDate)
 
         let activities = Activity<UshioAttributes>.activities
         if let activity = activities.first(where: { $0.attributes.entryId == data.entryId }) {
             log("LiveActivityManager: Ending activity \(activity.attributes.entryId)")
-            let staleDate = Date(timeIntervalSinceNow: 1800)
             await activity.end(
-                .init(state: contentState, staleDate: nil),
-                dismissalPolicy: .default
+                content,
+                dismissalPolicy: immediately ? .immediate : .after(dismissDate)
             )
+        } else {
+            log("LiveActivityManager: No matching activity found")
         }
     }
 }

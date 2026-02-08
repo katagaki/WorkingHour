@@ -20,13 +20,8 @@ struct WorkingHourApp: App {
             MainTabView()
                 .onAppear {
                     let context = SharedModelContainer.shared.container.mainContext
-                    // Set DataManager context
                     DataManager.shared.modelContext = context
-
-                    // Reload DataManager
                     DataManager.shared.loadAll()
-
-                    // Check for active entry and ensure live activity exists
                     checkAndRestoreLiveActivity(context: context)
                 }
         }
