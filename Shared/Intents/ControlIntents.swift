@@ -11,34 +11,34 @@ import SwiftData
 struct StartWorkSessionIntent: AppIntent {
     static var title: LocalizedStringResource = "Clock In"
     static var description = IntentDescription("Start a new work session")
-    static var openAppWhenRun: Bool = false
+    static var openAppWhenRun: Bool = true
 
     @MainActor
     func perform() async throws -> some IntentResult {
+        log("StartWorkSessionIntent: Starting", prefix: "YUUKA")
         let modelContext = SharedModelContainer.shared.container.mainContext
-
-        // Check if there's already an active session
         let descriptor = FetchDescriptor<ClockEntry>(
             predicate: #Predicate { $0.clockOutTime == nil }
         )
-
         if let entries = try? modelContext.fetch(descriptor),
            !entries.isEmpty {
-            // Already have an active session
+            log("StartWorkSessionIntent: Active session already exists, skipping", prefix: "YUUKA")
             return .result()
         }
 
-        // Create new entry
+        log("StartWorkSessionIntent: Creating new clock entry", prefix: "YUUKA")
         let newEntry = ClockEntry(.now)
         modelContext.insert(newEntry)
 
         try? modelContext.save()
+        modelContext.processPendingChanges()
 
-        // Start Live Activity
         if let sessionData = newEntry.toWorkSessionData() {
+            log("StartWorkSessionIntent: Starting live activity", prefix: "YUUKA")
             await LiveActivities.startActivity(with: sessionData)
         }
 
+        log("StartWorkSessionIntent: Completed", prefix: "YUUKA")
         return .result()
     }
 }
@@ -46,40 +46,44 @@ struct StartWorkSessionIntent: AppIntent {
 struct EndWorkSessionIntent: AppIntent {
     static var title: LocalizedStringResource = "Clock Out"
     static var description = IntentDescription("End the current work session")
-    static var openAppWhenRun: Bool = false
+    static var openAppWhenRun: Bool = true
 
     @MainActor
     func perform() async throws -> some IntentResult {
+        log("EndWorkSessionIntent: Starting", prefix: "YUUKA")
         let modelContext = SharedModelContainer.shared.container.mainContext
-
-        // Find active session
         let descriptor = FetchDescriptor<ClockEntry>(
             predicate: #Predicate { $0.clockOutTime == nil }
         )
-
         guard let entries = try? modelContext.fetch(descriptor),
               let entry = entries.first else {
+            log("EndWorkSessionIntent: No active session found", prefix: "YUUKA")
             return .result()
         }
 
-        // End any active break first
+        log("EndWorkSessionIntent: Found active session", prefix: "YUUKA")
+
         if entry.isOnBreak,
            let breakStart = entry.breakTimes.last?.start,
            entry.breakTimes.last?.end == nil {
+            log("EndWorkSessionIntent: Ending active break", prefix: "YUUKA")
             entry.breakTimes.removeLast()
             entry.breakTimes.append(Break(start: breakStart, end: .now))
             entry.isOnBreak = false
         }
 
+        log("EndWorkSessionIntent: Setting clock out time", prefix: "YUUKA")
         entry.clockOutTime = .now
 
         try? modelContext.save()
+        modelContext.processPendingChanges()
 
-        // End Live Activity
         if let sessionData = entry.toWorkSessionData() {
+            log("EndWorkSessionIntent: Ending live activity", prefix: "YUUKA")
             await LiveActivities.endActivity(with: sessionData)
         }
 
+        log("EndWorkSessionIntent: Completed", prefix: "YUUKA")
         return .result()
     }
 }
