@@ -148,7 +148,7 @@
       }
     },
     "Export.Section.Overtime" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -165,7 +165,7 @@
       }
     },
     "Export.Section.Timesheet" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -359,7 +359,7 @@
       }
     },
     "More.Projects" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -376,7 +376,7 @@
       }
     },
     "More.Section.App" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -393,7 +393,7 @@
       }
     },
     "More.Settings" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -558,7 +558,7 @@
       }
     },
     "Projects.Section.Active" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -575,7 +575,7 @@
       }
     },
     "Projects.Section.Archived" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -660,7 +660,7 @@
       }
     },
     "Settings.Data.Footer" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -693,7 +693,7 @@
       }
     },
     "Settings.ExportData" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -710,7 +710,7 @@
       }
     },
     "Settings.ExportSuccess" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -743,7 +743,7 @@
       }
     },
     "Settings.ImportData" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -760,7 +760,7 @@
       }
     },
     "Settings.ImportSuccess" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -793,7 +793,7 @@
       }
     },
     "Settings.Section.Break" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -810,7 +810,7 @@
       }
     },
     "Settings.Section.Data" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -827,7 +827,7 @@
       }
     },
     "Settings.Section.WorkingTime" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -940,7 +940,7 @@
       }
     },
     "Shared.Done" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -957,7 +957,7 @@
       }
     },
     "Shared.Edit" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -974,7 +974,7 @@
       }
     },
     "Shared.Error" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -991,7 +991,7 @@
       }
     },
     "Shared.OK" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1008,7 +1008,7 @@
       }
     },
     "Shared.Save" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1045,7 +1045,7 @@
       }
     },
     "Tab.Export" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
