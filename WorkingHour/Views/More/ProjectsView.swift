@@ -60,18 +60,6 @@ struct ProjectsView: View {
                             }
                         }
                     }
-
-                    // Add Project Button
-                    Button {
-                        showingAddProject = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundStyle(.accent)
-                            Text("Projects.Add")
-                                .foregroundStyle(.accent)
-                        }
-                    }
                 } header: {
                     ListSectionHeader(text: "Projects.Section.Active")
                 }
@@ -114,6 +102,16 @@ struct ProjectsView: View {
             }
             .navigationTitle("Projects.Title")
             .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showingAddProject = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .buttonStyle(.glassProminent)
+                }
+            }
             .alert("Projects.Add", isPresented: $showingAddProject) {
                 TextField("Projects.Name.Placeholder", text: $newProjectName)
                 Button("Shared.Cancel", role: .cancel) {
