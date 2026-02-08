@@ -35,6 +35,9 @@
         }
       }
     },
+    "CSV" : {
+
+    },
     "Debug.ClearAllData" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -202,6 +205,9 @@
           }
         }
       }
+    },
+    "Excel" : {
+
     },
     "Export.Section.Overtime" : {
       "extractionState" : "manual",

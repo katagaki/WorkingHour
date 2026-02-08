@@ -30,38 +30,24 @@ struct MoreView: View {
             MoreList(repoName: "katagaki/WorkingHour") {
                 // Timesheet Export Section
                 Section {
-                    Button {
+                    Button("Excel", systemImage: "x.square.fill") {
                         exportTimesheetToExcel()
-                    } label: {
-                        ListRow(image: "ListIcon.Excel", title: "Excel")
                     }
-                    .tint(.primary)
-
-                    Button {
+                    Button("CSV", systemImage: "tablecells") {
                         exportTimesheetToCSV()
-                    } label: {
-                        ListRow(image: "ListIcon.CSV", title: "CSV")
                     }
-                    .tint(.primary)
                 } header: {
                     ListSectionHeader(text: "Export.Section.Timesheet")
                 }
 
                 // Overtime Report Section
                 Section {
-                    Button {
+                    Button("Excel", systemImage: "x.square.fill") {
                         exportOvertimeToExcel()
-                    } label: {
-                        ListRow(image: "ListIcon.Excel", title: "Excel")
                     }
-                    .tint(.primary)
-
-                    Button {
+                    Button("CSV", systemImage: "tablecells") {
                         exportOvertimeToCSV()
-                    } label: {
-                        ListRow(image: "ListIcon.CSV", title: "CSV")
                     }
-                    .tint(.primary)
                 } header: {
                     ListSectionHeader(text: "Export.Section.Overtime")
                 }
