@@ -68,6 +68,13 @@
 			);
 			target = E44D37E62D06EF5E006C9F1F /* Ushio */;
 		};
+		E4F146912F386B6D0055F15D /* Exceptions for "Ushio" folder in "Working Hour" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Live Activity/Intents.swift",
+			);
+			target = E4260F772CB6B0EA0078946D /* Working Hour */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,6 +86,7 @@
 		E4C25B892F373EC700F3BADF /* Ushio */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				E4F146912F386B6D0055F15D /* Exceptions for "Ushio" folder in "Working Hour" target */,
 				E4C25B902F373EC700F3BADF /* Exceptions for "Ushio" folder in "Ushio" target */,
 			);
 			path = Ushio;

@@ -27,7 +27,7 @@ class LiveActivities {
 
         do {
             let activity = try Activity<UshioAttributes>.request(attributes: attributes, content: content)
-            log("LiveActivityManager: Started activity \(activity.attributes.entryId)")
+            log("LiveActivityManager: Started activity \(activity.id) for entryId \(activity.attributes.entryId)")
         } catch {
             log("LiveActivityManager: Error while starting activity: \(error), \(error.localizedDescription)")
         }

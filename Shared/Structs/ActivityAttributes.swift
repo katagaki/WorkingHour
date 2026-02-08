@@ -11,7 +11,7 @@ import Foundation
 struct UshioAttributes: ActivityAttributes {
     let entryId: String
 
-    struct ContentState: Codable, Hashable {
+    struct ContentState: Decodable, Encodable, Hashable {
         var clockInTime: Date
         var isOnBreak: Bool
         var breakStartTime: Date?

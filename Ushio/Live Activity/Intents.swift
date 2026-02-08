@@ -11,6 +11,9 @@ import Foundation
 import SwiftData
 import WidgetKit
 
+// NOTE: Intent target membership must include main app,
+//       or LiveActivityIntent will fizzle out and refuse to find activities!
+
 struct BreakData: Codable, Hashable {
     let start: Date
     let end: Date?
@@ -57,7 +60,7 @@ struct StartBreakIntent: LiveActivityIntent {
         modelContext.processPendingChanges()
 
         if let sessionData = entry.toWorkSessionData() {
-            log("StartBreakIntent: Updating live activity \(sessionData.entryId)")
+            log("StartBreakIntent: Updating live activity for entryId \(sessionData.entryId)")
             await LiveActivities.updateActivity(with: sessionData)
         }
 
@@ -111,13 +114,8 @@ struct EndBreakIntent: LiveActivityIntent {
             log("EndBreakIntent: Failed to save changes: \(error.localizedDescription)")
         }
 
-        // Ensure changes are processed
         modelContext.processPendingChanges()
 
-        // Small delay to ensure data is saved
-        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
-
-        // Update Live Activity
         if let sessionData = entry.toWorkSessionData() {
             log("EndBreakIntent: Updating live activity")
             await LiveActivities.updateActivity(with: sessionData)
@@ -170,13 +168,8 @@ struct ClockOutIntent: LiveActivityIntent {
             log("ClockOutIntent: Failed to save changes: \(error.localizedDescription)")
         }
 
-        // Ensure changes are processed
         modelContext.processPendingChanges()
 
-        // Small delay to ensure data is saved
-        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
-
-        // End Live Activity
         if let sessionData = entry.toWorkSessionData() {
             log("ClockOutIntent: Ending live activity")
             await LiveActivities.endActivity(with: sessionData)
