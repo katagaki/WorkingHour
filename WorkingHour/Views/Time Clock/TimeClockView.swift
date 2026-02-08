@@ -77,7 +77,7 @@ struct TimeClockView: View {
                         Button {
                             clockIn()
                         } label: {
-                            Label("TimeClock.Work.ClockIn", systemImage: "ipad.and.arrow.forward")
+                            Label("TimeClock.Work.ClockIn", systemImage: "play.fill")
                                 .fontWeight(.semibold)
                                 .padding([.top, .bottom], 6.0)
                                 .frame(maxWidth: .infinity)
@@ -134,7 +134,7 @@ struct TimeClockView: View {
                         Button {
                             clockOut()
                         } label: {
-                            Label("TimeClock.Work.ClockOut", systemImage: "rectangle.portrait.and.arrow.right")
+                            Label("TimeClock.Work.ClockOut", systemImage: "stop.fill")
                                 .fontWeight(.semibold)
                                 .padding([.top, .bottom], 6.0)
                                 .frame(maxWidth: .infinity)
@@ -258,7 +258,9 @@ struct TimeClockView: View {
 
             // Start Live Activity
             if let sessionData = newEntry.toWorkSessionData(standardWorkingHours: standardWorkingHours) {
-                LiveActivityManager.shared.startActivity(with: sessionData)
+                Task {
+                    await LiveActivityManager.shared.startActivity(with: sessionData)
+                }
             }
         }
     }
@@ -271,7 +273,9 @@ struct TimeClockView: View {
                 // dataManager.updateClockEntry(activeEntry)
 
                 // End Live Activity
-                LiveActivityManager.shared.endActivity(with: sessionData)
+                Task {
+                    await LiveActivityManager.shared.endActivity(with: sessionData)
+                }
             }
             timer?.invalidate()
             timer = nil
@@ -287,7 +291,9 @@ struct TimeClockView: View {
                 // dataManager.updateClockEntry(activeEntry)
 
                 // Update Live Activity
-                LiveActivityManager.shared.updateActivity(with: sessionData)
+                Task {
+                    await LiveActivityManager.shared.updateActivity(with: sessionData)
+                }
             }
         }
     }
@@ -304,7 +310,9 @@ struct TimeClockView: View {
                     // dataManager.updateClockEntry(activeEntry)
 
                     // Update Live Activity
-                    LiveActivityManager.shared.updateActivity(with: sessionData)
+                    Task {
+                        await LiveActivityManager.shared.updateActivity(with: sessionData)
+                    }
                 }
             }
         }

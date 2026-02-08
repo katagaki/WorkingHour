@@ -14,30 +14,20 @@ struct WorkingHourApp: App {
 
     @StateObject var navigator = Navigator<TabType, ViewPath>()
 
-    // Create the model container for SwiftData
-    let container: ModelContainer
-
-    init() {
-        container = SharedModelConfiguration.createModelContainer()
-    }
-
     var body: some Scene {
         WindowGroup {
             MainTabView()
                 .onAppear {
-                    let context = container.mainContext
+                    let context = SharedModelContainer.shared.container.mainContext
                     // Set DataManager context
                     DataManager.shared.modelContext = context
-
-                    // Perform migration
-                    MigrationManager().migrate(modelContext: context)
 
                     // Reload DataManager
                     DataManager.shared.loadAll()
                 }
         }
         .environmentObject(navigator)
-        .modelContainer(container)
+        .modelContainer(SharedModelContainer.shared.container)
         .onChange(of: navigator.selectedTab) { _, _ in
             navigator.saveToDefaults()
         }

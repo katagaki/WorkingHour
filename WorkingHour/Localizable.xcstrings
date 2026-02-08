@@ -21,9 +21,6 @@
     "%lld" : {
 
     },
-    "A an example control that runs a timer." : {
-
-    },
     "Break" : {
 
     },
@@ -60,6 +57,9 @@
 
     },
     "End the current break" : {
+
+    },
+    "End the current work session" : {
 
     },
     "End the work session" : {
@@ -365,12 +365,6 @@
     "My Widget" : {
 
     },
-    "Off" : {
-
-    },
-    "On" : {
-
-    },
     "On Break" : {
 
     },
@@ -601,6 +595,7 @@
       }
     },
     "Settings.Data.Footer" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -633,6 +628,7 @@
       }
     },
     "Settings.ExportData" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -649,6 +645,7 @@
       }
     },
     "Settings.ExportSuccess" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -681,6 +678,7 @@
       }
     },
     "Settings.ImportData" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -697,6 +695,7 @@
       }
     },
     "Settings.ImportSuccess" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -910,6 +909,7 @@
       }
     },
     "Shared.Error" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -926,6 +926,7 @@
       }
     },
     "Shared.OK" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -961,13 +962,10 @@
     "Start a break during the work session" : {
 
     },
-    "Start a timer" : {
+    "Start a new work session" : {
 
     },
     "Start Break" : {
-
-    },
-    "Start Timer" : {
 
     },
     "Tab.Export" : {
@@ -1360,12 +1358,6 @@
           }
         }
       }
-    },
-    "Timer" : {
-
-    },
-    "Timer is running" : {
-
     },
     "ViewTitle.Export" : {
       "localizations" : {

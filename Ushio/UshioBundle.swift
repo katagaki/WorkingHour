@@ -12,7 +12,8 @@ import SwiftUI
 struct UshioBundle: WidgetBundle {
     var body: some Widget {
         Ushio()
-        UshioControl()
+        StartWorkSessionControl()
+        EndWorkSessionControl()
         UshioLiveActivity()
     }
 }

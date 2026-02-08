@@ -38,7 +38,7 @@ struct TimelineRow: View {
                                 .overlay {
                                     switch eventType {
                                     case .start:
-                                        Image(systemName: "ipad.and.arrow.forward")
+                                        Image(systemName: "play.fill")
                                             .resizable()
                                             .foregroundStyle(.black)
                                             .fontWeight(.heavy)
@@ -53,7 +53,7 @@ struct TimelineRow: View {
                                             .aspectRatio(contentMode: .fit)
                                             .frame(height: 9.5)
                                     case .end:
-                                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                                        Image(systemName: "stop.fill")
                                             .resizable()
                                             .foregroundStyle(.black)
                                             .fontWeight(.heavy)

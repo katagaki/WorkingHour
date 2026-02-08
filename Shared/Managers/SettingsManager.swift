@@ -13,7 +13,7 @@ final class SettingsManager {
 
     static let shared = SettingsManager()
 
-    private let defaults = UserDefaults.standard
+    private let defaults = UserDefaults(suiteName: "group.com.tsubuzaki.WorkingHour") ?? UserDefaults.standard
 
     // MARK: - Keys
 

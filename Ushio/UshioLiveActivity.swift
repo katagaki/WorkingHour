@@ -48,8 +48,10 @@ public final class LiveActivityManager {
     private init() {}
 
     // Start a Live Activity for a work session
-    public func startActivity(with data: WorkSessionData) {
-        guard ActivityAuthorizationInfo().areActivitiesEnabled else {
+    public func startActivity(with data: WorkSessionData) async {
+        let authInfo = ActivityAuthorizationInfo()
+
+        guard authInfo.areActivitiesEnabled else {
             return
         }
 
@@ -69,12 +71,12 @@ public final class LiveActivityManager {
             )
             currentActivity = activity
         } catch {
-            print("Error starting Live Activity: \(error)")
+            // Handle error silently
         }
     }
 
     // Update the Live Activity
-    public func updateActivity(with data: WorkSessionData) {
+    public func updateActivity(with data: WorkSessionData) async {
         let contentState = UshioAttributes.ContentState(
             clockInTime: data.clockInTime,
             isOnBreak: data.isOnBreak,
@@ -83,20 +85,17 @@ public final class LiveActivityManager {
             standardWorkingHours: data.standardWorkingHours
         )
 
-        Task {
-            // Try to find the activity if we don't have a reference
-            if currentActivity == nil {
-                currentActivity = Activity<UshioAttributes>.activities.first(where: { $0.attributes.entryId == data.entryId })
-            }
-            
-            await currentActivity?.update(
-                .init(state: contentState, staleDate: nil)
-            )
+        // Always search for the activity since widget extension and main app are separate processes
+        let activity = Activity<UshioAttributes>.activities.first(where: { $0.attributes.entryId == data.entryId })
+
+        if let activity = activity {
+            await activity.update(.init(state: contentState, staleDate: nil))
+            currentActivity = activity // Cache for potential reuse in same process
         }
     }
 
     // End the Live Activity
-    public func endActivity(with data: WorkSessionData) {
+    public func endActivity(with data: WorkSessionData) async {
         let contentState = UshioAttributes.ContentState(
             clockInTime: data.clockInTime,
             isOnBreak: false,
@@ -105,13 +104,11 @@ public final class LiveActivityManager {
             standardWorkingHours: data.standardWorkingHours
         )
 
-        Task {
-            // Try to find the activity if we don't have a reference
-            if currentActivity == nil {
-                currentActivity = Activity<UshioAttributes>.activities.first(where: { $0.attributes.entryId == data.entryId })
-            }
-            
-            await currentActivity?.end(
+        // Always search for the activity since widget extension and main app are separate processes
+        let activity = Activity<UshioAttributes>.activities.first(where: { $0.attributes.entryId == data.entryId })
+
+        if let activity = activity {
+            await activity.end(
                 .init(state: contentState, staleDate: nil),
                 dismissalPolicy: .default
             )
@@ -208,7 +205,7 @@ struct UshioLiveActivity: Widget {
                                 Label {
                                     Text("Clock Out")
                                 } icon: {
-                                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                                    Image(systemName: "stop.fill")
                                 }
                                 .font(.caption)
                                 .fontWeight(.semibold)
@@ -221,13 +218,40 @@ struct UshioLiveActivity: Widget {
                 }
             } compactLeading: {
                 Image(systemName: "clock.fill")
+                    .font(.headline)
                     .foregroundStyle(context.state.isOnBreak ? .orange : .blue)
             } compactTrailing: {
-                Text(context.state.clockInTime, style: .relative)
-                    .font(.caption2)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(context.state.isOnBreak ? .orange : .primary)
-                    .monospacedDigit()
+                ZStack {
+                    let totalTime = Date.now.timeIntervalSince(context.state.clockInTime)
+                    let breakTime = context.state.totalBreakTime
+                    let currentBreakTime: TimeInterval = {
+                        if context.state.isOnBreak, let breakStartTime = context.state.breakStartTime {
+                            return Date.now.timeIntervalSince(breakStartTime)
+                        }
+                        return 0
+                    }()
+                    let workingTime = totalTime - breakTime - currentBreakTime
+                    let progress = min(workingTime / context.state.standardWorkingHours, 1.0)
+
+                    // Background circle
+                    Circle()
+                        .stroke(
+                            context.state.isOnBreak ? Color.orange.opacity(0.3) : Color.blue.opacity(0.3),
+                            lineWidth: 3
+                        )
+                        .frame(width: 20, height: 20)
+
+                    // Progress circle
+                    Circle()
+                        .trim(from: 0, to: progress)
+                        .stroke(
+                            context.state.isOnBreak ? Color.orange : Color.blue,
+                            style: StrokeStyle(lineWidth: 3, lineCap: .round)
+                        )
+                        .frame(width: 20, height: 20)
+                        .rotationEffect(.degrees(-90))
+                }
+                .padding(.leading, 4.0)
             } minimal: {
                 Image(systemName: context.state.isOnBreak ? "cup.and.heat.waves.fill" : "clock.fill")
                     .foregroundStyle(context.state.isOnBreak ? .orange : .blue)
@@ -291,7 +315,7 @@ struct LiveActivityView: View {
                             .foregroundStyle(context.state.isOnBreak ? .orange : .secondary)
                             .font(.caption)
                             .fontWeight(.bold)
-                        
+
                         // Show remaining/overtime beside the Working text
                         if !context.state.isOnBreak && currentWorkingTime > 0 {
                             if currentWorkingTime > context.state.standardWorkingHours {
@@ -320,7 +344,7 @@ struct LiveActivityView: View {
                             }
                         }
                     }
-                    
+
                     if context.state.isOnBreak, let breakStartTime = context.state.breakStartTime {
                         Text(breakStartTime, style: .relative)
                             .font(.title2)
@@ -368,7 +392,7 @@ struct LiveActivityView: View {
                         Label {
                             Text("Clock Out")
                         } icon: {
-                            Image(systemName: "rectangle.portrait.and.arrow.right")
+                            Image(systemName: "stop.fill")
                         }
                         .font(.caption)
                         .fontWeight(.semibold)

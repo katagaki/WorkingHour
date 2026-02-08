@@ -75,10 +75,3 @@ struct Ushio: Widget {
         .description("This is an example widget.")
     }
 }
-
-#Preview(as: .systemSmall) {
-    Ushio()
-} timeline: {
-    SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
-}

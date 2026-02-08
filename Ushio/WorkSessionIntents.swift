@@ -9,18 +9,6 @@ import AppIntents
 import SwiftData
 import Foundation
 
-// Shared model container
-@MainActor
-class SharedModelContainer {
-    static let shared = SharedModelContainer()
-
-    let container: ModelContainer
-
-    private init() {
-        container = SharedModelConfiguration.createModelContainer()
-    }
-}
-
 // MARK: - Break data structure for cross-target use
 public struct BreakData: Codable, Hashable {
     let start: Date
@@ -29,10 +17,11 @@ public struct BreakData: Codable, Hashable {
 
 // MARK: - Start Break Intent
 
-struct StartBreakIntent: AppIntent {
+struct StartBreakIntent: AppIntent, LiveActivityIntent, Sendable {
     static var title: LocalizedStringResource = "Start Break"
     static var description = IntentDescription("Start a break during the work session")
     static var openAppWhenRun: Bool = false
+    static var isDiscoverable: Bool = false
 
     @Parameter(title: "Entry ID")
     var entryId: String
@@ -61,11 +50,18 @@ struct StartBreakIntent: AppIntent {
         entry.breakTimes.append(Break(start: .now))
         entry.isOnBreak = true
 
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            // Handle error silently
+        }
+
+        // Small delay to ensure data is saved
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
 
         // Update Live Activity
         if let sessionData = entry.toWorkSessionData() {
-            LiveActivityManager.shared.updateActivity(with: sessionData)
+            await LiveActivityManager.shared.updateActivity(with: sessionData)
         }
 
         return .result()
@@ -74,10 +70,11 @@ struct StartBreakIntent: AppIntent {
 
 // MARK: - End Break Intent
 
-struct EndBreakIntent: AppIntent {
+struct EndBreakIntent: AppIntent, LiveActivityIntent, Sendable {
     static var title: LocalizedStringResource = "End Break"
     static var description = IntentDescription("End the current break")
     static var openAppWhenRun: Bool = false
+    static var isDiscoverable: Bool = false
 
     @Parameter(title: "Entry ID")
     var entryId: String
@@ -109,11 +106,18 @@ struct EndBreakIntent: AppIntent {
         entry.breakTimes.append(Break(start: startTime, end: .now))
         entry.isOnBreak = false
 
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            // Handle error silently
+        }
+
+        // Small delay to ensure data is saved
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
 
         // Update Live Activity
         if let sessionData = entry.toWorkSessionData() {
-            LiveActivityManager.shared.updateActivity(with: sessionData)
+            await LiveActivityManager.shared.updateActivity(with: sessionData)
         }
 
         return .result()
@@ -122,10 +126,11 @@ struct EndBreakIntent: AppIntent {
 
 // MARK: - Clock Out Intent
 
-struct ClockOutIntent: AppIntent {
+struct ClockOutIntent: AppIntent, LiveActivityIntent, Sendable {
     static var title: LocalizedStringResource = "Clock Out"
     static var description = IntentDescription("End the work session")
     static var openAppWhenRun: Bool = false
+    static var isDiscoverable: Bool = false
 
     @Parameter(title: "Entry ID")
     var entryId: String
@@ -154,11 +159,18 @@ struct ClockOutIntent: AppIntent {
         entry.clockOutTime = .now
         entry.isOnBreak = false
 
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            // Handle error silently
+        }
+
+        // Small delay to ensure data is saved
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
 
         // End Live Activity
         if let sessionData = entry.toWorkSessionData() {
-            LiveActivityManager.shared.endActivity(with: sessionData)
+            await LiveActivityManager.shared.endActivity(with: sessionData)
         }
 
         return .result()
@@ -166,6 +178,7 @@ struct ClockOutIntent: AppIntent {
 }
 // Extension to convert ClockEntry to WorkSessionData in the Ushio target
 extension ClockEntry {
+    @MainActor
     func toWorkSessionData() -> WorkSessionData? {
         guard let clockInTime = self.clockInTime else {
             return nil
@@ -178,8 +191,8 @@ extension ClockEntry {
             }
         }
 
-        // Default to 8 hours (28800 seconds) as standard working hours
-        let standardWorkingHours: TimeInterval = 28800
+        // Get standard working hours from settings
+        let standardWorkingHours = SettingsManager.shared.standardWorkingHours
 
         return WorkSessionData(
             entryId: self.id,
