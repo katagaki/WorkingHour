@@ -23,7 +23,8 @@ public class LiveActivities {
             totalBreakTime: data.totalBreakTime,
             standardWorkingHours: data.standardWorkingHours
         )
-        let content = ActivityContent(state: contentState, staleDate: .distantFuture)
+        let staleDate = data.clockInTime.addingTimeInterval(data.standardWorkingHours)
+        let content = ActivityContent(state: contentState, staleDate: staleDate)
 
         do {
             let activity = try Activity<UshioAttributes>.request(attributes: attributes, content: content)
@@ -41,7 +42,8 @@ public class LiveActivities {
             totalBreakTime: data.totalBreakTime,
             standardWorkingHours: data.standardWorkingHours
         )
-        let content = ActivityContent(state: contentState, staleDate: .distantFuture)
+        let staleDate = data.clockInTime.addingTimeInterval(data.standardWorkingHours)
+        let content = ActivityContent(state: contentState, staleDate: staleDate)
 
         let activities = Activity<UshioAttributes>.activities
         if let activity = activities.first(where: { $0.attributes.entryId == data.entryId }) {
