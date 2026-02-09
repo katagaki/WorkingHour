@@ -21,8 +21,15 @@
             "state" : "new",
             "value" : "%1$@ - %2$@"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ - %2$@"
+          }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@ %@" : {
       "localizations" : {
@@ -46,7 +53,14 @@
       }
     },
     "CSV" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CSV"
+          }
+        }
+      }
     },
     "Debug.ClearAllData" : {
       "extractionState" : "manual",
@@ -345,7 +359,14 @@
       }
     },
     "Excel" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excel"
+          }
+        }
+      }
     },
     "Export.Section.Overtime" : {
       "extractionState" : "manual",
@@ -1766,6 +1787,7 @@
       }
     },
     "ViewTitle.Export" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

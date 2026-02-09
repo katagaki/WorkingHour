@@ -10,6 +10,11 @@ import SwiftUI
 import SwiftData
 import xlsxwriter
 
+let isCloudSyncEnabled = FileManager.default.url(forUbiquityContainerIdentifier: nil) != nil
+let documentsURL = FileManager.default.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents") ??
+FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+let exportsFolderURL = documentsURL.appendingPathComponent("Exports")
+
 // MARK: - Export Helper Functions
 extension MoreView {
     func fetchCurrentMonthEntries() -> [ClockEntry] {
@@ -59,7 +64,8 @@ extension MoreView {
         worksheet.gridline(screen: false)
         writeTimesheetHeaders(to: worksheet, in: workbook)
         let entries = fetchCurrentMonthEntries()
-        writeTimesheetRows(entries, to: worksheet, in: workbook)
+        let lastRowWritten = writeTimesheetRows(entries, to: worksheet, in: workbook)
+        writeTimesheetFooter(entries, at: lastRowWritten, to: worksheet, in: workbook)
         workbook.close()
         openURL(URL(string: "shareddocuments://\(exportPath)")!)
     }
@@ -85,7 +91,7 @@ extension MoreView {
         worksheet.column([6, 6], width: 30.0)
     }
 
-    func writeTimesheetRows(_ entries: [ClockEntry], to worksheet: Worksheet, in workbook: Workbook) {
+    func writeTimesheetRows(_ entries: [ClockEntry], to worksheet: Worksheet, in workbook: Workbook) -> Int {
         let rowHeaderFormat = workbook.addFormat()
         rowHeaderFormat.background(color: Color(hex: 0xF2F2F7))
         rowHeaderFormat.font(color: .black)
@@ -114,6 +120,21 @@ extension MoreView {
                 currentRow += 1
             }
         }
+        return currentRow
+    }
+
+    func writeTimesheetFooter(_ entries: [ClockEntry], at row: Int, to worksheet: Worksheet, in workbook: Workbook) {
+        let footerFormat = workbook.addFormat()
+        footerFormat.background(color: Color(hex: 0xE6EDF0))
+        footerFormat.font(color: .black)
+        footerFormat.font(name: "Arial")
+        footerFormat.bold()
+        footerFormat.border(style: .thin)
+
+        let totalHours = entries.reduce(into: TimeInterval.zero) { $0 += ($1.timeWorked() ?? .zero) }
+        worksheet.merge(range: [row, 0, row, 4], string: String(localized: "Header.Total"), format: footerFormat)
+        worksheet.write(.string(formatTimeInterval(totalHours)), [row, 5], format: footerFormat)
+        worksheet.write(.blank, [row, 6], format: footerFormat)
     }
 
     func exportTimesheetToCSV() {
@@ -237,17 +258,15 @@ extension MoreView {
             }
         }
 
+        // writeOvertimeFooter
         let totalFormat = workbook.addFormat()
-        totalFormat.background(color: Color(hex: 0x004561))
+        totalFormat.background(color: Color(hex: 0xE27373))
         totalFormat.font(color: .white)
         totalFormat.font(name: "Arial")
         totalFormat.bold()
         totalFormat.border(style: .thin)
 
-        worksheet.write(.string(String(localized: "Header.Total")), [currentRow, 0], format: totalFormat)
-        worksheet.write(.string(""), [currentRow, 1], format: totalFormat)
-        worksheet.write(.string(""), [currentRow, 2], format: totalFormat)
-        worksheet.write(.string(""), [currentRow, 3], format: totalFormat)
+        worksheet.merge(range: [currentRow, 0, currentRow, 3], string: String(localized: "Header.Total"), format: totalFormat)
         worksheet.write(.string(formatTimeInterval(totalOvertime)), [currentRow, 4], format: totalFormat)
     }
 
@@ -288,14 +307,6 @@ extension MoreView {
                 csvContent += row.map { escapeCSV($0) }.joined(separator: ",") + "\n"
             }
         }
-
-        csvContent += [
-            String(localized: "Header.Total"),
-            "",
-            "",
-            "",
-            formatTimeInterval(totalOvertime)
-        ].map { escapeCSV($0) }.joined(separator: ",") + "\n"
 
         do {
             try csvContent.write(to: exportPath, atomically: true, encoding: .utf8)

@@ -15,7 +15,6 @@ struct TimesheetView: View {
     @Environment(\.modelContext) private var context
 
     @State var isMoreViewOpen: Bool = false
-    @State var isExportViewOpen: Bool = false
 
     @State var isBrowsingPastEntries: Bool = false
     @State var selectedMonth: Int
