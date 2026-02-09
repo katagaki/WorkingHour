@@ -18,6 +18,7 @@ struct EntryEditor: View {
     @State var newClockInTime: Date
     @State var newClockOutTime: Date
     @State var showingTasksEditor: Bool = false
+    let hasClockOutTime: Bool
     @State var showingAddBreakAlert: Bool = false
     @State var newBreakStart: Date = .now
     @State var newBreakEnd: Date = .now
@@ -26,6 +27,7 @@ struct EntryEditor: View {
         self.entry = entry
         self.newClockInTime = entry.clockInTime ?? .distantPast
         self.newClockOutTime = entry.clockOutTime ?? .distantFuture
+        self.hasClockOutTime = entry.clockOutTime != nil
     }
 
     var sortedBreakTimes: [Break] {
@@ -79,7 +81,9 @@ struct EntryEditor: View {
                     TimelineRow(.neutral, date: .constant(.distantPast))
                 }
                 breakTimesView
-                TimelineRow(.end, date: $newClockOutTime)
+                if hasClockOutTime {
+                    TimelineRow(.end, date: $newClockOutTime)
+                }
 
                 // Break Management Section
                 Section {
@@ -171,7 +175,9 @@ struct EntryEditor: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(role: .confirm) {
                         entry.clockInTime = newClockInTime
-                        entry.clockOutTime = newClockOutTime
+                        if hasClockOutTime {
+                            entry.clockOutTime = newClockOutTime
+                        }
                         saveEntry()
                         dismiss()
                     }
