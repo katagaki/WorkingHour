@@ -49,7 +49,9 @@ struct StartBreakIntent: LiveActivityIntent {
         }
 
         log("StartBreakIntent: Found entry, adding break")
-        entry.breakTimes.append(Break(start: .now))
+        let newBreak = Break(start: .now)
+        newBreak.clockEntry = entry
+        modelContext.insert(newBreak)
         entry.isOnBreak = true
         do {
             try modelContext.save()
@@ -96,15 +98,14 @@ struct EndBreakIntent: LiveActivityIntent {
 
         guard let entries = try? modelContext.fetch(descriptor),
               let entry = entries.first,
-              let startTime = entry.breakTimes.last?.start,
-              entry.breakTimes.last?.end == nil else {
+              let lastBreak = (entry.breakTimes ?? []).last,
+              lastBreak.end == nil else {
             log("EndBreakIntent: No matching entry or active break found for ID: \(entryId)")
             return .result()
         }
 
         log("EndBreakIntent: Found active break, ending it")
-        entry.breakTimes.removeLast()
-        entry.breakTimes.append(Break(start: startTime, end: .now))
+        lastBreak.end = .now
         entry.isOnBreak = false
 
         do {

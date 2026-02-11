@@ -197,7 +197,7 @@ struct TimeClockView: View {
                 // Break Time
                 if let activeEntry, activeEntry.clockOutTime == nil {
                     VStack(alignment: .leading, spacing: 6.0) {
-                        if let lastBreakTime = activeEntry.breakTimes.last {
+                        if let lastBreakTime = (activeEntry.breakTimes ?? []).last {
                             Group {
                                 Text("TimeClock.Break.Title")
                                     .fontWeight(.bold)
@@ -291,7 +291,9 @@ struct TimeClockView: View {
             if settingsManager.autoAddBreakTime && settingsManager.defaultBreakDuration > 0 {
                 let breakStart = Date.now
                 let breakEnd = breakStart.addingTimeInterval(settingsManager.defaultBreakDuration)
-                newEntry.breakTimes.append(Break(start: breakStart, end: breakEnd))
+                let newBreak = Break(start: breakStart, end: breakEnd)
+                newBreak.clockEntry = newEntry
+                modelContext.insert(newBreak)
             }
             modelContext.insert(newEntry)
             startTimer()
@@ -321,7 +323,9 @@ struct TimeClockView: View {
 
     func startBreak() {
         withAnimation(.smooth.speed(2.0)) {
-            activeEntry?.breakTimes.append(Break(start: .now))
+            let newBreak = Break(start: .now)
+            newBreak.clockEntry = activeEntry
+            modelContext.insert(newBreak)
             activeEntry?.isOnBreak = true
             modelContext.processPendingChanges()
             if let activeEntry,
@@ -334,11 +338,10 @@ struct TimeClockView: View {
     }
 
     func endBreak() {
-        if let startTime = activeEntry?.breakTimes.last?.start,
-           activeEntry?.breakTimes.last?.end == nil {
+        if let lastBreak = (activeEntry?.breakTimes ?? []).last,
+           lastBreak.end == nil {
             withAnimation(.smooth.speed(2.0)) {
-                activeEntry?.breakTimes.removeLast()
-                activeEntry?.breakTimes.append(Break(start: startTime, end: .now))
+                lastBreak.end = .now
                 activeEntry?.isOnBreak = false
                 modelContext.processPendingChanges()
                 if let activeEntry,

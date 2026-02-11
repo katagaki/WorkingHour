@@ -14,7 +14,8 @@ final class ClockEntry: Identifiable {
 
     var clockInTime: Date?
     var clockOutTime: Date?
-    var breakTimes: [Break] = []
+    @Relationship(deleteRule: .cascade)
+    var breakTimes: [Break]? = []
     var isOnBreak: Bool = false
 
     @Relationship(deleteRule: .cascade)
@@ -86,7 +87,7 @@ final class ClockEntry: Identifiable {
     }
 
     func breakTime() -> TimeInterval {
-        return breakTimes.reduce(into: .zero) { partialResult, breakTime in
+        return (breakTimes ?? []).reduce(into: .zero) { partialResult, breakTime in
             partialResult += breakTime.time()
         }
     }
@@ -138,7 +139,7 @@ final class ClockEntry: Identifiable {
             return nil
         }
 
-        let totalBreakTime = self.breakTimes.reduce(into: 0.0) { partialResult, breakTime in
+        let totalBreakTime = (self.breakTimes ?? []).reduce(into: 0.0) { partialResult, breakTime in
             if let end = breakTime.end {
                 partialResult += end.timeIntervalSince(breakTime.start)
             }
@@ -151,7 +152,7 @@ final class ClockEntry: Identifiable {
             clockInTime: clockInTime,
             clockOutTime: self.clockOutTime,
             isOnBreak: self.isOnBreak,
-            breakStartTime: self.isOnBreak ? self.breakTimes.last?.start : nil,
+            breakStartTime: self.isOnBreak ? (self.breakTimes ?? []).last?.start : nil,
             totalBreakTime: totalBreakTime,
             standardWorkingHours: standardWorkingHours
         )

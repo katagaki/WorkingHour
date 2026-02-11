@@ -64,11 +64,10 @@ struct EndWorkSessionIntent: AppIntent {
         log("EndWorkSessionIntent: Found active session", prefix: "YUUKA")
 
         if entry.isOnBreak,
-           let breakStart = entry.breakTimes.last?.start,
-           entry.breakTimes.last?.end == nil {
+           let lastBreak = (entry.breakTimes ?? []).last,
+           lastBreak.end == nil {
             log("EndWorkSessionIntent: Ending active break", prefix: "YUUKA")
-            entry.breakTimes.removeLast()
-            entry.breakTimes.append(Break(start: breakStart, end: .now))
+            lastBreak.end = .now
             entry.isOnBreak = false
         }
 

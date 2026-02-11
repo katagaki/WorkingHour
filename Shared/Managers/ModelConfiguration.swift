@@ -22,6 +22,7 @@ public class SharedModelContainer {
     private static func createModelContainer() -> ModelContainer {
         let schema = Schema([
             ClockEntry.self,
+            Break.self,
             Project.self,
             ProjectTask.self
         ])

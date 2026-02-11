@@ -209,7 +209,9 @@ final class DataManager {
 
                 if let breakStart = calendar.date(from: breakStartComponents),
                    let breakEnd = calendar.date(byAdding: .hour, value: 1, to: breakStart) {
-                    entry.breakTimes.append(Break(start: breakStart, end: breakEnd))
+                    let sampleBreak = Break(start: breakStart, end: breakEnd)
+                    sampleBreak.clockEntry = entry
+                    modelContext.insert(sampleBreak)
                 }
 
                 modelContext.insert(entry)

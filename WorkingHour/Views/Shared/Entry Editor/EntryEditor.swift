@@ -12,6 +12,7 @@ import SwiftUI
 struct EntryEditor: View {
 
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
 
     @State var entry: ClockEntry
 
@@ -31,13 +32,13 @@ struct EntryEditor: View {
     }
 
     var sortedBreakTimes: [Break] {
-        entry.breakTimes.sorted { $0.start < $1.start }
+        (entry.breakTimes ?? []).sorted { $0.start < $1.start }
     }
 
     @ViewBuilder
     var breakTimesView: some View {
         ForEach(sortedBreakTimes) { breakTime in
-            if let index = entry.breakTimes.firstIndex(where: { $0.id == breakTime.id }) {
+            if let index = (entry.breakTimes ?? []).firstIndex(where: { $0.id == breakTime.id }) {
                 breakTimelineRows(for: index)
             }
         }
@@ -46,23 +47,23 @@ struct EntryEditor: View {
     @ViewBuilder
     func breakTimelineRows(for index: Int) -> some View {
         TimelineRow(.breakStart, date: Binding(
-            get: { entry.breakTimes[index].start },
+            get: { (entry.breakTimes ?? [])[index].start },
             set: { newStart in
                 withAnimation(.smooth(duration: 0.35)) {
-                    entry.breakTimes[index].start = newStart
-                    if let end = entry.breakTimes[index].end, end < newStart {
-                        entry.breakTimes[index].end = newStart
+                    (entry.breakTimes ?? [])[index].start = newStart
+                    if let end = (entry.breakTimes ?? [])[index].end, end < newStart {
+                        (entry.breakTimes ?? [])[index].end = newStart
                     }
                 }
             }
         ), in: newClockInTime...newClockOutTime)
 
-        if entry.breakTimes[index].end != nil {
+        if (entry.breakTimes ?? [])[index].end != nil {
             TimelineRow(.breakEnd, date: Binding(
-                get: { entry.breakTimes[index].end ?? .now },
+                get: { (entry.breakTimes ?? [])[index].end ?? .now },
                 set: { newEnd in
                     withAnimation(.smooth(duration: 0.35)) {
-                        entry.breakTimes[index].end = newEnd
+                        (entry.breakTimes ?? [])[index].end = newEnd
                     }
                 }
             ), in: newClockInTime...newClockOutTime)
@@ -122,10 +123,11 @@ struct EntryEditor: View {
                                 Spacer()
                                 Button(role: .destructive) {
                                     withAnimation(.smooth(duration: 0.35)) {
-                                        if let originalIndex = entry.breakTimes.firstIndex(
+                                        if let originalIndex = (entry.breakTimes ?? []).firstIndex(
                                             where: { $0.id == breakTime.id }
                                         ) {
-                                            entry.breakTimes.remove(at: originalIndex)
+                                            let breakToDelete = (entry.breakTimes ?? [])[originalIndex]
+                                            modelContext.delete(breakToDelete)
                                         }
                                     }
                                 } label: {
@@ -220,8 +222,9 @@ struct EntryEditor: View {
                             Button("Shared.Add") {
                                 withAnimation(.smooth(duration: 0.35)) {
                                     if newBreakEnd > newBreakStart {
-                                        entry.breakTimes.append(Break(start: newBreakStart, end: newBreakEnd))
-                                        entry.breakTimes.sort { $0.start < $1.start }
+                                        let newBreak = Break(start: newBreakStart, end: newBreakEnd)
+                                        newBreak.clockEntry = entry
+                                        modelContext.insert(newBreak)
                                     }
                                 }
                                 showingAddBreakAlert = false

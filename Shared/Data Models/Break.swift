@@ -6,11 +6,16 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Break: Codable, Hashable, Identifiable {
-    var id = UUID()
-    var start: Date
+@Model
+final class Break: Identifiable {
+    var id: String = UUID().uuidString
+    var start: Date = Date.now
     var end: Date?
+
+    @Relationship(inverse: \ClockEntry.breakTimes)
+    var clockEntry: ClockEntry?
 
     init(start: Date) {
         self.start = start
@@ -27,13 +32,5 @@ struct Break: Codable, Hashable, Identifiable {
         } else {
             return .zero
         }
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-
-    static func == (lhs: Break, rhs: Break) -> Bool {
-        return lhs.id == rhs.id
     }
 }
