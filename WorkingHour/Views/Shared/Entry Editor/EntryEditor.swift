@@ -188,29 +188,48 @@ struct EntryEditor: View {
             .sheet(isPresented: $showingTasksEditor) {
                 TasksEditorView(entry: entry)
             }
-            .alert("EntryEditor.AddBreak.Title", isPresented: $showingAddBreakAlert) {
-                DatePicker(
-                    "EntryEditor.Break.Start",
-                    selection: $newBreakStart,
-                    in: newClockInTime...newClockOutTime, displayedComponents: [.date, .hourAndMinute]
-                )
-                DatePicker(
-                    "EntryEditor.Break.End",
-                    selection: $newBreakEnd,
-                    in: newClockInTime...newClockOutTime,
-                    displayedComponents: [.date, .hourAndMinute]
-                )
-                Button("Shared.Add") {
-                    withAnimation(.smooth(duration: 0.35)) {
-                        if newBreakEnd > newBreakStart {
-                            entry.breakTimes.append(Break(start: newBreakStart, end: newBreakEnd))
-                            entry.breakTimes.sort { $0.start < $1.start }
+            .sheet(isPresented: $showingAddBreakAlert) {
+                NavigationStack {
+                    Form {
+                        Section {
+                            DatePicker(
+                                "EntryEditor.Break.Start",
+                                selection: $newBreakStart,
+                                in: newClockInTime...newClockOutTime,
+                                displayedComponents: [.date, .hourAndMinute]
+                            )
+                            DatePicker(
+                                "EntryEditor.Break.End",
+                                selection: $newBreakEnd,
+                                in: newClockInTime...newClockOutTime,
+                                displayedComponents: [.date, .hourAndMinute]
+                            )
+                        } footer: {
+                            Text("EntryEditor.AddBreak.Message")
+                        }
+                    }
+                    .navigationTitle("EntryEditor.AddBreak.Title")
+                    .toolbarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Shared.Cancel") {
+                                showingAddBreakAlert = false
+                            }
+                        }
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Shared.Add") {
+                                withAnimation(.smooth(duration: 0.35)) {
+                                    if newBreakEnd > newBreakStart {
+                                        entry.breakTimes.append(Break(start: newBreakStart, end: newBreakEnd))
+                                        entry.breakTimes.sort { $0.start < $1.start }
+                                    }
+                                }
+                                showingAddBreakAlert = false
+                            }
                         }
                     }
                 }
-                Button("Shared.Cancel", role: .cancel) {}
-            } message: {
-                Text("EntryEditor.AddBreak.Message")
+                .presentationDetents([.medium])
             }
         }
         .interactiveDismissDisabled(true)
