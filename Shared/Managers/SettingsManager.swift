@@ -21,6 +21,10 @@ final class SettingsManager {
         static let standardWorkingHours = "standardWorkingHours"
         static let defaultBreakDuration = "defaultBreakDuration"
         static let autoAddBreakTime = "autoAddBreakTime"
+        static let clockInReminderEnabled = "clockInReminderEnabled"
+        static let clockOutReminderEnabled = "clockOutReminderEnabled"
+        static let clockInReminderTime = "clockInReminderTime"
+        static let clockOutReminderTime = "clockOutReminderTime"
     }
 
     // MARK: - Properties
@@ -57,6 +61,52 @@ final class SettingsManager {
         }
     }
 
+    var clockInReminderEnabled: Bool {
+        get {
+            defaults.bool(forKey: Keys.clockInReminderEnabled)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.clockInReminderEnabled)
+        }
+    }
+
+    var clockOutReminderEnabled: Bool {
+        get {
+            defaults.bool(forKey: Keys.clockOutReminderEnabled)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.clockOutReminderEnabled)
+        }
+    }
+
+    /// Stored as seconds since midnight
+    var clockInReminderTime: Double {
+        get {
+            let value = defaults.double(forKey: Keys.clockInReminderTime)
+            if defaults.object(forKey: Keys.clockInReminderTime) == nil {
+                return 8 * 3600 // Default: 08:00
+            }
+            return value
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.clockInReminderTime)
+        }
+    }
+
+    /// Stored as seconds since midnight
+    var clockOutReminderTime: Double {
+        get {
+            let value = defaults.double(forKey: Keys.clockOutReminderTime)
+            if defaults.object(forKey: Keys.clockOutReminderTime) == nil {
+                return 17 * 3600 // Default: 17:00
+            }
+            return value
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.clockOutReminderTime)
+        }
+    }
+
     // MARK: - Initialization
 
     private init() {
@@ -64,7 +114,11 @@ final class SettingsManager {
         defaults.register(defaults: [
             Keys.standardWorkingHours: 8 * 3600,
             Keys.defaultBreakDuration: 3600,
-            Keys.autoAddBreakTime: false
+            Keys.autoAddBreakTime: false,
+            Keys.clockInReminderEnabled: false,
+            Keys.clockOutReminderEnabled: false,
+            Keys.clockInReminderTime: 8 * 3600,
+            Keys.clockOutReminderTime: 17 * 3600
         ])
     }
 }

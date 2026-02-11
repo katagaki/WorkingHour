@@ -164,7 +164,6 @@ struct TimeClockView: View {
                                 let remaining = standardWorkingHours - currentWorkingTime
                                 HStack(spacing: 6.0) {
                                     Image(systemName: "clock.badge.checkmark.fill")
-                                        .foregroundStyle(.accent)
                                     Text("TimeClock.Remaining")
                                         .fontWeight(.semibold)
                                     Text(formatTimeInterval(remaining))

@@ -20,6 +20,21 @@ struct SettingsView: View {
     @State private var breakMinutes: Double = 60.0
     @State private var autoAddBreak: Bool = false
 
+    @State private var clockInReminderEnabled: Bool = false
+    @State private var clockOutReminderEnabled: Bool = false
+    @State private var clockInReminderTime: Date = {
+        var components = DateComponents()
+        components.hour = 8
+        components.minute = 0
+        return Calendar.current.date(from: components) ?? Date()
+    }()
+    @State private var clockOutReminderTime: Date = {
+        var components = DateComponents()
+        components.hour = 17
+        components.minute = 0
+        return Calendar.current.date(from: components) ?? Date()
+    }()
+
     #if DEBUG
     @State private var showingClearDataAlert = false
     #endif
@@ -27,7 +42,30 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
-                // Working Hours Section
+                // Notifications Section
+                Section {
+                    Toggle("Settings.ClockInReminder", isOn: $clockInReminderEnabled)
+                    if clockInReminderEnabled {
+                        DatePicker("Settings.ClockInReminder.Time",
+                                   selection: $clockInReminderTime,
+                                   displayedComponents: .hourAndMinute)
+                    }
+
+                    Toggle("Settings.ClockOutReminder", isOn: $clockOutReminderEnabled)
+                    if clockOutReminderEnabled {
+                        DatePicker("Settings.ClockOutReminder.Time",
+                                   selection: $clockOutReminderTime,
+                                   displayedComponents: .hourAndMinute)
+                    }
+                } header: {
+                    ListSectionHeader(text: "Settings.Section.Notifications")
+                } footer: {
+                    Text("Settings.Notifications.Footer")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                // Working Hours & Break Settings Section
                 Section {
                     VStack(alignment: .leading, spacing: 8.0) {
                         HStack {
@@ -40,16 +78,7 @@ struct SettingsView: View {
                             .tint(.accent)
                     }
                     .padding(.vertical, 4)
-                } header: {
-                    ListSectionHeader(text: "Settings.Section.WorkingTime")
-                } footer: {
-                    Text("Settings.WorkingHours.Footer")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
 
-                // Break Settings Section
-                Section {
                     VStack(alignment: .leading, spacing: 8.0) {
                         HStack {
                             Text("Settings.DefaultBreak")
@@ -64,9 +93,9 @@ struct SettingsView: View {
 
                     Toggle("Settings.AutoAddBreak", isOn: $autoAddBreak)
                 } header: {
-                    ListSectionHeader(text: "Settings.Section.Break")
+                    ListSectionHeader(text: "Settings.Section.WorkingTimeAndBreak")
                 } footer: {
-                    Text("Settings.AutoAddBreak.Footer")
+                    Text("Settings.WorkingHours.Footer")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -113,6 +142,18 @@ struct SettingsView: View {
             .onChange(of: autoAddBreak) { _, _ in
                 saveSettings()
             }
+            .onChange(of: clockInReminderEnabled) { _, _ in
+                saveNotificationSettings()
+            }
+            .onChange(of: clockOutReminderEnabled) { _, _ in
+                saveNotificationSettings()
+            }
+            .onChange(of: clockInReminderTime) { _, _ in
+                saveNotificationSettings()
+            }
+            .onChange(of: clockOutReminderTime) { _, _ in
+                saveNotificationSettings()
+            }
             #if DEBUG
             .alert("Debug.ClearAllData.Confirmation", isPresented: $showingClearDataAlert) {
                 Button("Shared.Cancel", role: .cancel) { }
@@ -130,11 +171,56 @@ struct SettingsView: View {
         workingHours = settingsManager.standardWorkingHours / 3600.0
         breakMinutes = settingsManager.defaultBreakDuration / 60.0
         autoAddBreak = settingsManager.autoAddBreakTime
+        clockInReminderEnabled = settingsManager.clockInReminderEnabled
+        clockOutReminderEnabled = settingsManager.clockOutReminderEnabled
+        clockInReminderTime = dateFromSecondsSinceMidnight(settingsManager.clockInReminderTime)
+        clockOutReminderTime = dateFromSecondsSinceMidnight(settingsManager.clockOutReminderTime)
     }
 
     private func saveSettings() {
         settingsManager.standardWorkingHours = workingHours * 3600
         settingsManager.defaultBreakDuration = breakMinutes * 60
         settingsManager.autoAddBreakTime = autoAddBreak
+    }
+
+    private func saveNotificationSettings() {
+        settingsManager.clockInReminderEnabled = clockInReminderEnabled
+        settingsManager.clockOutReminderEnabled = clockOutReminderEnabled
+        settingsManager.clockInReminderTime = secondsSinceMidnight(from: clockInReminderTime)
+        settingsManager.clockOutReminderTime = secondsSinceMidnight(from: clockOutReminderTime)
+
+        let notificationManager = NotificationManager.shared
+
+        if clockInReminderEnabled {
+            let components = Calendar.current.dateComponents([.hour, .minute], from: clockInReminderTime)
+            Task {
+                await notificationManager.scheduleClockInReminder(at: components)
+            }
+        } else {
+            notificationManager.cancelClockInReminder()
+        }
+
+        if clockOutReminderEnabled {
+            let components = Calendar.current.dateComponents([.hour, .minute], from: clockOutReminderTime)
+            Task {
+                await notificationManager.scheduleClockOutReminder(at: components)
+            }
+        } else {
+            notificationManager.cancelClockOutReminder()
+        }
+    }
+
+    private func secondsSinceMidnight(from date: Date) -> Double {
+        let components = Calendar.current.dateComponents([.hour, .minute], from: date)
+        return Double((components.hour ?? 0) * 3600 + (components.minute ?? 0) * 60)
+    }
+
+    private func dateFromSecondsSinceMidnight(_ seconds: Double) -> Date {
+        let hour = Int(seconds) / 3600
+        let minute = (Int(seconds) % 3600) / 60
+        var components = DateComponents()
+        components.hour = hour
+        components.minute = minute
+        return Calendar.current.date(from: components) ?? Date()
     }
 }

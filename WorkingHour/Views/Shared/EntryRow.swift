@@ -43,14 +43,14 @@ struct EntryRow: View {
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Text("\(Image(systemName: "clock")) \(entry.timeWorkedString())")
+                Text("\(Image(.briefcaseClock)) \(entry.timeWorkedString())")
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(8.0)
             .background(.groupedBackground)
-            .clipShape(.rect(cornerRadius: 8.0))
+            .clipShape(.capsule)
         }
         .frame(maxWidth: .infinity)
     }

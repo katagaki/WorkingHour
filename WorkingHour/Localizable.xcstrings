@@ -620,6 +620,70 @@
         }
       }
     },
+    "Notification.ClockIn.Body" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Don't forget to clock in for the day."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出勤の打刻を忘れずに。"
+          }
+        }
+      }
+    },
+    "Notification.ClockIn.Title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clock In Reminder"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出勤時間のリマインダー"
+          }
+        }
+      }
+    },
+    "Notification.ClockOut.Body" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Don't forget to clock out for the day."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退勤の打刻を忘れずに。"
+          }
+        }
+      }
+    },
+    "Notification.ClockOut.Title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clock Out Reminder"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退勤時間のリマインダー"
+          }
+        }
+      }
+    },
     "Projects.Active" : {
       "localizations" : {
         "en" : {
@@ -814,18 +878,66 @@
         }
       }
     },
-    "Settings.AutoAddBreak.Footer" : {
+    "Settings.ClockInReminder" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatically adds the default break duration when you clock in."
+            "value" : "Clock In Reminder"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "出勤時にデフォルトの休憩時間を自動的に追加します。"
+            "value" : "出勤時間"
+          }
+        }
+      }
+    },
+    "Settings.ClockInReminder.Time" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時刻"
+          }
+        }
+      }
+    },
+    "Settings.ClockOutReminder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clock Out Reminder"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退勤時間"
+          }
+        }
+      }
+    },
+    "Settings.ClockOutReminder.Time" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時刻"
           }
         }
       }
@@ -858,7 +970,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "デフォルト休憩時間"
+            "value" : "所定休憩時間"
           }
         }
       }
@@ -963,6 +1075,22 @@
         }
       }
     },
+    "Settings.Notifications.Footer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set daily reminders to clock in and clock out."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出勤・退勤の毎日のリマインダーを設定します。"
+          }
+        }
+      }
+    },
     "Settings.Section.Break" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -997,6 +1125,23 @@
         }
       }
     },
+    "Settings.Section.Notifications" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知"
+          }
+        }
+      }
+    },
     "Settings.Section.WorkingTime" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1010,6 +1155,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "勤務時間"
+          }
+        }
+      }
+    },
+    "Settings.Section.WorkingTimeAndBreak" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Working Hours & Break"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "勤務時間と休憩"
           }
         }
       }
@@ -1057,7 +1219,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "これを超える時間は残業としてカウントされます。"
+            "value" : "これを超える時間は残業として計算されます。"
           }
         }
       }
