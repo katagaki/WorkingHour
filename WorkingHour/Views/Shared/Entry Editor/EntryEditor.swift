@@ -151,8 +151,8 @@ struct EntryEditor: View {
                             Text("EntryEditor.Tasks")
                                 .foregroundStyle(.primary)
                             Spacer()
-                            if !entry.projectTasks.isEmpty {
-                                Text("\(entry.projectTasks.count)")
+                            if !(entry.tasks ?? []).isEmpty {
+                                Text("\((entry.tasks ?? []).count)")
                                     .foregroundStyle(.secondary)
                                     .font(.caption)
                                     .padding(.horizontal, 8)

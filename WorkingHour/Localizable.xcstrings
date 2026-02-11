@@ -848,6 +848,38 @@
         }
       }
     },
+    "Projects.Tasks" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasks"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タスク一覧"
+          }
+        }
+      }
+    },
+    "Projects.Tasks.Empty" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This project has no tasks"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このプロジェクトにはタスクがありません"
+          }
+        }
+      }
+    },
     "Projects.Title" : {
       "localizations" : {
         "en" : {

@@ -116,7 +116,7 @@ extension MoreView {
                 worksheet.write(.string(clockOutTime), [currentRow, 3], format: rowFormat)
                 worksheet.write(.string(entry.breakTimeString()), [currentRow, 4], format: rowFormat)
                 worksheet.write(.string(entry.timeWorkedString()), [currentRow, 5], format: rowFormat)
-                worksheet.write(.string(formatProjectTasks(entry.projectTasks)), [currentRow, 6], format: rowFormat)
+                worksheet.write(.string(formatProjectTasks(entry.tasks ?? [])), [currentRow, 6], format: rowFormat)
                 currentRow += 1
             }
         }
@@ -169,7 +169,7 @@ extension MoreView {
                     clockOutTime,
                     entry.breakTimeString(),
                     entry.timeWorkedString(),
-                    formatProjectTasks(entry.projectTasks)
+                    formatProjectTasks(entry.tasks ?? [])
                 ]
                 csvContent += row.map { escapeCSV($0) }.joined(separator: ",") + "\n"
             }
@@ -357,14 +357,12 @@ extension MoreView {
         return formatter.string(from: interval) ?? ""
     }
 
-    func formatProjectTasks(_ tasks: [String: String]) -> String {
+    func formatProjectTasks(_ tasks: [ProjectTask]) -> String {
         guard !tasks.isEmpty else { return "" }
 
-        let projectDict = Dictionary(uniqueKeysWithValues: projects.map { ($0.id, $0.name) })
-
-        return tasks.map { projectId, task in
-            let projectName = projectDict[projectId] ?? "Unknown Project"
-            return "\(projectName): \(task)"
+        return tasks.map { task in
+            let projectName = task.project?.name ?? String(localized: "Tasks.Others")
+            return "\(projectName): \(task.taskDescription)"
         }.joined(separator: "; ")
     }
 }

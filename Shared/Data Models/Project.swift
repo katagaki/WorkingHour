@@ -15,6 +15,9 @@ final class Project: Identifiable {
     var createdAt: Date = Date.now
     var isActive: Bool = true
 
+    @Relationship(deleteRule: .nullify)
+    var tasks: [ProjectTask]?
+
     init(name: String = "") {
         self.name = name
     }

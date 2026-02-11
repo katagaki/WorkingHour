@@ -17,7 +17,8 @@ final class ClockEntry: Identifiable {
     var breakTimes: [Break] = []
     var isOnBreak: Bool = false
 
-    var projectTasks: [String: String] = [:]
+    @Relationship(deleteRule: .cascade)
+    var tasks: [ProjectTask]?
 
     init(_ clockInTime: Date? = nil) {
         self.clockInTime = clockInTime

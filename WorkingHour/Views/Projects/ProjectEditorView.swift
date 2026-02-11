@@ -27,6 +27,33 @@ struct ProjectEditorView: View {
                 Section {
                     Toggle("Projects.Active", isOn: $isActive)
                 }
+
+                // Tasks linked to this project
+                Section {
+                    let tasks = (project.tasks ?? []).sorted {
+                        ($0.clockEntry?.clockInTime ?? .distantPast) > ($1.clockEntry?.clockInTime ?? .distantPast)
+                    }
+                    if tasks.isEmpty {
+                        Text("Projects.Tasks.Empty")
+                            .foregroundStyle(.secondary)
+                            .font(.subheadline)
+                    } else {
+                        ForEach(tasks) { task in
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(task.taskDescription)
+                                    .font(.body)
+                                if let clockInTime = task.clockEntry?.clockInTime {
+                                    Text(clockInTime, style: .date)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            .padding(.vertical, 2)
+                        }
+                    }
+                } header: {
+                    Text("Projects.Tasks")
+                }
             }
             .navigationTitle("Projects.Edit")
             .toolbarTitleDisplayMode(.inline)

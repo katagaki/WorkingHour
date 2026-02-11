@@ -19,6 +19,7 @@ final class DataManager {
 
     private(set) var clockEntries: [ClockEntry] = []
     private(set) var projects: [Project] = []
+    private(set) var tasks: [ProjectTask] = []
 
     private init() {
     }
@@ -34,10 +35,14 @@ final class DataManager {
 
             let projectDescriptor = FetchDescriptor<Project>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
             projects = try modelContext.fetch(projectDescriptor)
+
+            let taskDescriptor = FetchDescriptor<ProjectTask>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+            tasks = try modelContext.fetch(taskDescriptor)
         } catch {
             print("Error loading data: \(error)")
             clockEntries = []
             projects = []
+            tasks = []
         }
     }
 
@@ -226,6 +231,11 @@ final class DataManager {
         // Delete all projects
         for project in projects {
             modelContext.delete(project)
+        }
+
+        // Delete all tasks (in case any orphaned)
+        for task in tasks {
+            modelContext.delete(task)
         }
 
         save()

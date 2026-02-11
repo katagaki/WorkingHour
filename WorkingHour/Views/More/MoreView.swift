@@ -13,7 +13,6 @@ import xlsxwriter
 struct MoreView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.openURL) var openURL
-    @Query var projects: [Project]
     @State var settingsManager = SettingsManager.shared
     @State var dataManager = DataManager.shared
 
