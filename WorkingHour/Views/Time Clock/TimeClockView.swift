@@ -42,7 +42,7 @@ struct TimeClockView: View {
         settingsManager.standardWorkingHours
     }
 
-    let cornerRadius = 32.0
+    let cornerRadius = 26.0
 
     var body: some View {
         NavigationStack {
@@ -247,7 +247,7 @@ struct TimeClockView: View {
                     .clipShape(.rect(cornerRadius: cornerRadius))
                 }
             }
-            .padding([.leading, .trailing], 18.0)
+            .padding([.leading, .trailing], 16.0)
             .padding([.top, .bottom], 12.0)
             .navigationTitle("ViewTitle.TimeClock")
             .toolbarTitleDisplayMode(.inlineLarge)

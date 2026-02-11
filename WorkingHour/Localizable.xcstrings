@@ -53,6 +53,7 @@
       }
     },
     "CSV" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -359,6 +360,7 @@
       }
     },
     "Excel" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -1172,22 +1174,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "勤務時間と休憩"
-          }
-        }
-      }
-    },
-    "Settings.Title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Settings"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定"
           }
         }
       }

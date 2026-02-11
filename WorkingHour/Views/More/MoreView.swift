@@ -45,24 +45,54 @@ struct MoreView: View {
             MoreList(repoName: "katagaki/WorkingHour") {
                 // Timesheet Export Section
                 Section {
-                    Button("Excel", systemImage: "x.square.fill") {
-                        exportTimesheetToExcel()
+                    LazyVGrid(columns: [
+                        GridItem(.flexible()),
+                        GridItem(.flexible())
+                    ], spacing: 16) {
+                        ExportGridButton(
+                            title: "Excel",
+                            systemImage: "x.square.fill",
+                            color: .green
+                        ) {
+                            exportTimesheetToExcel()
+                        }
+                        ExportGridButton(
+                            title: "CSV",
+                            systemImage: "tablecells",
+                            color: .blue
+                        ) {
+                            exportTimesheetToCSV()
+                        }
                     }
-                    Button("CSV", systemImage: "tablecells") {
-                        exportTimesheetToCSV()
-                    }
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
                 } header: {
                     ListSectionHeader(text: "Export.Section.Timesheet")
                 }
 
                 // Overtime Report Section
                 Section {
-                    Button("Excel", systemImage: "x.square.fill") {
-                        exportOvertimeToExcel()
+                    LazyVGrid(columns: [
+                        GridItem(.flexible()),
+                        GridItem(.flexible())
+                    ], spacing: 16) {
+                        ExportGridButton(
+                            title: "Excel",
+                            systemImage: "x.square.fill",
+                            color: .green
+                        ) {
+                            exportOvertimeToExcel()
+                        }
+                        ExportGridButton(
+                            title: "CSV",
+                            systemImage: "tablecells",
+                            color: .blue
+                        ) {
+                            exportOvertimeToCSV()
+                        }
                     }
-                    Button("CSV", systemImage: "tablecells") {
-                        exportOvertimeToCSV()
-                    }
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
                 } header: {
                     ListSectionHeader(text: "Export.Section.Overtime")
                 }
