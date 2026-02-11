@@ -25,6 +25,7 @@ final class SettingsManager {
         static let clockOutReminderEnabled = "clockOutReminderEnabled"
         static let clockInReminderTime = "clockInReminderTime"
         static let clockOutReminderTime = "clockOutReminderTime"
+        static let notificationsLastScheduledDate = "notificationsLastScheduledDate"
     }
 
     // MARK: - Properties
@@ -105,6 +106,25 @@ final class SettingsManager {
         set {
             defaults.set(newValue, forKey: Keys.clockOutReminderTime)
         }
+    }
+
+    /// The date when notifications were last bulk-scheduled, or `nil` if never.
+    var notificationsLastScheduledDate: Date? {
+        get {
+            defaults.object(forKey: Keys.notificationsLastScheduledDate) as? Date
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.notificationsLastScheduledDate)
+        }
+    }
+
+    /// Convenience: returns `DateComponents` (hour + minute) for the stored clock-in time.
+    var clockInReminderTimeComponents: DateComponents {
+        let totalSeconds = Int(clockInReminderTime)
+        var components = DateComponents()
+        components.hour = totalSeconds / 3600
+        components.minute = (totalSeconds % 3600) / 60
+        return components
     }
 
     // MARK: - Initialization

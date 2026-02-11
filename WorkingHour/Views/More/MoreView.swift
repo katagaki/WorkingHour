@@ -211,10 +211,13 @@ struct MoreView: View {
         if clockInReminderEnabled {
             let components = Calendar.current.dateComponents([.hour, .minute], from: clockInReminderTime)
             Task {
-                await notificationManager.scheduleClockInReminder(at: components)
+                await notificationManager.scheduleClockInReminders(at: components)
+                settingsManager.notificationsLastScheduledDate = Date()
             }
         } else {
-            notificationManager.cancelClockInReminder()
+            Task {
+                await notificationManager.cancelClockInReminders()
+            }
         }
 
         if clockOutReminderEnabled {

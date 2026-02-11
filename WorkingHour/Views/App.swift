@@ -23,6 +23,7 @@ struct WorkingHourApp: App {
                     DataManager.shared.modelContext = context
                     DataManager.shared.loadAll()
                     checkAndRestoreLiveActivity(context: context)
+                    refreshClockInRemindersIfNeeded()
                 }
         }
         .environmentObject(navigator)
@@ -50,6 +51,33 @@ struct WorkingHourApp: App {
             Task {
                 await LiveActivities.ensureActivity(with: sessionData)
             }
+        }
+    }
+
+    /// Re-schedules clock-in reminders if they are enabled and were last
+    /// scheduled more than 7 days ago (or have never been scheduled).
+    private func refreshClockInRemindersIfNeeded() {
+        let settings = SettingsManager.shared
+        guard settings.clockInReminderEnabled else { return }
+
+        let needsRefresh: Bool
+        if let lastScheduled = settings.notificationsLastScheduledDate {
+            let daysSinceLastScheduled = Calendar.current.dateComponents(
+                [.day], from: lastScheduled, to: Date()
+            ).day ?? 0
+            needsRefresh = daysSinceLastScheduled >= 7
+        } else {
+            // Never scheduled before
+            needsRefresh = true
+        }
+
+        guard needsRefresh else { return }
+
+        let components = settings.clockInReminderTimeComponents
+
+        Task {
+            await NotificationManager.shared.scheduleClockInReminders(at: components)
+            settings.notificationsLastScheduledDate = Date()
         }
     }
 }
