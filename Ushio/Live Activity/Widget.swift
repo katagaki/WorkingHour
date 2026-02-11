@@ -66,11 +66,13 @@ struct UshioLiveActivity: Widget {
                                 } icon: {
                                     Image(systemName: "arrowshape.turn.up.backward.badge.clock.fill")
                                 }
-                                .font(.caption)
+                                .font(.body)
                                 .fontWeight(.semibold)
+                                .padding(.vertical, 4)
+                                .frame(maxWidth: .infinity)
                             }
                             .tint(.red)
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.bordered)
                         } else {
                             Button(intent: StartBreakIntent(entryId: context.attributes.entryId)) {
                                 Label {
@@ -78,11 +80,13 @@ struct UshioLiveActivity: Widget {
                                 } icon: {
                                     Image(systemName: "cup.and.heat.waves.fill")
                                 }
-                                .font(.caption)
+                                .font(.body)
                                 .fontWeight(.semibold)
+                                .padding(.vertical, 4)
+                                .frame(maxWidth: .infinity)
                             }
                             .tint(.orange)
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.bordered)
 
                             Button(intent: ClockOutIntent(entryId: context.attributes.entryId)) {
                                 Label {
@@ -90,19 +94,25 @@ struct UshioLiveActivity: Widget {
                                 } icon: {
                                     Image(systemName: "stop.fill")
                                 }
-                                .font(.caption)
+                                .font(.body)
                                 .fontWeight(.semibold)
+                                .padding(.vertical, 4)
+                                .frame(maxWidth: .infinity)
                             }
                             .tint(.red)
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.bordered)
                         }
                     }
                     .padding(.top, 8)
                 }
             } compactLeading: {
-                Image(systemName: "clock.fill")
-                    .font(.headline)
-                    .foregroundStyle(context.state.isOnBreak ? .orange : .blue)
+                if context.state.isOnBreak {
+                    Image(systemName: "cup.and.heat.waves.fill")
+                        .foregroundStyle(.orange)
+                } else {
+                    Image(systemName: "clock.fill")
+                        .foregroundStyle(.blue)
+                }
             } compactTrailing: {
                 ZStack {
                     let totalTime = Date.now.timeIntervalSince(context.state.clockInTime)

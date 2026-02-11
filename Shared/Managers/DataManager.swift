@@ -179,7 +179,10 @@ final class DataManager {
             clockInComponents.second = 0
 
             guard let baseClockInTime = calendar.date(from: clockInComponents),
-                  let clockInTime = calendar.date(byAdding: .minute, value: clockInVariation, to: baseClockInTime) else { continue }
+                  let clockInTime = calendar.date(
+                    byAdding: .minute,
+                    value: clockInVariation, to: baseClockInTime
+                  ) else { continue }
 
             let entry = ClockEntry(clockInTime)
 

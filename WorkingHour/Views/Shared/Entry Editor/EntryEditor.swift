@@ -57,7 +57,7 @@ struct EntryEditor: View {
             }
         ), in: newClockInTime...newClockOutTime)
 
-        if let _ = entry.breakTimes[index].end {
+        if entry.breakTimes[index].end != nil {
             TimelineRow(.breakEnd, date: Binding(
                 get: { entry.breakTimes[index].end ?? .now },
                 set: { newEnd in
@@ -122,7 +122,9 @@ struct EntryEditor: View {
                                 Spacer()
                                 Button(role: .destructive) {
                                     withAnimation(.smooth(duration: 0.35)) {
-                                        if let originalIndex = entry.breakTimes.firstIndex(where: { $0.id == breakTime.id }) {
+                                        if let originalIndex = entry.breakTimes.firstIndex(
+                                            where: { $0.id == breakTime.id }
+                                        ) {
                                             entry.breakTimes.remove(at: originalIndex)
                                         }
                                     }
@@ -187,8 +189,17 @@ struct EntryEditor: View {
                 TasksEditorView(entry: entry)
             }
             .alert("EntryEditor.AddBreak.Title", isPresented: $showingAddBreakAlert) {
-                DatePicker("EntryEditor.Break.Start", selection: $newBreakStart, in: newClockInTime...newClockOutTime, displayedComponents: [.date, .hourAndMinute])
-                DatePicker("EntryEditor.Break.End", selection: $newBreakEnd, in: newClockInTime...newClockOutTime, displayedComponents: [.date, .hourAndMinute])
+                DatePicker(
+                    "EntryEditor.Break.Start",
+                    selection: $newBreakStart,
+                    in: newClockInTime...newClockOutTime, displayedComponents: [.date, .hourAndMinute]
+                )
+                DatePicker(
+                    "EntryEditor.Break.End",
+                    selection: $newBreakEnd,
+                    in: newClockInTime...newClockOutTime,
+                    displayedComponents: [.date, .hourAndMinute]
+                )
                 Button("Shared.Add") {
                     withAnimation(.smooth(duration: 0.35)) {
                         if newBreakEnd > newBreakStart {

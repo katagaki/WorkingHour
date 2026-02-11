@@ -1786,23 +1786,6 @@
         }
       }
     },
-    "ViewTitle.Export" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Export"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "書き出す"
-          }
-        }
-      }
-    },
     "ViewTitle.More" : {
       "localizations" : {
         "en" : {

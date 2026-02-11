@@ -266,7 +266,11 @@ extension MoreView {
         totalFormat.bold()
         totalFormat.border(style: .thin)
 
-        worksheet.merge(range: [currentRow, 0, currentRow, 3], string: String(localized: "Header.Total"), format: totalFormat)
+        worksheet.merge(
+            range: [currentRow, 0, currentRow, 3],
+            string: String(localized: "Header.Total"),
+            format: totalFormat
+        )
         worksheet.write(.string(formatTimeInterval(totalOvertime)), [currentRow, 4], format: totalFormat)
     }
 
