@@ -12,16 +12,6 @@ import SwiftUI
 struct LiveActivityView: View {
     let context: ActivityViewContext<UshioAttributes>
 
-    var currentWorkingTime: TimeInterval {
-        let totalTime = Date.now.timeIntervalSince(context.state.clockInTime)
-        let breakTime = context.state.totalBreakTime
-        if context.state.isOnBreak, let breakStartTime = context.state.breakStartTime {
-            let currentBreakTime = Date.now.timeIntervalSince(breakStartTime)
-            return totalTime - breakTime - currentBreakTime
-        }
-        return totalTime - breakTime
-    }
-
     var body: some View {
         VStack(spacing: 6.0) {
             // Clock in/out times
@@ -86,27 +76,29 @@ struct LiveActivityView: View {
                                 .fontWeight(.bold)
 
                             // Show remaining/overtime beside the Working text
-                            if !context.state.isOnBreak && currentWorkingTime > 0 {
-                                if currentWorkingTime > context.state.standardWorkingHours {
+                            if !context.state.isOnBreak {
+                                let endWorkDate = context.state.clockInTime
+                                    .addingTimeInterval(context.state.totalBreakTime)
+                                    .addingTimeInterval(context.state.standardWorkingHours)
+                                if Date.now >= endWorkDate {
                                     HStack(spacing: 3) {
                                         Image(systemName: "exclamationmark.triangle.fill")
                                             .font(.caption2)
                                         Text("Shared.Overtime")
                                             .font(.caption2)
                                             .fontWeight(.semibold)
-                                        Text(formatTimeInterval(currentWorkingTime - context.state.standardWorkingHours))
+                                        Text(endWorkDate, style: .timer)
                                             .font(.caption2)
                                     }
                                     .foregroundStyle(.red)
                                 } else {
-                                    let remaining = context.state.standardWorkingHours - currentWorkingTime
                                     HStack(spacing: 3) {
                                         Image(systemName: "clock.badge.checkmark.fill")
                                             .font(.caption2)
                                         Text("Shared.Remaining")
                                             .font(.caption2)
                                             .fontWeight(.semibold)
-                                        Text(formatTimeInterval(remaining))
+                                        Text(endWorkDate, style: .timer)
                                             .font(.caption2)
                                     }
                                     .foregroundStyle(.secondary)
