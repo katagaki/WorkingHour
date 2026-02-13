@@ -114,36 +114,38 @@ struct UshioLiveActivity: Widget {
                         .foregroundStyle(.blue)
                 }
             } compactTrailing: {
-                ZStack {
-                    let totalTime = Date.now.timeIntervalSince(context.state.clockInTime)
-                    let breakTime = context.state.totalBreakTime
-                    let currentBreakTime: TimeInterval = {
-                        if context.state.isOnBreak, let breakStartTime = context.state.breakStartTime {
-                            return Date.now.timeIntervalSince(breakStartTime)
+                if context.state.isOnBreak {
+                    let workingTime: TimeInterval = {
+                        if let breakStartTime = context.state.breakStartTime {
+                            return breakStartTime.timeIntervalSince(context.state.clockInTime)
+                                - context.state.totalBreakTime
                         }
                         return 0
                     }()
-                    let workingTime = totalTime - breakTime - currentBreakTime
-                    let progress = min(workingTime / context.state.standardWorkingHours, 1.0)
-                    // Background circle
-                    Circle()
-                        .stroke(
-                            context.state.isOnBreak ? Color.orange.opacity(0.3) : Color.blue.opacity(0.3),
-                            lineWidth: 3
-                        )
-                        .frame(width: 20, height: 20)
-
-                    // Progress circle
-                    Circle()
-                        .trim(from: 0, to: progress)
-                        .stroke(
-                            context.state.isOnBreak ? Color.orange : Color.blue,
-                            style: StrokeStyle(lineWidth: 3, lineCap: .round)
-                        )
-                        .frame(width: 20, height: 20)
-                        .rotationEffect(.degrees(-90))
+                    ProgressView(
+                        value: min(workingTime, context.state.standardWorkingHours),
+                        total: context.state.standardWorkingHours
+                    )
+                    .progressViewStyle(.circular)
+                    .tint(.orange)
+                    .padding(.leading, 4.0)
+                } else {
+                    let adjustedStart = context.state.clockInTime
+                        .addingTimeInterval(context.state.totalBreakTime)
+                    let endDate = adjustedStart
+                        .addingTimeInterval(context.state.standardWorkingHours)
+                    ProgressView(
+                        timerInterval: adjustedStart...endDate,
+                        countsDown: false
+                    ) {
+                        EmptyView()
+                    } currentValueLabel: {
+                        EmptyView()
+                    }
+                    .progressViewStyle(.circular)
+                    .tint(.blue)
+                    .padding(.leading, 4.0)
                 }
-                .padding(.leading, 4.0)
             } minimal: {
                 Image(systemName: context.state.isOnBreak ? "cup.and.heat.waves.fill" : "clock.fill")
                     .foregroundStyle(context.state.isOnBreak ? .orange : .blue)

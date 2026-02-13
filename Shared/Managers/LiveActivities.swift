@@ -44,7 +44,7 @@ class LiveActivities {
             totalBreakTime: data.totalBreakTime,
             standardWorkingHours: data.standardWorkingHours
         )
-        let staleDate = data.clockInTime.addingTimeInterval(data.standardWorkingHours)
+        let staleDate = data.clockInTime.addingTimeInterval(data.standardWorkingHours + 14400)
         let content = ActivityContent(state: contentState, staleDate: staleDate)
 
         do {
@@ -64,7 +64,7 @@ class LiveActivities {
             totalBreakTime: data.totalBreakTime,
             standardWorkingHours: data.standardWorkingHours
         )
-        let staleDate = data.clockInTime.addingTimeInterval(data.standardWorkingHours)
+        let staleDate = data.clockInTime.addingTimeInterval(data.standardWorkingHours + 14400)
         let content = ActivityContent(state: contentState, staleDate: staleDate)
 
         let activities = Activity<UshioAttributes>.activities
