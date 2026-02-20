@@ -59,24 +59,28 @@ struct HomeWidgetProvider: TimelineProvider {
         if context.isPreview {
             completion(.placeholder)
         } else {
-            completion(fetchEntry())
+            Task { @MainActor in
+                completion(fetchEntry())
+            }
         }
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<HomeWidgetEntry>) -> Void) {
-        let entry = fetchEntry()
+        Task { @MainActor in
+            let entry = fetchEntry()
 
-        let refreshDate: Date
-        if entry.isActive {
-            // Refresh every 15 minutes while working
-            refreshDate = Calendar.current.date(byAdding: .minute, value: 15, to: .now) ?? .now
-        } else {
-            // Refresh every hour when idle
-            refreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: .now) ?? .now
+            let refreshDate: Date
+            if entry.isActive {
+                // Refresh every 15 minutes while working
+                refreshDate = Calendar.current.date(byAdding: .minute, value: 15, to: .now) ?? .now
+            } else {
+                // Refresh every hour when idle
+                refreshDate = Calendar.current.date(byAdding: .hour, value: 1, to: .now) ?? .now
+            }
+
+            let timeline = Timeline(entries: [entry], policy: .after(refreshDate))
+            completion(timeline)
         }
-
-        let timeline = Timeline(entries: [entry], policy: .after(refreshDate))
-        completion(timeline)
     }
 
     @MainActor
