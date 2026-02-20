@@ -686,6 +686,22 @@
         }
       }
     },
+    "Notification.Snooze" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snooze for 30 Minutes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30分後に再通知"
+          }
+        }
+      }
+    },
     "Projects.Active" : {
       "localizations" : {
         "en" : {
