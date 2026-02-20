@@ -96,6 +96,26 @@ struct MoreView: View {
                     ListSectionHeader(text: "Export.Section.Overtime")
                 }
 
+                // Workplaces Section
+                Section {
+                    NavigationLink {
+                        WorkplacesView()
+                    } label: {
+                        Label {
+                            Text("Workplace.Title")
+                        } icon: {
+                            Image(systemName: "building.2.fill")
+                                .foregroundStyle(.accent)
+                        }
+                    }
+                } header: {
+                    ListSectionHeader(text: "Settings.Section.Geofencing")
+                } footer: {
+                    Text("Settings.Geofencing.Footer")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
                 // Notifications Section
                 Section {
                     Toggle("Settings.ClockInReminder", isOn: $clockInReminderEnabled)
