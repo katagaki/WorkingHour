@@ -1070,6 +1070,38 @@
         }
       }
     },
+    "Settings.Notifications.ClockIn" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clock In"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出勤"
+          }
+        }
+      }
+    },
+    "Settings.Notifications.ClockOut" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clock Out"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退勤"
+          }
+        }
+      }
+    },
     "Settings.Notifications.Footer" : {
       "localizations" : {
         "en" : {
@@ -1709,6 +1741,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "残り:"
+          }
+        }
+      }
+    },
+    "TimeClock.Tasks.Edit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Tasks"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タスクを編集"
+          }
+        }
+      }
+    },
+    "TimeClock.Tasks.Title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasks"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タスク"
           }
         }
       }
