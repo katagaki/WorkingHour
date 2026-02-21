@@ -37,6 +37,7 @@ struct TimeClockView: View {
 
     @State var currentWorkingTime: TimeInterval = 0
     @State var timer: Timer?
+    @State var showingTasksEditor: Bool = false
 
     var standardWorkingHours: TimeInterval {
         settingsManager.standardWorkingHours
@@ -246,6 +247,47 @@ struct TimeClockView: View {
                     .background(.groupedBackground)
                     .clipShape(.rect(cornerRadius: cornerRadius))
                 }
+
+                // Tasks
+                if let activeEntry, activeEntry.clockOutTime == nil {
+                    VStack(alignment: .leading, spacing: 6.0) {
+                        Text("TimeClock.Tasks.Title")
+                            .foregroundStyle(.secondary)
+                            .fontWeight(.bold)
+
+                        let taskCount = (activeEntry.tasks ?? []).count
+                        if taskCount > 0 {
+                            ForEach(activeEntry.tasks ?? []) { task in
+                                HStack(spacing: 8.0) {
+                                    Image(systemName: task.project != nil
+                                          ? "folder.fill" : "ellipsis.circle.fill")
+                                        .foregroundStyle(task.project != nil ? .accent : .orange)
+                                        .font(.caption)
+                                    Text(task.project?.name ?? String(localized: "Tasks.Others"))
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                }
+                            }
+                        }
+
+                        Button {
+                            showingTasksEditor = true
+                        } label: {
+                            Label("TimeClock.Tasks.Edit", systemImage: "checklist")
+                                .fontWeight(.semibold)
+                                .padding([.top, .bottom], 6.0)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .tint(.accent)
+                        .clipShape(.capsule)
+                        .buttonStyle(.borderedProminent)
+                        .padding([.top], 2.0)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .background(.groupedBackground)
+                    .clipShape(.rect(cornerRadius: cornerRadius))
+                }
             }
             .padding([.leading, .trailing], 16.0)
             .padding([.top, .bottom], 12.0)
@@ -257,6 +299,11 @@ struct TimeClockView: View {
             .onDisappear {
                 timer?.invalidate()
                 timer = nil
+            }
+            .sheet(isPresented: $showingTasksEditor) {
+                if let activeEntry {
+                    TasksEditorView(entry: activeEntry)
+                }
             }
         }
     }

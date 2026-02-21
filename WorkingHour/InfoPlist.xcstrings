@@ -31,6 +31,57 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "NSLocationAlwaysAndWhenInUseUsageDescription" : {
+      "comment" : "Privacy - Location Always and When In Use Usage Description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Working Hour uses your location to automatically clock you in and out when you arrive at or leave your workplace."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "職場に到着した時や離れた時に自動的に出勤・退勤を記録するために位置情報を使用します。"
+          }
+        }
+      }
+    },
+    "NSLocationAlwaysUsageDescription" : {
+      "comment" : "Privacy - Location Always Usage Description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Working Hour uses your location to automatically clock you in and out when you arrive at or leave your workplace."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "職場に到着した時や離れた時に自動的に出勤・退勤を記録するために位置情報を使用します。"
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "comment" : "Privacy - Location When In Use Usage Description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Working Hour uses your location to set up workplace geofences for automatic clock-in and clock-out."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動出勤・退勤のための職場ジオフェンスを設定するために位置情報を使用します。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
