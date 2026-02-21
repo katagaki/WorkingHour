@@ -35,10 +35,6 @@ struct MoreView: View {
         return Calendar.current.date(from: components) ?? Date()
     }()
 
-    #if DEBUG
-    @State private var showingClearDataAlert = false
-    #endif
-
     var body: some View {
         NavigationStack {
             MoreList(repoName: "katagaki/WorkingHour") {
@@ -66,7 +62,7 @@ struct MoreView: View {
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                 } header: {
-                    ListSectionHeader(text: "Export.Section.Timesheet")
+                    Text("Export.Section.Timesheet")
                 }
 
                 // Overtime Report Section
@@ -93,23 +89,16 @@ struct MoreView: View {
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                 } header: {
-                    ListSectionHeader(text: "Export.Section.Overtime")
+                    Text("Export.Section.Overtime")
                 }
 
                 // Workplaces Section
                 Section {
-                    NavigationLink {
+                    NavigationLink("Workplace.Title") {
                         WorkplacesView()
-                    } label: {
-                        Label {
-                            Text("Workplace.Title")
-                        } icon: {
-                            Image(systemName: "building.2.fill")
-                                .foregroundStyle(.accent)
-                        }
                     }
                 } header: {
-                    ListSectionHeader(text: "Settings.Section.Geofencing")
+                    Text("Settings.Section.Geofencing")
                 } footer: {
                     Text("Settings.Geofencing.Footer")
                         .font(.caption)
@@ -132,7 +121,7 @@ struct MoreView: View {
                                    displayedComponents: .hourAndMinute)
                     }
                 } header: {
-                    ListSectionHeader(text: "Settings.Section.Notifications")
+                    Text("Settings.Section.Notifications")
                 } footer: {
                     Text("Settings.Notifications.Footer")
                         .font(.caption)
@@ -167,7 +156,7 @@ struct MoreView: View {
 
                     Toggle("Settings.AutoAddBreak", isOn: $autoAddBreak)
                 } header: {
-                    ListSectionHeader(text: "Settings.Section.WorkingTimeAndBreak")
+                    Text("Settings.Section.WorkingTimeAndBreak")
                 } footer: {
                     Text("Settings.WorkingHours.Footer")
                         .font(.caption)
@@ -175,21 +164,15 @@ struct MoreView: View {
                 }
 
                 #if DEBUG
-                // Debug Section
                 Section {
-                    Button("Debug.PopulateSampleData") {
+                    Button("Populate Sample Data") {
                         dataManager.populateSampleData()
                     }
-
-                    Button("Debug.ClearAllData", role: .destructive) {
-                        showingClearDataAlert = true
+                    Button("Clear All Data", role: .destructive) {
+                        dataManager.clearAllData()
                     }
                 } header: {
-                    ListSectionHeader(text: "Debug")
-                } footer: {
-                    Text("Debug.PopulateSampleData.Description")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text(verbatim: "Debug")
                 }
                 #endif
 
@@ -220,16 +203,6 @@ struct MoreView: View {
             .onChange(of: clockOutReminderTime) { _, _ in
                 saveNotificationSettings()
             }
-            #if DEBUG
-            .alert("Debug.ClearAllData.Confirmation", isPresented: $showingClearDataAlert) {
-                Button("Shared.Cancel", role: .cancel) { }
-                Button("Shared.Clear", role: .destructive) {
-                    dataManager.clearAllData()
-                }
-            } message: {
-                Text("Debug.ClearAllData.Message")
-            }
-            #endif
         }
     }
 

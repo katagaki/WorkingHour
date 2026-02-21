@@ -40,26 +40,12 @@
     "%lld" : {
       "shouldTranslate" : false
     },
+    "Clear All Data" : {
+      "shouldTranslate" : false
+    },
     "CSV" : {
       "extractionState" : "manual",
       "shouldTranslate" : false
-    },
-    "Debug.ClearAllData" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Clear All Data"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "すべてのデータを消去"
-          }
-        }
-      }
     },
     "Debug.ClearAllData.Confirmation" : {
       "extractionState" : "manual",
@@ -91,40 +77,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "これにより、すべての打刻記録とプロジェクトが完全に削除されます。"
-          }
-        }
-      }
-    },
-    "Debug.PopulateSampleData" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Populate Sample Data"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サンプルデータを投入"
-          }
-        }
-      }
-    },
-    "Debug.PopulateSampleData.Description" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Populate 30 days of sample clock entries with breaks. Today's entry will be ongoing (9am start)."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30日分の休憩を含むサンプル打刻記録を投入します。本日の記録は進行中（午前9時開始）になります。"
           }
         }
       }
@@ -676,6 +628,9 @@
         }
       }
     },
+    "Populate Sample Data" : {
+      "shouldTranslate" : false
+    },
     "Projects.Active" : {
       "localizations" : {
         "en" : {
@@ -1171,13 +1126,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geofencing"
+            "value" : "Locations"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ジオフェンス"
+            "value" : "場所"
           }
         }
       }
@@ -2271,13 +2226,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enable Geofencing"
+            "value" : "Enable Location Services"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ジオフェンスを有効にする"
+            "value" : "位置情報の使用を許可"
           }
         }
       }
@@ -2479,13 +2434,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automation"
+            "value" : "Automatically Clock In/Out"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自動化"
+            "value" : "自動打刻"
           }
         }
       }
@@ -2495,13 +2450,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geofencing"
+            "value" : "Location Services"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ジオフェンス"
+            "value" : "自動打刻"
           }
         }
       }
