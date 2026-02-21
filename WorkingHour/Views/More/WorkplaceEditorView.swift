@@ -85,7 +85,7 @@ struct WorkplaceEditorView: View {
                 .frame(height: 250)
                 .clipShape(RoundedRectangle(cornerRadius: 12.0))
                 .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-                .onTapGesture { position in
+                .onTapGesture { _ in
                     // Map tap handling is done via long press
                 }
 
@@ -153,7 +153,7 @@ struct WorkplaceEditorView: View {
         request.naturalLanguageQuery = trimmed
 
         let search = MKLocalSearch(request: request)
-        search.start { response, error in
+        search.start { response, _ in
             isSearching = false
             if let response {
                 searchResults = Array(response.mapItems.prefix(5))
