@@ -240,7 +240,11 @@ struct EntryEditor: View {
     }
 
     private func saveEntry() {
-        // dataManager.updateClockEntry(entry)
+        if entry.clockOutTime == nil, let sessionData = entry.toWorkSessionData() {
+            Task {
+                await LiveActivities.updateActivity(with: sessionData)
+            }
+        }
     }
 
     private func formatTime(_ date: Date) -> String {
