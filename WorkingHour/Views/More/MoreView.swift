@@ -255,7 +255,9 @@ struct MoreView: View {
                 await notificationManager.scheduleClockOutReminder(at: components)
             }
         } else {
-            notificationManager.cancelClockOutReminder()
+            Task {
+                await notificationManager.cancelClockOutReminder()
+            }
         }
     }
 

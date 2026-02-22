@@ -120,9 +120,16 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         center.removePendingNotificationRequests(withIdentifiers: clockInIdentifiers)
     }
 
+    // Schedules clock-out reminders for every weekday in the next 30 days.
     func scheduleClockOutReminder(at dateComponents: DateComponents) async {
         let authorized = await requestAuthorization()
         guard authorized else { return }
+
+        // Cancel any existing clock-out reminders before scheduling new ones
+        await cancelClockOutReminder()
+
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
 
         let content = UNMutableNotificationContent()
         content.title = String(localized: "Notification.ClockOut.Title")
@@ -130,18 +137,45 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         content.sound = .default
         content.categoryIdentifier = Category.clockOutReminder
 
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-        let request = UNNotificationRequest(
-            identifier: Identifier.clockOutReminder,
-            content: content,
-            trigger: trigger
-        )
+        for dayOffset in 0..<schedulingWindowDays {
+            guard let targetDate = calendar.date(byAdding: .day, value: dayOffset, to: today) else {
+                continue
+            }
 
-        try? await center.add(request)
+            let weekday = calendar.component(.weekday, from: targetDate)
+            // Skip weekends: 1 = Sunday, 7 = Saturday
+            guard weekday >= 2 && weekday <= 6 else { continue }
+
+            var triggerComponents = calendar.dateComponents([.year, .month, .day], from: targetDate)
+            triggerComponents.hour = dateComponents.hour
+            triggerComponents.minute = dateComponents.minute
+
+            // Skip if the trigger time is already in the past
+            if let triggerDate = calendar.date(from: triggerComponents), triggerDate <= Date() {
+                continue
+            }
+
+            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerComponents, repeats: false)
+
+            let dateString = formatDateForIdentifier(targetDate)
+            let identifier = "\(Identifier.clockOutReminder).\(dateString)"
+
+            let request = UNNotificationRequest(
+                identifier: identifier,
+                content: content,
+                trigger: trigger
+            )
+
+            try? await center.add(request)
+        }
     }
 
-    func cancelClockOutReminder() {
-        center.removePendingNotificationRequests(withIdentifiers: [Identifier.clockOutReminder])
+    func cancelClockOutReminder() async {
+        let pendingRequests = await center.pendingNotificationRequests()
+        let clockOutIdentifiers = pendingRequests
+            .map(\.identifier)
+            .filter { $0.hasPrefix(Identifier.clockOutReminder) }
+        center.removePendingNotificationRequests(withIdentifiers: clockOutIdentifiers)
     }
 
     // MARK: - UNUserNotificationCenterDelegate
