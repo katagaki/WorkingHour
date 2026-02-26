@@ -612,6 +612,38 @@
         }
       }
     },
+    "Notification.ClockedIn.Body %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You clocked in at %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@に出勤しました。"
+          }
+        }
+      }
+    },
+    "Notification.ClockedIn.Title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clocked In"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出勤しました"
+          }
+        }
+      }
+    },
     "Notification.Snooze" : {
       "localizations" : {
         "en" : {

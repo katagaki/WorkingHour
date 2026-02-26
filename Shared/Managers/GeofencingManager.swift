@@ -150,6 +150,11 @@ final class GeofencingManager: NSObject {
 
             log("GeofencingManager: Auto clocked in", prefix: "MIKA")
 
+            // Send clock-in notification
+            Task {
+                await NotificationManager.shared.sendClockInConfirmation(at: .now)
+            }
+
             // Start live activity
             if let sessionData = newEntry.toWorkSessionData() {
                 Task {

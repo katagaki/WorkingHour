@@ -350,6 +350,9 @@ struct TimeClockView: View {
                     await LiveActivities.startActivity(with: sessionData)
                 }
             }
+            Task {
+                await NotificationManager.shared.sendClockInConfirmation(at: .now)
+            }
         }
     }
 
