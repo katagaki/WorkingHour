@@ -24,7 +24,8 @@ public class SharedModelContainer {
             ClockEntry.self,
             Break.self,
             Project.self,
-            ProjectTask.self
+            ProjectTask.self,
+            Workplace.self
         ])
 
         let modelConfiguration = ModelConfiguration(

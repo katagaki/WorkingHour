@@ -17,6 +17,7 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
 
     private enum Identifier {
         static let clockInReminderPrefix = "com.tsubuzaki.WorkingHour.clockInReminder"
+        static let clockInConfirmation = "com.tsubuzaki.WorkingHour.clockInConfirmation"
         static let clockOutReminder = "com.tsubuzaki.WorkingHour.clockOutReminder"
         static let clockOutSnoozeReminder = "com.tsubuzaki.WorkingHour.clockOutSnoozeReminder"
     }
@@ -60,6 +61,28 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         } catch {
             return false
         }
+    }
+
+    func sendClockInConfirmation(at clockInTime: Date) async {
+        let authorized = await requestAuthorization()
+        guard authorized else { return }
+
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateStyle = .none
+        timeFormatter.timeStyle = .short
+
+        let content = UNMutableNotificationContent()
+        content.title = String(localized: "Notification.ClockedIn.Title")
+        content.body = String(localized: "Notification.ClockedIn.Body \(timeFormatter.string(from: clockInTime))")
+        content.sound = .default
+
+        let request = UNNotificationRequest(
+            identifier: Identifier.clockInConfirmation,
+            content: content,
+            trigger: nil
+        )
+
+        try? await center.add(request)
     }
 
     // Schedules clock-in reminders for every weekday in the next 30 days.
