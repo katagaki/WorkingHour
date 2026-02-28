@@ -8,6 +8,7 @@
 import SwiftData
 import SwiftUI
 
+// swiftlint:disable type_body_length file_length
 struct TimeClockView: View {
 
     @Environment(\.modelContext) private var modelContext
@@ -411,3 +412,4 @@ struct TimeClockView: View {
         return formatter.string(from: interval) ?? ""
     }
 }
+// swiftlint:enable type_body_length file_length

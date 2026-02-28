@@ -64,7 +64,9 @@ struct LiveActivityView: View {
                             .font(.caption)
                             .fontWeight(.bold)
 
-                        let totalTime = clockOutTime.timeIntervalSince(context.state.clockInTime) - context.state.totalBreakTime
+                        let totalTime = clockOutTime.timeIntervalSince(
+                            context.state.clockInTime
+                        ) - context.state.totalBreakTime
                         Text(formatTimeInterval(totalTime))
                             .font(.title2)
                             .fontWeight(.bold)

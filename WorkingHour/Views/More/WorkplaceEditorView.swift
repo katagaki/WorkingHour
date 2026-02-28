@@ -54,7 +54,7 @@ struct WorkplaceEditorView: View {
                             VStack(alignment: .leading, spacing: 2.0) {
                                 Text(item.name ?? "")
                                     .foregroundStyle(.primary)
-                                if let subtitle = item.placemark.formattedAddress {
+                                if let subtitle = item.address?.fullAddress {
                                     Text(subtitle)
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
@@ -161,7 +161,7 @@ struct WorkplaceEditorView: View {
     }
 
     private func selectSearchResult(_ item: MKMapItem) {
-        coordinate = item.placemark.coordinate
+        coordinate = item.location.coordinate
         if name.isEmpty {
             name = item.name ?? ""
         }

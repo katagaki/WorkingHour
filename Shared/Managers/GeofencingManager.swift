@@ -216,7 +216,7 @@ final class GeofencingManager: NSObject {
 
 // MARK: - CLLocationManagerDelegate
 
-extension GeofencingManager: @preconcurrency CLLocationManagerDelegate {
+extension GeofencingManager: CLLocationManagerDelegate {
 
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
@@ -246,9 +246,16 @@ extension GeofencingManager: @preconcurrency CLLocationManagerDelegate {
         }
     }
 
-    nonisolated func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
+    nonisolated func locationManager(
+        _ manager: CLLocationManager,
+        monitoringDidFailFor region: CLRegion?,
+        withError error: Error
+    ) {
         Task { @MainActor in
-            log("GeofencingManager: Monitoring failed for region \(region?.identifier ?? "unknown"): \(error)", prefix: "MIKA")
+            log(
+                "GeofencingManager: Monitoring failed for region \(region?.identifier ?? "unknown"): \(error)",
+                prefix: "MIKA"
+            )
         }
     }
 }

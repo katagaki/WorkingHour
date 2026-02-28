@@ -144,6 +144,7 @@ final class DataManager {
 
     // MARK: - Debug Operations
 
+    // swiftlint:disable function_body_length
     #if DEBUG
     func populateSampleData() {
         guard let modelContext else { return }
@@ -221,6 +222,7 @@ final class DataManager {
         save()
         loadAll()
     }
+    // swiftlint:enable function_body_length
 
     func clearAllData() {
         guard let modelContext else { return }
