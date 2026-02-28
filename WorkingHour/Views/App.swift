@@ -24,6 +24,7 @@ struct WorkingHourApp: App {
                     DataManager.shared.loadAll()
                     checkAndRestoreLiveActivity(context: context)
                     refreshClockInRemindersIfNeeded()
+                    startGeofencingIfEnabled()
                 }
         }
         .environmentObject(navigator)
@@ -55,6 +56,13 @@ struct WorkingHourApp: App {
     }
 
     /// Re-schedules reminders if they are enabled and were last
+    private func startGeofencingIfEnabled() {
+        let settings = SettingsManager.shared
+        guard settings.geofencingEnabled else { return }
+        GeofencingManager.shared.startMonitoringWorkplaces()
+    }
+
+    /// Re-schedules clock-in reminders if they are enabled and were last
     /// scheduled more than 7 days ago (or have never been scheduled).
     private func refreshClockInRemindersIfNeeded() {
         let settings = SettingsManager.shared

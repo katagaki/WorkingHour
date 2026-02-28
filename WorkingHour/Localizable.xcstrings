@@ -12,19 +12,14 @@
             "value" : "-"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@ - %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "%1$@ - %2$@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
             "value" : "%1$@ - %2$@"
           }
         }
@@ -43,42 +38,14 @@
       "shouldTranslate" : false
     },
     "%lld" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        }
-      }
+      "shouldTranslate" : false
+    },
+    "Clear All Data" : {
+      "shouldTranslate" : false
     },
     "CSV" : {
       "extractionState" : "manual",
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CSV"
-          }
-        }
-      }
-    },
-    "Debug.ClearAllData" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Clear All Data"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "すべてのデータを消去"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "Debug.ClearAllData.Confirmation" : {
       "extractionState" : "manual",
@@ -110,40 +77,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "これにより、すべての打刻記録とプロジェクトが完全に削除されます。"
-          }
-        }
-      }
-    },
-    "Debug.PopulateSampleData" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Populate Sample Data"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サンプルデータを投入"
-          }
-        }
-      }
-    },
-    "Debug.PopulateSampleData.Description" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Populate 30 days of sample clock entries with breaks. Today's entry will be ongoing (9am start)."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30日分の休憩を含むサンプル打刻記録を投入します。本日の記録は進行中（午前9時開始）になります。"
           }
         }
       }
@@ -361,14 +294,7 @@
     },
     "Excel" : {
       "extractionState" : "manual",
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Excel"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "Export.Section.Overtime" : {
       "extractionState" : "manual",
@@ -686,6 +612,38 @@
         }
       }
     },
+    "Notification.ClockedIn.Body %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You clocked in at %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@に出勤しました。"
+          }
+        }
+      }
+    },
+    "Notification.ClockedIn.Title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clocked In"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出勤しました"
+          }
+        }
+      }
+    },
     "Notification.Snooze" : {
       "localizations" : {
         "en" : {
@@ -701,6 +659,9 @@
           }
         }
       }
+    },
+    "Populate Sample Data" : {
+      "shouldTranslate" : false
     },
     "Projects.Active" : {
       "localizations" : {
@@ -1059,6 +1020,22 @@
         }
       }
     },
+    "Settings.Geofencing.Footer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set up workplaces to automatically clock in and out based on your location."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "職場を設定して、位置情報に基づいて自動的に出勤・退勤を記録します。"
+          }
+        }
+      }
+    },
     "Settings.Hours" : {
       "localizations" : {
         "en" : {
@@ -1125,6 +1102,38 @@
         }
       }
     },
+    "Settings.Notifications.ClockIn" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clock In"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出勤"
+          }
+        }
+      }
+    },
+    "Settings.Notifications.ClockOut" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clock Out"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退勤"
+          }
+        }
+      }
+    },
     "Settings.Notifications.Footer" : {
       "localizations" : {
         "en" : {
@@ -1171,6 +1180,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "データ管理"
+          }
+        }
+      }
+    },
+    "Settings.Section.Geofencing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Locations"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "場所"
           }
         }
       }
@@ -1751,6 +1777,38 @@
         }
       }
     },
+    "TimeClock.Tasks.Edit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Tasks"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タスクを編集"
+          }
+        }
+      }
+    },
+    "TimeClock.Tasks.Title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasks"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タスク"
+          }
+        }
+      }
+    },
     "TimeClock.Work.ClockIn" : {
       "localizations" : {
         "en" : {
@@ -2111,6 +2169,422 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未出勤"
+          }
+        }
+      }
+    },
+    "Workplace.Add" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Workplace"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "職場を追加"
+          }
+        }
+      }
+    },
+    "Workplace.AutoClockIn" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto Clock In"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動出勤"
+          }
+        }
+      }
+    },
+    "Workplace.AutoClockOut" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto Clock Out"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動退勤"
+          }
+        }
+      }
+    },
+    "Workplace.Automation.Footer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically clock in when you arrive at a workplace and clock out when you leave."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "職場に到着した時に自動的に出勤し、離れた時に自動的に退勤します。"
+          }
+        }
+      }
+    },
+    "Workplace.Delete.Message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This workplace will be removed and its geofence will stop being monitored."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この職場は削除され、ジオフェンスの監視も停止されます。"
+          }
+        }
+      }
+    },
+    "Workplace.Delete.Title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Workplace?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "職場を削除しますか？"
+          }
+        }
+      }
+    },
+    "Workplace.Disable" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効にする"
+          }
+        }
+      }
+    },
+    "Workplace.Edit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Workplace"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "職場を編集"
+          }
+        }
+      }
+    },
+    "Workplace.Enable" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効にする"
+          }
+        }
+      }
+    },
+    "Workplace.Geofencing.Enable" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Location Services"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "位置情報の使用を許可"
+          }
+        }
+      }
+    },
+    "Workplace.Geofencing.Footer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When enabled, the app will monitor your location in the background to automatically clock you in and out at your workplaces."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効にすると、アプリがバックグラウンドで位置情報を監視し、職場での自動出勤・退勤を行います。"
+          }
+        }
+      }
+    },
+    "Workplace.Location" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "場所"
+          }
+        }
+      }
+    },
+    "Workplace.Location.Authorized" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location access granted"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "位置情報のアクセスが許可されました"
+          }
+        }
+      }
+    },
+    "Workplace.Location.Request" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grant Location Access"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "位置情報のアクセスを許可"
+          }
+        }
+      }
+    },
+    "Workplace.Location.Request.Description" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Always\" location permission is required for geofencing to work in the background."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ジオフェンスがバックグラウンドで動作するには「常に許可」の位置情報権限が必要です。"
+          }
+        }
+      }
+    },
+    "Workplace.Map" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Map"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "地図"
+          }
+        }
+      }
+    },
+    "Workplace.Map.Footer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The circle shows the geofence area. You will be clocked in when you enter this area and clocked out when you leave."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "円はジオフェンスの範囲を示しています。この範囲に入ると出勤し、離れると退勤します。"
+          }
+        }
+      }
+    },
+    "Workplace.Name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前"
+          }
+        }
+      }
+    },
+    "Workplace.Name.Placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workplace name"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "職場名"
+          }
+        }
+      }
+    },
+    "Workplace.Radius" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Radius"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "半径"
+          }
+        }
+      }
+    },
+    "Workplace.Radius.Meters" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "m"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "m"
+          }
+        }
+      }
+    },
+    "Workplace.Search.Placeholder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search for an address..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "住所を検索..."
+          }
+        }
+      }
+    },
+    "Workplace.Section.Automation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically Clock In/Out"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動打刻"
+          }
+        }
+      }
+    },
+    "Workplace.Section.Geofencing" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location Services"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動打刻"
+          }
+        }
+      }
+    },
+    "Workplace.Section.Workplaces" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workplaces"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "職場一覧"
+          }
+        }
+      }
+    },
+    "Workplace.Title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workplaces"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "職場"
           }
         }
       }

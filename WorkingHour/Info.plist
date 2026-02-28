@@ -18,8 +18,15 @@
 	<array>
 		<string>remote-notification</string>
 		<string>fetch</string>
+		<string>location</string>
 	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Working Hour uses your location to automatically clock you in and out when you arrive at or leave your workplace.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Working Hour uses your location to set up workplace geofences for automatic clock-in and clock-out.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Working Hour uses your location to automatically clock you in and out when you arrive at or leave your workplace.</string>
 </dict>
 </plist>

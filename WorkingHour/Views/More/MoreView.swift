@@ -20,25 +20,6 @@ struct MoreView: View {
     @State private var breakMinutes: Double = 60.0
     @State private var autoAddBreak: Bool = false
 
-    @State private var clockInReminderEnabled: Bool = false
-    @State private var clockOutReminderEnabled: Bool = false
-    @State private var clockInReminderTime: Date = {
-        var components = DateComponents()
-        components.hour = 8
-        components.minute = 0
-        return Calendar.current.date(from: components) ?? Date()
-    }()
-    @State private var clockOutReminderTime: Date = {
-        var components = DateComponents()
-        components.hour = 17
-        components.minute = 0
-        return Calendar.current.date(from: components) ?? Date()
-    }()
-
-    #if DEBUG
-    @State private var showingClearDataAlert = false
-    #endif
-
     var body: some View {
         NavigationStack {
             MoreList(repoName: "katagaki/WorkingHour") {
@@ -66,7 +47,7 @@ struct MoreView: View {
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                 } header: {
-                    ListSectionHeader(text: "Export.Section.Timesheet")
+                    Text("Export.Section.Timesheet")
                 }
 
                 // Overtime Report Section
@@ -93,26 +74,29 @@ struct MoreView: View {
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                 } header: {
-                    ListSectionHeader(text: "Export.Section.Overtime")
+                    Text("Export.Section.Overtime")
+                }
+
+                // Workplaces Section
+                Section {
+                    NavigationLink("Workplace.Title") {
+                        WorkplacesView()
+                    }
+                } header: {
+                    Text("Settings.Section.Geofencing")
+                } footer: {
+                    Text("Settings.Geofencing.Footer")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
 
                 // Notifications Section
                 Section {
-                    Toggle("Settings.ClockInReminder", isOn: $clockInReminderEnabled)
-                    if clockInReminderEnabled {
-                        DatePicker("Settings.ClockInReminder.Time",
-                                   selection: $clockInReminderTime,
-                                   displayedComponents: .hourAndMinute)
-                    }
-
-                    Toggle("Settings.ClockOutReminder", isOn: $clockOutReminderEnabled)
-                    if clockOutReminderEnabled {
-                        DatePicker("Settings.ClockOutReminder.Time",
-                                   selection: $clockOutReminderTime,
-                                   displayedComponents: .hourAndMinute)
+                    NavigationLink("Settings.Section.Notifications") {
+                        NotificationsSettingsView()
                     }
                 } header: {
-                    ListSectionHeader(text: "Settings.Section.Notifications")
+                    Text("Settings.Section.Notifications")
                 } footer: {
                     Text("Settings.Notifications.Footer")
                         .font(.caption)
@@ -147,7 +131,7 @@ struct MoreView: View {
 
                     Toggle("Settings.AutoAddBreak", isOn: $autoAddBreak)
                 } header: {
-                    ListSectionHeader(text: "Settings.Section.WorkingTimeAndBreak")
+                    Text("Settings.Section.WorkingTimeAndBreak")
                 } footer: {
                     Text("Settings.WorkingHours.Footer")
                         .font(.caption)
@@ -155,21 +139,15 @@ struct MoreView: View {
                 }
 
                 #if DEBUG
-                // Debug Section
                 Section {
-                    Button("Debug.PopulateSampleData") {
+                    Button("Populate Sample Data") {
                         dataManager.populateSampleData()
                     }
-
-                    Button("Debug.ClearAllData", role: .destructive) {
-                        showingClearDataAlert = true
+                    Button("Clear All Data", role: .destructive) {
+                        dataManager.clearAllData()
                     }
                 } header: {
-                    ListSectionHeader(text: "Debug")
-                } footer: {
-                    Text("Debug.PopulateSampleData.Description")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text(verbatim: "Debug")
                 }
                 #endif
 
@@ -188,28 +166,6 @@ struct MoreView: View {
             .onChange(of: autoAddBreak) { _, _ in
                 saveSettings()
             }
-            .onChange(of: clockInReminderEnabled) { _, _ in
-                saveNotificationSettings()
-            }
-            .onChange(of: clockOutReminderEnabled) { _, _ in
-                saveNotificationSettings()
-            }
-            .onChange(of: clockInReminderTime) { _, _ in
-                saveNotificationSettings()
-            }
-            .onChange(of: clockOutReminderTime) { _, _ in
-                saveNotificationSettings()
-            }
-            #if DEBUG
-            .alert("Debug.ClearAllData.Confirmation", isPresented: $showingClearDataAlert) {
-                Button("Shared.Cancel", role: .cancel) { }
-                Button("Shared.Clear", role: .destructive) {
-                    dataManager.clearAllData()
-                }
-            } message: {
-                Text("Debug.ClearAllData.Message")
-            }
-            #endif
         }
     }
 
@@ -217,10 +173,6 @@ struct MoreView: View {
         workingHours = settingsManager.standardWorkingHours / 3600.0
         breakMinutes = settingsManager.defaultBreakDuration / 60.0
         autoAddBreak = settingsManager.autoAddBreakTime
-        clockInReminderEnabled = settingsManager.clockInReminderEnabled
-        clockOutReminderEnabled = settingsManager.clockOutReminderEnabled
-        clockInReminderTime = dateFromSecondsSinceMidnight(settingsManager.clockInReminderTime)
-        clockOutReminderTime = dateFromSecondsSinceMidnight(settingsManager.clockOutReminderTime)
     }
 
     private func saveSettings() {

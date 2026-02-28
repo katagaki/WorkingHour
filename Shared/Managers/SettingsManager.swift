@@ -26,6 +26,9 @@ final class SettingsManager {
         static let clockInReminderTime = "clockInReminderTime"
         static let clockOutReminderTime = "clockOutReminderTime"
         static let notificationsLastScheduledDate = "notificationsLastScheduledDate"
+        static let geofencingEnabled = "geofencingEnabled"
+        static let autoClockInEnabled = "autoClockInEnabled"
+        static let autoClockOutEnabled = "autoClockOutEnabled"
     }
 
     // MARK: - Properties
@@ -118,6 +121,33 @@ final class SettingsManager {
         }
     }
 
+    var geofencingEnabled: Bool {
+        get {
+            defaults.bool(forKey: Keys.geofencingEnabled)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.geofencingEnabled)
+        }
+    }
+
+    var autoClockInEnabled: Bool {
+        get {
+            defaults.bool(forKey: Keys.autoClockInEnabled)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.autoClockInEnabled)
+        }
+    }
+
+    var autoClockOutEnabled: Bool {
+        get {
+            defaults.bool(forKey: Keys.autoClockOutEnabled)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.autoClockOutEnabled)
+        }
+    }
+
     /// Convenience: returns `DateComponents` (hour + minute) for the stored clock-in time.
     var clockInReminderTimeComponents: DateComponents {
         let totalSeconds = Int(clockInReminderTime)
@@ -147,7 +177,10 @@ final class SettingsManager {
             Keys.clockInReminderEnabled: false,
             Keys.clockOutReminderEnabled: false,
             Keys.clockInReminderTime: 8 * 3600,
-            Keys.clockOutReminderTime: 17 * 3600
+            Keys.clockOutReminderTime: 17 * 3600,
+            Keys.geofencingEnabled: false,
+            Keys.autoClockInEnabled: true,
+            Keys.autoClockOutEnabled: true
         ])
     }
 }
