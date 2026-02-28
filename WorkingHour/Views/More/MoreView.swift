@@ -180,4 +180,50 @@ struct MoreView: View {
         settingsManager.defaultBreakDuration = breakMinutes * 60
         settingsManager.autoAddBreakTime = autoAddBreak
     }
+
+    private func saveNotificationSettings() {
+        settingsManager.clockInReminderEnabled = clockInReminderEnabled
+        settingsManager.clockOutReminderEnabled = clockOutReminderEnabled
+        settingsManager.clockInReminderTime = secondsSinceMidnight(from: clockInReminderTime)
+        settingsManager.clockOutReminderTime = secondsSinceMidnight(from: clockOutReminderTime)
+
+        let notificationManager = NotificationManager.shared
+
+        if clockInReminderEnabled {
+            let components = Calendar.current.dateComponents([.hour, .minute], from: clockInReminderTime)
+            Task {
+                await notificationManager.scheduleClockInReminders(at: components)
+                settingsManager.notificationsLastScheduledDate = Date()
+            }
+        } else {
+            Task {
+                await notificationManager.cancelClockInReminders()
+            }
+        }
+
+        if clockOutReminderEnabled {
+            let components = Calendar.current.dateComponents([.hour, .minute], from: clockOutReminderTime)
+            Task {
+                await notificationManager.scheduleClockOutReminder(at: components)
+            }
+        } else {
+            Task {
+                await notificationManager.cancelClockOutReminder()
+            }
+        }
+    }
+
+    private func secondsSinceMidnight(from date: Date) -> Double {
+        let components = Calendar.current.dateComponents([.hour, .minute], from: date)
+        return Double((components.hour ?? 0) * 3600 + (components.minute ?? 0) * 60)
+    }
+
+    private func dateFromSecondsSinceMidnight(_ seconds: Double) -> Date {
+        let hour = Int(seconds) / 3600
+        let minute = (Int(seconds) % 3600) / 60
+        var components = DateComponents()
+        components.hour = hour
+        components.minute = minute
+        return Calendar.current.date(from: components) ?? Date()
+    }
 }

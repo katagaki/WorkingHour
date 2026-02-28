@@ -55,6 +55,7 @@ struct WorkingHourApp: App {
         }
     }
 
+    /// Re-schedules reminders if they are enabled and were last
     private func startGeofencingIfEnabled() {
         let settings = SettingsManager.shared
         guard settings.geofencingEnabled else { return }
@@ -65,7 +66,7 @@ struct WorkingHourApp: App {
     /// scheduled more than 7 days ago (or have never been scheduled).
     private func refreshClockInRemindersIfNeeded() {
         let settings = SettingsManager.shared
-        guard settings.clockInReminderEnabled else { return }
+        guard settings.clockInReminderEnabled || settings.clockOutReminderEnabled else { return }
 
         let needsRefresh: Bool
         if let lastScheduled = settings.notificationsLastScheduledDate {
@@ -80,10 +81,13 @@ struct WorkingHourApp: App {
 
         guard needsRefresh else { return }
 
-        let components = settings.clockInReminderTimeComponents
-
         Task {
-            await NotificationManager.shared.scheduleClockInReminders(at: components)
+            if settings.clockInReminderEnabled {
+                await NotificationManager.shared.scheduleClockInReminders(at: settings.clockInReminderTimeComponents)
+            }
+            if settings.clockOutReminderEnabled {
+                await NotificationManager.shared.scheduleClockOutReminder(at: settings.clockOutReminderTimeComponents)
+            }
             settings.notificationsLastScheduledDate = Date()
         }
     }

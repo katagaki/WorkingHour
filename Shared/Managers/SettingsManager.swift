@@ -157,6 +157,15 @@ final class SettingsManager {
         return components
     }
 
+    /// Convenience: returns `DateComponents` (hour + minute) for the stored clock-out time.
+    var clockOutReminderTimeComponents: DateComponents {
+        let totalSeconds = Int(clockOutReminderTime)
+        var components = DateComponents()
+        components.hour = totalSeconds / 3600
+        components.minute = (totalSeconds % 3600) / 60
+        return components
+    }
+
     // MARK: - Initialization
 
     private init() {
