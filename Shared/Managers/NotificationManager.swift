@@ -75,6 +75,7 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         content.title = String(localized: "Notification.ClockedIn.Title")
         content.body = String(localized: "Notification.ClockedIn.Body \(timeFormatter.string(from: clockInTime))")
         content.sound = .default
+        content.interruptionLevel = .timeSensitive
 
         let request = UNNotificationRequest(
             identifier: Identifier.clockInConfirmation,
@@ -100,6 +101,7 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         content.title = String(localized: "Notification.ClockIn.Title")
         content.body = String(localized: "Notification.ClockIn.Body")
         content.sound = .default
+        content.interruptionLevel = .timeSensitive
 
         for dayOffset in 0..<schedulingWindowDays {
             guard let targetDate = calendar.date(byAdding: .day, value: dayOffset, to: today) else {
@@ -158,6 +160,7 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         content.title = String(localized: "Notification.ClockOut.Title")
         content.body = String(localized: "Notification.ClockOut.Body")
         content.sound = .default
+        content.interruptionLevel = .timeSensitive
         content.categoryIdentifier = Category.clockOutReminder
 
         for dayOffset in 0..<schedulingWindowDays {
@@ -216,6 +219,7 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         content.title = String(localized: "Notification.ClockOut.Title")
         content.body = String(localized: "Notification.ClockOut.Body")
         content.sound = .default
+        content.interruptionLevel = .timeSensitive
         content.categoryIdentifier = Category.clockOutReminder
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1800, repeats: false)
