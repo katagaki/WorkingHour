@@ -208,10 +208,16 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
 
     nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter,
-        didReceive response: UNNotificationResponse
-    ) async {
-        guard response.actionIdentifier == Action.snooze else { return }
-        await scheduleSnoozeReminder()
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        let actionIdentifier = response.actionIdentifier
+        Task { @MainActor in
+            if actionIdentifier == Action.snooze {
+                await self.scheduleSnoozeReminder()
+            }
+            completionHandler()
+        }
     }
 
     private func scheduleSnoozeReminder() async {
