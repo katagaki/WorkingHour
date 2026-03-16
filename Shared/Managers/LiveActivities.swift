@@ -9,6 +9,16 @@ import ActivityKit
 import Foundation
 
 class LiveActivities {
+    private static func staleDateForClockIn(_ clockInTime: Date) -> Date {
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: clockInTime)
+        let targetDate = hour >= 21
+            ? calendar.date(byAdding: .day, value: 1, to: clockInTime)!
+            : clockInTime
+        return calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: targetDate)!)
+    }
+
+
     public static func hasActivity(for entryId: String) -> Bool {
         let activities = Activity<UshioAttributes>.activities
         return activities.contains(where: { $0.attributes.entryId == entryId })
@@ -44,7 +54,7 @@ class LiveActivities {
             totalBreakTime: data.totalBreakTime,
             standardWorkingHours: data.standardWorkingHours
         )
-        let staleDate = data.clockInTime.addingTimeInterval(data.standardWorkingHours + 14400)
+        let staleDate = staleDateForClockIn(data.clockInTime)
         let content = ActivityContent(state: contentState, staleDate: staleDate)
 
         do {
@@ -64,7 +74,7 @@ class LiveActivities {
             totalBreakTime: data.totalBreakTime,
             standardWorkingHours: data.standardWorkingHours
         )
-        let staleDate = data.clockInTime.addingTimeInterval(data.standardWorkingHours + 14400)
+        let staleDate = staleDateForClockIn(data.clockInTime)
         let content = ActivityContent(state: contentState, staleDate: staleDate)
 
         let activities = Activity<UshioAttributes>.activities
