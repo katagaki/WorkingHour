@@ -31,6 +31,14 @@ struct EntryEditor: View {
         self.hasClockOutTime = entry.clockOutTime != nil
     }
 
+    var safeBreakTimeRange: ClosedRange<Date> {
+        if newClockInTime <= newClockOutTime {
+            return newClockInTime...newClockOutTime
+        } else {
+            return newClockOutTime...newClockInTime
+        }
+    }
+
     var sortedBreakTimes: [Break] {
         (entry.breakTimes ?? []).sorted { $0.start < $1.start }
     }
@@ -56,7 +64,7 @@ struct EntryEditor: View {
                     }
                 }
             }
-        ), in: newClockInTime...newClockOutTime)
+        ), in: safeBreakTimeRange)
 
         if (entry.breakTimes ?? [])[index].end != nil {
             TimelineRow(.breakEnd, date: Binding(
@@ -66,7 +74,7 @@ struct EntryEditor: View {
                         (entry.breakTimes ?? [])[index].end = newEnd
                     }
                 }
-            ), in: newClockInTime...newClockOutTime)
+            ), in: safeBreakTimeRange)
         } else {
             TimelineRow(.breakTime, date: .constant(.distantPast))
         }
@@ -77,13 +85,13 @@ struct EntryEditor: View {
     var body: some View {
         NavigationStack {
             List {
-                TimelineRow(.start, date: $newClockInTime)
+                TimelineRow(.start, date: $newClockInTime, in: hasClockOutTime ? .distantPast...newClockOutTime : nil)
                 if !sortedBreakTimes.isEmpty {
                     TimelineRow(.neutral, date: .constant(.distantPast))
                 }
                 breakTimesView
                 if hasClockOutTime {
-                    TimelineRow(.end, date: $newClockOutTime)
+                    TimelineRow(.end, date: $newClockOutTime, in: newClockInTime...Date.distantFuture)
                 }
 
                 // Break Management Section
@@ -197,13 +205,13 @@ struct EntryEditor: View {
                             DatePicker(
                                 "EntryEditor.Break.Start",
                                 selection: $newBreakStart,
-                                in: newClockInTime...newClockOutTime,
+                                in: safeBreakTimeRange,
                                 displayedComponents: [.date, .hourAndMinute]
                             )
                             DatePicker(
                                 "EntryEditor.Break.End",
                                 selection: $newBreakEnd,
-                                in: newClockInTime...newClockOutTime,
+                                in: safeBreakTimeRange,
                                 displayedComponents: [.date, .hourAndMinute]
                             )
                         } footer: {

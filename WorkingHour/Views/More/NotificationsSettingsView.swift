@@ -99,6 +99,18 @@ struct NotificationsSettingsView: View {
                 await notificationManager.cancelClockInReminders()
             }
         }
+
+        if clockOutReminderEnabled {
+            let components = Calendar.current.dateComponents([.hour, .minute], from: clockOutReminderTime)
+            Task {
+                await notificationManager.scheduleClockOutReminder(at: components)
+                settingsManager.notificationsLastScheduledDate = Date()
+            }
+        } else {
+            Task {
+                await notificationManager.cancelClockOutReminder()
+            }
+        }
     }
 
     private func secondsSinceMidnight(from date: Date) -> Double {
