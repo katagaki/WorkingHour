@@ -58,49 +58,70 @@ struct UshioLiveActivity: Widget {
                     .padding(.top, 2.0)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    HStack(spacing: 8) {
-                        if context.state.isOnBreak {
-                            Button(intent: EndBreakIntent(entryId: context.attributes.entryId)) {
-                                Label {
-                                    Text("TimeClock.Break.End")
-                                } icon: {
-                                    Image(systemName: "arrowshape.turn.up.backward.badge.clock.fill")
-                                }
-                                .font(.body)
-                                .fontWeight(.semibold)
-                                .padding(.vertical, 4)
-                                .frame(maxWidth: .infinity)
+                    VStack(spacing: 8) {
+                        if context.isStale && context.state.clockOutTime == nil {
+                            HStack(spacing: 6) {
+                                Image(systemName: "exclamationmark.arrow.circlepath")
+                                    .font(.caption)
+                                Text("LiveActivity.Stale.Message")
+                                    .font(.caption2)
+                                    .fontWeight(.semibold)
+                                    .multilineTextAlignment(.leading)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .tint(.red)
-                            .buttonStyle(.bordered)
-                        } else {
-                            Button(intent: StartBreakIntent(entryId: context.attributes.entryId)) {
-                                Label {
-                                    Text("Shared.Break")
-                                } icon: {
-                                    Image(systemName: "cup.and.heat.waves.fill")
+                            .foregroundStyle(.orange)
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 10)
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.orange.opacity(0.15))
+                            )
+                        }
+                        HStack(spacing: 8) {
+                            if context.state.isOnBreak {
+                                Button(intent: EndBreakIntent(entryId: context.attributes.entryId)) {
+                                    Label {
+                                        Text("TimeClock.Break.End")
+                                    } icon: {
+                                        Image(systemName: "arrowshape.turn.up.backward.badge.clock.fill")
+                                    }
+                                    .font(.body)
+                                    .fontWeight(.semibold)
+                                    .padding(.vertical, 4)
+                                    .frame(maxWidth: .infinity)
                                 }
-                                .font(.body)
-                                .fontWeight(.semibold)
-                                .padding(.vertical, 4)
-                                .frame(maxWidth: .infinity)
-                            }
-                            .tint(.orange)
-                            .buttonStyle(.bordered)
+                                .tint(.red)
+                                .buttonStyle(.bordered)
+                            } else {
+                                Button(intent: StartBreakIntent(entryId: context.attributes.entryId)) {
+                                    Label {
+                                        Text("Shared.Break")
+                                    } icon: {
+                                        Image(systemName: "cup.and.heat.waves.fill")
+                                    }
+                                    .font(.body)
+                                    .fontWeight(.semibold)
+                                    .padding(.vertical, 4)
+                                    .frame(maxWidth: .infinity)
+                                }
+                                .tint(.orange)
+                                .buttonStyle(.bordered)
 
-                            Button(intent: ClockOutIntent(entryId: context.attributes.entryId)) {
-                                Label {
-                                    Text("TimeClock.Work.ClockOut")
-                                } icon: {
-                                    Image(systemName: "stop.fill")
+                                Button(intent: ClockOutIntent(entryId: context.attributes.entryId)) {
+                                    Label {
+                                        Text("TimeClock.Work.ClockOut")
+                                    } icon: {
+                                        Image(systemName: "stop.fill")
+                                    }
+                                    .font(.body)
+                                    .fontWeight(.semibold)
+                                    .padding(.vertical, 4)
+                                    .frame(maxWidth: .infinity)
                                 }
-                                .font(.body)
-                                .fontWeight(.semibold)
-                                .padding(.vertical, 4)
-                                .frame(maxWidth: .infinity)
+                                .tint(.red)
+                                .buttonStyle(.bordered)
                             }
-                            .tint(.red)
-                            .buttonStyle(.bordered)
                         }
                     }
                     .padding(.top, 8)
