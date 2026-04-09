@@ -46,32 +46,30 @@ struct EntryEditor: View {
     @ViewBuilder
     var breakTimesView: some View {
         ForEach(sortedBreakTimes) { breakTime in
-            if let index = (entry.breakTimes ?? []).firstIndex(where: { $0.id == breakTime.id }) {
-                breakTimelineRows(for: index)
-            }
+            breakTimelineRows(for: breakTime)
         }
     }
 
     @ViewBuilder
-    func breakTimelineRows(for index: Int) -> some View {
+    func breakTimelineRows(for breakTime: Break) -> some View {
         TimelineRow(.breakStart, date: Binding(
-            get: { (entry.breakTimes ?? [])[index].start },
+            get: { breakTime.start },
             set: { newStart in
                 withAnimation(.smooth(duration: 0.35)) {
-                    (entry.breakTimes ?? [])[index].start = newStart
-                    if let end = (entry.breakTimes ?? [])[index].end, end < newStart {
-                        (entry.breakTimes ?? [])[index].end = newStart
+                    breakTime.start = newStart
+                    if let end = breakTime.end, end < newStart {
+                        breakTime.end = newStart
                     }
                 }
             }
         ), in: safeBreakTimeRange)
 
-        if (entry.breakTimes ?? [])[index].end != nil {
+        if breakTime.end != nil {
             TimelineRow(.breakEnd, date: Binding(
-                get: { (entry.breakTimes ?? [])[index].end ?? .now },
+                get: { breakTime.end ?? .now },
                 set: { newEnd in
                     withAnimation(.smooth(duration: 0.35)) {
-                        (entry.breakTimes ?? [])[index].end = newEnd
+                        breakTime.end = newEnd
                     }
                 }
             ), in: safeBreakTimeRange)
@@ -131,12 +129,7 @@ struct EntryEditor: View {
                                 Spacer()
                                 Button(role: .destructive) {
                                     withAnimation(.smooth(duration: 0.35)) {
-                                        if let originalIndex = (entry.breakTimes ?? []).firstIndex(
-                                            where: { $0.id == breakTime.id }
-                                        ) {
-                                            let breakToDelete = (entry.breakTimes ?? [])[originalIndex]
-                                            modelContext.delete(breakToDelete)
-                                        }
+                                        deleteBreak(breakTime)
                                     }
                                 } label: {
                                     Image(systemName: "trash")
@@ -245,6 +238,30 @@ struct EntryEditor: View {
         }
         .interactiveDismissDisabled(true)
         .presentationDetents([.medium, .large])
+    }
+
+    private func deleteBreak(_ breakTime: Break) {
+        // If this was the ongoing break of an active work session, clear the flag
+        // so the entry is no longer stuck in an "on break" state.
+        if entry.clockOutTime == nil, breakTime.end == nil, entry.isOnBreak {
+            entry.isOnBreak = false
+        }
+
+        // Sever the inverse relationship first so SwiftUI's next render no longer
+        // sees this break in entry.breakTimes, avoiding stale bindings to a
+        // deleted SwiftData object.
+        if let index = entry.breakTimes?.firstIndex(where: { $0.id == breakTime.id }) {
+            entry.breakTimes?.remove(at: index)
+        }
+        breakTime.clockEntry = nil
+        modelContext.delete(breakTime)
+
+        // Keep the live activity in sync when the session is still ongoing.
+        if entry.clockOutTime == nil, let sessionData = entry.toWorkSessionData() {
+            Task {
+                await LiveActivities.updateActivity(with: sessionData)
+            }
+        }
     }
 
     private func saveEntry() {
