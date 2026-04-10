@@ -123,33 +123,31 @@ struct LiveActivityView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            // Stale warning: prompt the user to reopen the app to refresh
-            // the live activity. ActivityKit caps the stale date at 8 hours,
-            // so when it elapses we ask the user to refresh or end the
-            // session from the app.
-            if context.isStale && context.state.clockOutTime == nil {
-                HStack(spacing: 6) {
-                    Image(systemName: "exclamationmark.arrow.circlepath")
-                        .font(.caption)
-                    Text("LiveActivity.Stale.Message")
-                        .font(.caption2)
-                        .fontWeight(.semibold)
-                        .multilineTextAlignment(.leading)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .foregroundStyle(.orange)
-                .padding(.vertical, 6)
-                .padding(.horizontal, 10)
-                .frame(maxWidth: .infinity)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.orange.opacity(0.15))
-                )
-            }
-
-            // Action buttons (only show when not clocked out)
+            // Action buttons (only show when not clocked out).
+            // When the activity has gone stale (ActivityKit caps the stale
+            // date at 8 hours) replace the buttons with a prompt telling
+            // the user to open the app to refresh or end their session.
             if context.state.clockOutTime == nil {
-                HStack(spacing: 8) {
+                if context.isStale {
+                    HStack(spacing: 6) {
+                        Image(systemName: "exclamationmark.arrow.circlepath")
+                            .font(.caption)
+                        Text("LiveActivity.Stale.Message")
+                            .font(.caption2)
+                            .fontWeight(.semibold)
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .foregroundStyle(.orange)
+                    .padding(.vertical, 6)
+                    .padding(.horizontal, 10)
+                    .frame(maxWidth: .infinity)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.orange.opacity(0.15))
+                    )
+                } else {
+                    HStack(spacing: 8) {
                     if context.state.isOnBreak {
                         Button(intent: EndBreakIntent(entryId: context.attributes.entryId)) {
                             Label {
@@ -189,6 +187,7 @@ struct LiveActivityView: View {
                         }
                         .tint(.red)
                         .buttonStyle(.borderedProminent)
+                    }
                     }
                 }
             }
