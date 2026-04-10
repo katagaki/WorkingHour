@@ -14,13 +14,13 @@ class LiveActivities {
     /// end-and-restart cycle only runs once per process lifetime.
     private static var hasRefreshedOnLaunch = false
 
-    /// ActivityKit caps the stale date at 8 hours from now. We use a value
-    /// slightly below that cap so the activity reliably transitions to the
-    /// stale state, prompting the user to open the app to refresh it.
-    private static let staleDateInterval: TimeInterval = 8 * 60 * 60 - 60
+    /// Maximum stale interval allowed by ActivityKit (8 hours from now).
+    /// After this point the activity transitions to the stale state,
+    /// prompting the user to open the app to refresh it.
+    private static let maxStaleInterval: TimeInterval = 8 * 60 * 60
 
     private static func nextStaleDate() -> Date {
-        return Date().addingTimeInterval(staleDateInterval)
+        return Date().addingTimeInterval(maxStaleInterval)
     }
 
 
