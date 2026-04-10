@@ -5,6 +5,7 @@
 //  Created by シン・ジャスティン on 2026/02/11.
 //
 
+import Komponents
 import SwiftData
 import SwiftUI
 
@@ -59,16 +60,33 @@ struct ProjectEditorView: View {
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .cancel) {
-                        dismiss()
+                    if #available(iOS 26, *) {
+                        Button(role: .cancel) {
+                            dismiss()
+                        }
+                    } else {
+                        CloseButton {
+                            dismiss()
+                        }
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(role: .confirm) {
-                        project.name = editedName.trimmingCharacters(in: .whitespaces)
-                        project.isActive = isActive
-                        // dataManager.updateProject(project)
-                        dismiss()
+                    Group {
+                        if #available(iOS 26, *) {
+                            Button(role: .confirm) {
+                                project.name = editedName.trimmingCharacters(in: .whitespaces)
+                                project.isActive = isActive
+                                // dataManager.updateProject(project)
+                                dismiss()
+                            }
+                        } else {
+                            Button("Shared.Done") {
+                                project.name = editedName.trimmingCharacters(in: .whitespaces)
+                                project.isActive = isActive
+                                // dataManager.updateProject(project)
+                                dismiss()
+                            }
+                        }
                     }
                     .disabled(editedName.trimmingCharacters(in: .whitespaces).isEmpty)
                 }

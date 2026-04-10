@@ -54,10 +54,12 @@ struct WorkplaceEditorView: View {
                             VStack(alignment: .leading, spacing: 2.0) {
                                 Text(item.name ?? "")
                                     .foregroundStyle(.primary)
-                                if let subtitle = item.address?.fullAddress {
-                                    Text(subtitle)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                if #available(iOS 26.0, *) {
+                                    if let subtitle = item.address?.fullAddress {
+                                        Text(subtitle)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
                             }
                         }
@@ -161,7 +163,11 @@ struct WorkplaceEditorView: View {
     }
 
     private func selectSearchResult(_ item: MKMapItem) {
-        coordinate = item.location.coordinate
+        if #available(iOS 26.0, *) {
+            coordinate = item.location.coordinate
+        } else {
+            coordinate = item.placemark.coordinate
+        }
         if name.isEmpty {
             name = item.name ?? ""
         }

@@ -87,7 +87,7 @@ struct TimesheetView: View {
                     }
                     .padding(.horizontal, 20.0)
                     .padding(.vertical, 8.0)
-                    .glassEffect(.regular, in: .rect(cornerRadius: 28.0))
+                    .adaptiveGlass()
                     .padding(.horizontal, 20.0)
                 }
             }

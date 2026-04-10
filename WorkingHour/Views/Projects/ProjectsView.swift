@@ -104,12 +104,20 @@ struct ProjectsView: View {
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showingAddProject = true
-                    } label: {
-                        Image(systemName: "plus")
+                    if #available(iOS 26, *) {
+                        Button {
+                            showingAddProject = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                        .buttonStyle(.glassProminent)
+                    } else {
+                        Button {
+                            showingAddProject = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
                     }
-                    .buttonStyle(.glassProminent)
                 }
             }
             .alert("Projects.Add", isPresented: $showingAddProject) {

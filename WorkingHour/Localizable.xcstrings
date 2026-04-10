@@ -40,9 +40,6 @@
     "%lld" : {
       "shouldTranslate" : false
     },
-    "Clear All Data" : {
-      "shouldTranslate" : false
-    },
     "CSV" : {
       "extractionState" : "manual",
       "shouldTranslate" : false
@@ -565,6 +562,38 @@
         }
       }
     },
+    "Notification.ClockedIn.Body %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You clocked in at %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@に出勤しました。"
+          }
+        }
+      }
+    },
+    "Notification.ClockedIn.Title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clocked In"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出勤しました"
+          }
+        }
+      }
+    },
     "Notification.ClockIn.Body" : {
       "localizations" : {
         "en" : {
@@ -629,38 +658,6 @@
         }
       }
     },
-    "Notification.ClockedIn.Body %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You clocked in at %@."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@に出勤しました。"
-          }
-        }
-      }
-    },
-    "Notification.ClockedIn.Title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Clocked In"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "出勤しました"
-          }
-        }
-      }
-    },
     "Notification.Snooze" : {
       "localizations" : {
         "en" : {
@@ -676,9 +673,6 @@
           }
         }
       }
-    },
-    "Populate Sample Data" : {
-      "shouldTranslate" : false
     },
     "Projects.Active" : {
       "localizations" : {

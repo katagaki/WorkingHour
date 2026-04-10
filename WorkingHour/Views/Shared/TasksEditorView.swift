@@ -5,6 +5,7 @@
 //  Created by Assistant on 2026/02/07.
 //
 
+import Komponents
 import SwiftData
 import SwiftUI
 
@@ -61,14 +62,27 @@ struct TasksEditorView: View {
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .cancel) {
-                        dismiss()
+                    if #available(iOS 26, *) {
+                        Button(role: .cancel) {
+                            dismiss()
+                        }
+                    } else {
+                        CloseButton {
+                            dismiss()
+                        }
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(role: .confirm) {
-                        saveTasks()
-                        dismiss()
+                    if #available(iOS 26, *) {
+                        Button(role: .confirm) {
+                            saveTasks()
+                            dismiss()
+                        }
+                    } else {
+                        CloseButton {
+                            saveTasks()
+                            dismiss()
+                        }
                     }
                 }
             }

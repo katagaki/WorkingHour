@@ -178,13 +178,24 @@ struct EntryEditor: View {
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(role: .confirm) {
-                        entry.clockInTime = newClockInTime
-                        if hasClockOutTime {
-                            entry.clockOutTime = newClockOutTime
+                    if #available(iOS 26, *) {
+                        Button(role: .confirm) {
+                            entry.clockInTime = newClockInTime
+                            if hasClockOutTime {
+                                entry.clockOutTime = newClockOutTime
+                            }
+                            saveEntry()
+                            dismiss()
                         }
-                        saveEntry()
-                        dismiss()
+                    } else {
+                        Button("Shared.Done") {
+                            entry.clockInTime = newClockInTime
+                            if hasClockOutTime {
+                                entry.clockOutTime = newClockOutTime
+                            }
+                            saveEntry()
+                            dismiss()
+                        }
                     }
                 }
             }
