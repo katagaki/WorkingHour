@@ -47,11 +47,15 @@ struct WorkingHourApp: App {
             sortBy: [SortDescriptor(\.clockInTime, order: .reverse)]
         )
 
-        if let activeEntry = try? context.fetch(descriptor).first,
-           let sessionData = activeEntry.toWorkSessionData() {
-            Task {
-                await LiveActivities.ensureActivity(with: sessionData)
-            }
+        let activeEntry = try? context.fetch(descriptor).first
+        let sessionData = activeEntry?.toWorkSessionData()
+
+        // On first launch this closes every existing live activity and
+        // starts a fresh one (resetting the 8-hour stale date). On
+        // subsequent foreground transitions within the same process it
+        // just ensures an activity exists.
+        Task {
+            await LiveActivities.refreshOnLaunch(with: sessionData)
         }
     }
 

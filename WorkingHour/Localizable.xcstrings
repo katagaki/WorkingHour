@@ -497,6 +497,23 @@
         }
       }
     },
+    "LiveActivity.Stale.Message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the app to refresh or end your session"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを開いて更新するか、退勤してください"
+          }
+        }
+      }
+    },
     "More.Projects" : {
       "extractionState" : "manual",
       "localizations" : {

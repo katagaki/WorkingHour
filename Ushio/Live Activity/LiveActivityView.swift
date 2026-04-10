@@ -123,9 +123,13 @@ struct LiveActivityView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            // Action buttons (only show when not clocked out)
+            // Action buttons (only show when not clocked out). When the
+            // activity has gone stale, StaleWarningView takes their place.
             if context.state.clockOutTime == nil {
-                HStack(spacing: 8) {
+                if context.isStale {
+                    StaleWarningView()
+                } else {
+                    HStack(spacing: 8) {
                     if context.state.isOnBreak {
                         Button(intent: EndBreakIntent(entryId: context.attributes.entryId)) {
                             Label {
@@ -165,6 +169,7 @@ struct LiveActivityView: View {
                         }
                         .tint(.red)
                         .buttonStyle(.borderedProminent)
+                    }
                     }
                 }
             }
