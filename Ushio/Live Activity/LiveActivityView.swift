@@ -123,29 +123,11 @@ struct LiveActivityView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            // Action buttons (only show when not clocked out).
-            // When the activity has gone stale (ActivityKit caps the stale
-            // date at 8 hours) replace the buttons with a prompt telling
-            // the user to open the app to refresh or end their session.
+            // Action buttons (only show when not clocked out). When the
+            // activity has gone stale, StaleWarningView takes their place.
             if context.state.clockOutTime == nil {
                 if context.isStale {
-                    HStack(spacing: 6) {
-                        Image(systemName: "exclamationmark.arrow.circlepath")
-                            .font(.caption)
-                        Text("LiveActivity.Stale.Message")
-                            .font(.caption2)
-                            .fontWeight(.semibold)
-                            .multilineTextAlignment(.leading)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .foregroundStyle(.orange)
-                    .padding(.vertical, 6)
-                    .padding(.horizontal, 10)
-                    .frame(maxWidth: .infinity)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.orange.opacity(0.15))
-                    )
+                    StaleWarningView()
                 } else {
                     HStack(spacing: 8) {
                     if context.state.isOnBreak {

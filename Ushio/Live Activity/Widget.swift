@@ -58,28 +58,11 @@ struct UshioLiveActivity: Widget {
                     .padding(.top, 2.0)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    // When the activity has gone stale, replace the action
-                    // buttons with a prompt telling the user to open the
-                    // app to refresh or end their session.
+                    // When the activity has gone stale, StaleWarningView
+                    // takes the place of the action buttons.
                     if context.isStale && context.state.clockOutTime == nil {
-                        HStack(spacing: 6) {
-                            Image(systemName: "exclamationmark.arrow.circlepath")
-                                .font(.caption)
-                            Text("LiveActivity.Stale.Message")
-                                .font(.caption2)
-                                .fontWeight(.semibold)
-                                .multilineTextAlignment(.leading)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        .foregroundStyle(.orange)
-                        .padding(.vertical, 6)
-                        .padding(.horizontal, 10)
-                        .frame(maxWidth: .infinity)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color.orange.opacity(0.15))
-                        )
-                        .padding(.top, 8)
+                        StaleWarningView()
+                            .padding(.top, 8)
                     } else {
                         HStack(spacing: 8) {
                             if context.state.isOnBreak {
