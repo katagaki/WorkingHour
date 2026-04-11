@@ -175,6 +175,12 @@ struct LiveActivityView: View {
             }
         }
         .padding(16)
+        .background {
+            if context.state.isOnBreak {
+                Color.orange.opacity(0.2)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
     }
 
     func formatTimeInterval(_ interval: TimeInterval) -> String {

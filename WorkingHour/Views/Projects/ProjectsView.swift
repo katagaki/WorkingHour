@@ -26,38 +26,23 @@ struct ProjectsView: View {
                 // Active Projects
                 Section {
                     ForEach(activeProjects) { project in
-                        Button {
+                        Button(project.name, systemImage: "folder.fill") {
                             projectBeingEdited = project
-                        } label: {
-                            HStack {
-                                Image(systemName: "folder.fill")
-                                    .foregroundStyle(.accent)
-                                Text(project.name)
-                                    .foregroundStyle(.primary)
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
                         }
+                        .tint(.primary)
                         .swipeActions(edge: .trailing) {
-                            Button {
+                            Button("Shared.Delete", systemImage: "trash", role: .destructive) {
+                                withAnimation {
+                                    modelContext.delete(project)
+                                }
+                            }
+                            Button("Projects.Archive", systemImage: "archivebox") {
                                 withAnimation {
                                     project.isActive = false
                                     // dataManager.updateProject(project)
                                 }
-                            } label: {
-                                Label("Projects.Archive", systemImage: "archivebox")
                             }
                             .tint(.orange)
-
-                            Button(role: .destructive) {
-                                withAnimation {
-                                    modelContext.delete(project)
-                                }
-                            } label: {
-                                Label("Shared.Delete", systemImage: "trash")
-                            }
                         }
                     }
                 } header: {
@@ -68,30 +53,26 @@ struct ProjectsView: View {
                 if !archivedProjects.isEmpty {
                     Section {
                         ForEach(archivedProjects) { project in
-                            HStack {
-                                Image(systemName: "folder")
-                                    .foregroundStyle(.secondary)
-                                Text(project.name)
-                                    .foregroundStyle(.secondary)
+                            Button {
+                                projectBeingEdited = project
+                            } label: {
+                                Label(project.name, systemImage: "folder.fill")
                             }
+                            .tint(.primary)
                             .swipeActions(edge: .leading) {
-                                Button {
+                                Button("Projects.Restore", systemImage: "arrow.uturn.backward") {
                                     withAnimation {
                                         project.isActive = true
                                         // dataManager.updateProject(project)
                                     }
-                                } label: {
-                                    Label("Projects.Restore", systemImage: "arrow.uturn.backward")
                                 }
                                 .tint(.accent)
                             }
                             .swipeActions(edge: .trailing) {
-                                Button(role: .destructive) {
+                                Button("Shared.Delete", systemImage: "trash", role: .destructive) {
                                     withAnimation {
                                         modelContext.delete(project)
                                     }
-                                } label: {
-                                    Label("Shared.Delete", systemImage: "trash")
                                 }
                             }
                         }
