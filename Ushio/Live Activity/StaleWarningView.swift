@@ -17,18 +17,18 @@ struct StaleWarningView: View {
             Image(systemName: "exclamationmark.arrow.circlepath")
                 .font(.caption)
             Text("LiveActivity.Stale.Message")
-                .font(.caption2)
+                .font(.caption)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .foregroundStyle(.orange)
+        .foregroundStyle(.blue)
         .padding(.vertical, 6)
         .padding(.horizontal, 10)
         .frame(maxWidth: .infinity)
         .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.orange.opacity(0.15))
+            Capsule()
+                .fill(Color.blue.opacity(0.15))
         )
     }
 }
