@@ -364,7 +364,7 @@ struct TimeClockView: View {
                 activeEntry.clockOutTime = .now
                 modelContext.processPendingChanges()
                 Task {
-                    await LiveActivities.endActivity(with: sessionData, immediately: true)
+                    await LiveActivities.endActivity(with: sessionData)
                 }
             }
             timer?.invalidate()

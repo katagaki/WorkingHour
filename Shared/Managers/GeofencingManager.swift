@@ -205,7 +205,7 @@ final class GeofencingManager: NSObject {
             // End live activity
             if let sessionData {
                 Task {
-                    await LiveActivities.endActivity(with: sessionData, immediately: true)
+                    await LiveActivities.endActivity(with: sessionData)
                 }
             }
         } catch {

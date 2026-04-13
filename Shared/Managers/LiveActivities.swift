@@ -117,7 +117,12 @@ class LiveActivities {
         }
     }
 
-    public static func endActivity(with data: WorkSessionData, immediately: Bool = false) async {
+    /// Transitions an existing activity into its clocked-out state without
+    /// dismissing it. The activity remains visible on the Lock Screen /
+    /// Dynamic Island until the user dismisses it manually or the 8-hour
+    /// stale date elapses. Callers that need an immediate tear-down should
+    /// use `endAllActivities(immediately: true)` instead.
+    public static func endActivity(with data: WorkSessionData) async {
         let contentState = UshioAttributes.ContentState(
             clockInTime: data.clockInTime,
             clockOutTime: data.clockOutTime,
@@ -126,16 +131,12 @@ class LiveActivities {
             totalBreakTime: data.totalBreakTime,
             standardWorkingHours: data.standardWorkingHours
         )
-        let dismissDate = Date(timeIntervalSinceNow: 1800)
-        let content = ActivityContent(state: contentState, staleDate: immediately ? nil : dismissDate)
+        let content = ActivityContent(state: contentState, staleDate: nextStaleDate())
 
         let activities = Activity<UshioAttributes>.activities
         if let activity = activities.first(where: { $0.attributes.entryId == data.entryId }) {
-            log("LiveActivityManager: Ending activity \(activity.attributes.entryId)")
-            await activity.end(
-                content,
-                dismissalPolicy: immediately ? .immediate : .after(dismissDate)
-            )
+            log("LiveActivityManager: Updating activity \(activity.attributes.entryId) to clocked-out state")
+            await activity.update(content)
         } else {
             log("LiveActivityManager: No matching activity found")
         }
