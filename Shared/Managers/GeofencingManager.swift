@@ -186,12 +186,13 @@ final class GeofencingManager: NSObject {
                 return
             }
 
-            // End any active break first
-            if activeEntry.isOnBreak,
-               let lastBreak = (activeEntry.breakTimes ?? []).last,
-               lastBreak.end == nil {
-                lastBreak.end = .now
-                activeEntry.isOnBreak = false
+            // Don't auto-clock-out while on break. Stepping outside the
+            // workplace during a break (lunch, coffee run, errand) is
+            // expected and shouldn't end the session — and shouldn't
+            // dismiss the live activity.
+            if activeEntry.isOnBreak {
+                log("GeofencingManager: Skipping auto clock-out — entry is on break", prefix: "MIKA")
+                return
             }
 
             let sessionData = activeEntry.toWorkSessionData()
