@@ -36,11 +36,6 @@ struct BreakWindowsView: View {
                                 }
                             }
                             Spacer()
-                            if window.isEnabled {
-                                Image(systemName: "cup.and.saucer.fill")
-                                    .foregroundStyle(.orange)
-                                    .font(.caption)
-                            }
                         }
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
