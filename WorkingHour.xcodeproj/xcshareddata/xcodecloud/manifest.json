@@ -1,0 +1,9 @@
+{
+  "id" : "7f773f06-fd42-45bf-a40b-ae4167eacaf4",
+  "targets" : [
+    {
+      "id" : "9DCC8E76-56A9-4B78-BDDE-1930DA8793A4",
+      "name" : "WorkingHour"
+    }
+  ]
+}

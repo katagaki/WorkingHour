@@ -21,6 +21,12 @@ final class GeofencingManager: NSObject {
     var authorizationStatus: CLAuthorizationStatus = .notDetermined
     var isMonitoring: Bool = false
 
+    /// Region exits awaiting confirmation via `requestState`.
+    private var pendingExitConfirmations: Set<String> = []
+
+    /// Exit events received before this date are ignored.
+    private var ignoreExitEventsUntil: Date = .distantPast
+
     private override init() {
         super.init()
         locationManager.delegate = self
@@ -75,6 +81,9 @@ final class GeofencingManager: NSObject {
         // Stop all existing monitoring first
         stopMonitoringAllRegions()
 
+        // Ignore exits briefly while regions settle after re-registration.
+        ignoreExitEventsUntil = Date().addingTimeInterval(15)
+
         do {
             let descriptor = FetchDescriptor<Workplace>(
                 predicate: #Predicate { $0.isEnabled }
@@ -115,12 +124,18 @@ final class GeofencingManager: NSObject {
 
     private func handleRegionEntry() {
         let settings = SettingsManager.shared
-        guard settings.geofencingEnabled, settings.autoClockInEnabled else { return }
+        guard settings.geofencingEnabled else { return }
 
         guard let modelContext = DataManager.shared.modelContext else {
             log("GeofencingManager: No model context for clock-in", prefix: "MIKA")
             return
         }
+
+        // Ending an in-progress break takes priority and happens regardless of
+        // the auto clock-in setting or the current time.
+        if endActiveBreak(in: modelContext) { return }
+
+        guard settings.autoClockInEnabled else { return }
 
         // Check if there's already an active entry
         let descriptor = FetchDescriptor<ClockEntry>(
@@ -168,7 +183,7 @@ final class GeofencingManager: NSObject {
 
     private func handleRegionExit() {
         let settings = SettingsManager.shared
-        guard settings.geofencingEnabled, settings.autoClockOutEnabled else { return }
+        guard settings.geofencingEnabled else { return }
 
         guard let modelContext = DataManager.shared.modelContext else {
             log("GeofencingManager: No model context for clock-out", prefix: "MIKA")
@@ -182,9 +197,18 @@ final class GeofencingManager: NSObject {
 
         do {
             guard let activeEntry = try modelContext.fetch(descriptor).first else {
-                log("GeofencingManager: No active entry to clock out", prefix: "MIKA")
+                log("GeofencingManager: No active entry on exit", prefix: "MIKA")
                 return
             }
+
+            // During a configured break window, leaving starts a break instead
+            // of clocking out — regardless of the auto clock-out setting.
+            if isWithinBreakWindow(.now, in: modelContext) {
+                startAutoBreak(for: activeEntry, in: modelContext)
+                return
+            }
+
+            guard settings.autoClockOutEnabled else { return }
 
             // End any active break first
             if activeEntry.isOnBreak,
@@ -210,6 +234,90 @@ final class GeofencingManager: NSObject {
             }
         } catch {
             log("GeofencingManager: Error during auto clock-out: \(error)", prefix: "MIKA")
+        }
+    }
+
+    // MARK: - Automatic Breaks
+
+    /// Whether `date` falls within any enabled break window.
+    private func isWithinBreakWindow(_ date: Date, in modelContext: ModelContext) -> Bool {
+        let descriptor = FetchDescriptor<BreakWindow>(
+            predicate: #Predicate { $0.isEnabled }
+        )
+        do {
+            let windows = try modelContext.fetch(descriptor)
+            return windows.contains { $0.contains(date) }
+        } catch {
+            log("GeofencingManager: Error fetching break windows: \(error)", prefix: "MIKA")
+            return false
+        }
+    }
+
+    /// Starts a break for the active entry (unless one is already in progress)
+    /// and notifies the user.
+    private func startAutoBreak(for activeEntry: ClockEntry, in modelContext: ModelContext) {
+        guard !activeEntry.isOnBreak else {
+            log("GeofencingManager: Already on break, skipping auto break", prefix: "MIKA")
+            return
+        }
+
+        do {
+            let newBreak = Break(start: .now)
+            newBreak.clockEntry = activeEntry
+            modelContext.insert(newBreak)
+            activeEntry.isOnBreak = true
+            try modelContext.save()
+            DataManager.shared.loadAll()
+
+            log("GeofencingManager: Auto started break", prefix: "MIKA")
+
+            if let sessionData = activeEntry.toWorkSessionData() {
+                Task {
+                    await LiveActivities.updateActivity(with: sessionData)
+                }
+            }
+            Task {
+                await NotificationManager.shared.sendBreakStartedConfirmation(at: .now)
+            }
+        } catch {
+            log("GeofencingManager: Error starting auto break: \(error)", prefix: "MIKA")
+        }
+    }
+
+    /// Ends the active break, if any. Returns `true` when a break was ended.
+    private func endActiveBreak(in modelContext: ModelContext) -> Bool {
+        let descriptor = FetchDescriptor<ClockEntry>(
+            predicate: #Predicate { $0.clockOutTime == nil },
+            sortBy: [SortDescriptor(\.clockInTime, order: .reverse)]
+        )
+
+        do {
+            guard let activeEntry = try modelContext.fetch(descriptor).first,
+                  activeEntry.isOnBreak,
+                  let lastBreak = (activeEntry.breakTimes ?? []).last,
+                  lastBreak.end == nil else {
+                return false
+            }
+
+            lastBreak.end = .now
+            activeEntry.isOnBreak = false
+            try modelContext.save()
+            DataManager.shared.loadAll()
+
+            log("GeofencingManager: Auto ended break", prefix: "MIKA")
+
+            if let sessionData = activeEntry.toWorkSessionData() {
+                Task {
+                    await LiveActivities.updateActivity(with: sessionData)
+                }
+            }
+            Task {
+                await NotificationManager.shared.sendBreakEndedConfirmation(at: .now)
+            }
+            return true
+        } catch {
+            log("GeofencingManager: Error ending break: \(error)", prefix: "MIKA")
+            return false
         }
     }
 }
@@ -242,7 +350,40 @@ extension GeofencingManager: CLLocationManagerDelegate {
         guard region is CLCircularRegion else { return }
         Task { @MainActor in
             log("GeofencingManager: Exited region \(region.identifier)", prefix: "MIKA")
-            self.handleRegionExit()
+
+            if Date() < self.ignoreExitEventsUntil {
+                log(
+                    "GeofencingManager: Ignoring exit for \(region.identifier) during monitoring settling window",
+                    prefix: "MIKA"
+                )
+                return
+            }
+
+            // Confirm the device is genuinely outside before clocking out.
+            self.pendingExitConfirmations.insert(region.identifier)
+            manager.requestState(for: region)
+        }
+    }
+
+    nonisolated func locationManager(
+        _ manager: CLLocationManager,
+        didDetermineState state: CLRegionState,
+        for region: CLRegion
+    ) {
+        guard region is CLCircularRegion else { return }
+        Task { @MainActor in
+            // Only act on states we explicitly requested to confirm an exit.
+            guard self.pendingExitConfirmations.remove(region.identifier) != nil else { return }
+
+            if state == .outside {
+                log("GeofencingManager: Confirmed exit for \(region.identifier)", prefix: "MIKA")
+                self.handleRegionExit()
+            } else {
+                log(
+                    "GeofencingManager: Ignoring unconfirmed exit for \(region.identifier) (state=\(state.rawValue))",
+                    prefix: "MIKA"
+                )
+            }
         }
     }
 

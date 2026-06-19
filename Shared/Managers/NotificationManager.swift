@@ -20,6 +20,8 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         static let clockInConfirmation = "com.tsubuzaki.WorkingHour.clockInConfirmation"
         static let clockOutReminder = "com.tsubuzaki.WorkingHour.clockOutReminder"
         static let clockOutSnoozeReminder = "com.tsubuzaki.WorkingHour.clockOutSnoozeReminder"
+        static let breakStartedConfirmation = "com.tsubuzaki.WorkingHour.breakStartedConfirmation"
+        static let breakEndedConfirmation = "com.tsubuzaki.WorkingHour.breakEndedConfirmation"
     }
 
     private enum Action {
@@ -79,6 +81,52 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
 
         let request = UNNotificationRequest(
             identifier: Identifier.clockInConfirmation,
+            content: content,
+            trigger: nil
+        )
+
+        try? await center.add(request)
+    }
+
+    func sendBreakStartedConfirmation(at time: Date) async {
+        let authorized = await requestAuthorization()
+        guard authorized else { return }
+
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateStyle = .none
+        timeFormatter.timeStyle = .short
+
+        let content = UNMutableNotificationContent()
+        content.title = String(localized: "Notification.BreakStarted.Title")
+        content.body = String(localized: "Notification.BreakStarted.Body \(timeFormatter.string(from: time))")
+        content.sound = .default
+        content.interruptionLevel = .timeSensitive
+
+        let request = UNNotificationRequest(
+            identifier: Identifier.breakStartedConfirmation,
+            content: content,
+            trigger: nil
+        )
+
+        try? await center.add(request)
+    }
+
+    func sendBreakEndedConfirmation(at time: Date) async {
+        let authorized = await requestAuthorization()
+        guard authorized else { return }
+
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateStyle = .none
+        timeFormatter.timeStyle = .short
+
+        let content = UNMutableNotificationContent()
+        content.title = String(localized: "Notification.BreakEnded.Title")
+        content.body = String(localized: "Notification.BreakEnded.Body \(timeFormatter.string(from: time))")
+        content.sound = .default
+        content.interruptionLevel = .timeSensitive
+
+        let request = UNNotificationRequest(
+            identifier: Identifier.breakEndedConfirmation,
             content: content,
             trigger: nil
         )

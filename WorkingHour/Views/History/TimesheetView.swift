@@ -16,11 +16,11 @@ struct TimesheetView: View {
 
     @State var isMoreViewOpen: Bool = false
 
-    @State var isBrowsingPastEntries: Bool = false
     @State var selectedMonth: Int
     @State var selectedYear: Int
 
     @State var entryBeingEdited: ClockEntry?
+    @State var shareableFile: ShareableFile?
 
     @Namespace var namespace
 
@@ -54,53 +54,64 @@ struct TimesheetView: View {
             .listStyle(.plain)
             .navigationTitle("ViewTitle.Timesheet")
             .toolbarTitleDisplayMode(.inlineLarge)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+            .safeAreaInset(edge: .top, spacing: 0.0) {
+                HStack(alignment: .center, spacing: 8.0) {
+                    Picker("Shared.Month", selection: $selectedMonth) {
+                        ForEach(
+                            Array(selectableMonths.enumerated()),
+                            id: \.offset
+                        ) { index, month in
+                            Text(month)
+                                .tag(index + 1)
+                        }
+                    }
+                    Picker("Shared.Year", selection: $selectedYear) {
+                        ForEach(selectableYears, id: \.self) { year in
+                            Text(String(year))
+                                .tag(year)
+                        }
+                    }
+                    Spacer()
                     Menu {
-                        Toggle(
-                            "EntryEditor.BrowsePastEntries",
-                            isOn: $isBrowsingPastEntries.animation(.smooth.speed(2.0))
-                        )
+                        Section("Export.Section.Timesheet") {
+                            Button("Excel", systemImage: "tablecells") {
+                                share(.timesheetExcel)
+                            }
+                            Button("CSV", systemImage: "doc.text") {
+                                share(.timesheetCSV)
+                            }
+                        }
+                        Section("Export.Section.Overtime") {
+                            Button("Excel", systemImage: "tablecells") {
+                                share(.overtimeExcel)
+                            }
+                            Button("CSV", systemImage: "doc.text") {
+                                share(.overtimeCSV)
+                            }
+                        }
                     } label: {
-                        Image(systemName: "ellipsis")
+                        Image(systemName: "square.and.arrow.up")
                     }
                 }
-            }
-            .safeAreaInset(edge: .top, spacing: 0.0) {
-                if isBrowsingPastEntries {
-                    HStack(alignment: .center, spacing: 8.0) {
-                        Picker("Shared.Month", selection: $selectedMonth) {
-                            ForEach(
-                                Array(selectableMonths.enumerated()),
-                                id: \.offset
-                            ) { index, month in
-                                Text(month)
-                                    .tag(index + 1)
-                            }
-                        }
-                        Picker("Shared.Year", selection: $selectedYear) {
-                            ForEach(selectableYears, id: \.self) { year in
-                                Text(String(year))
-                                    .tag(year)
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 20.0)
-                    .padding(.vertical, 8.0)
-                    .adaptiveGlass()
-                    .padding(.horizontal, 20.0)
+                .padding(.horizontal, 20.0)
+                .padding(.vertical, 8.0)
+                .adaptiveGlass()
+                .padding(.horizontal, 20.0)
+                .sheet(item: $shareableFile) { file in
+                    ShareSheet(activityItems: [file.url])
                 }
             }
             .sheet(item: $entryBeingEdited) { entry in
                 EntryEditor(entry)
                     .navigationTransition(.zoom(sourceID: entry.id, in: namespace))
             }
-            .onChange(of: isBrowsingPastEntries) { oldValue, newValue in
-                if oldValue && !newValue {
-                    selectedMonth = Calendar.current.component(.month, from: .now)
-                    selectedYear = Calendar.current.component(.year, from: .now)
-                }
-            }
+        }
+    }
+
+    private func share(_ format: TimesheetExportFormat) {
+        let exporter = TimesheetExporter(modelContext: context, settingsManager: .shared)
+        if let url = exporter.export(format, month: selectedMonth, year: selectedYear) {
+            shareableFile = ShareableFile(url: url)
         }
     }
 }

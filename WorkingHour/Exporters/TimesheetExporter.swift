@@ -1,13 +1,13 @@
 //
-//  MoreView+Export.swift
-//  Working Hour
+//  TimesheetExporter.swift
+//  WorkingHour
 //
 //  Created by Assistant on 2026/02/07.
 //
 
 import Foundation
-import SwiftUI
 import SwiftData
+import SwiftUI
 import xlsxwriter
 
 let isCloudSyncEnabled = FileManager.default.url(forUbiquityContainerIdentifier: nil) != nil
@@ -15,13 +15,32 @@ let documentsURL = FileManager.default.url(forUbiquityContainerIdentifier: nil)?
 FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 let exportsFolderURL = documentsURL.appendingPathComponent("Exports")
 
-// MARK: - Export Helper Functions
-extension MoreView {
-    func fetchCurrentMonthEntries() -> [ClockEntry] {
-        let dateNow = Date.now
+enum TimesheetExportFormat {
+    case timesheetExcel
+    case timesheetCSV
+    case overtimeExcel
+    case overtimeCSV
+}
+
+// MARK: - Timesheet & Overtime Exporter
+
+@MainActor
+struct TimesheetExporter {
+    let modelContext: ModelContext
+    let settingsManager: SettingsManager
+
+    /// Generates the requested export for the given month/year and returns the file URL, or `nil` on failure.
+    func export(_ format: TimesheetExportFormat, month: Int, year: Int) -> URL? {
+        switch format {
+        case .timesheetExcel: exportTimesheetToExcel(month: month, year: year)
+        case .timesheetCSV: exportTimesheetToCSV(month: month, year: year)
+        case .overtimeExcel: exportOvertimeToExcel(month: month, year: year)
+        case .overtimeCSV: exportOvertimeToCSV(month: month, year: year)
+        }
+    }
+
+    func fetchEntries(month: Int, year: Int) -> [ClockEntry] {
         let calendar = Calendar.current
-        let month = calendar.component(.month, from: dateNow)
-        let year = calendar.component(.year, from: dateNow)
 
         var components = DateComponents()
         components.year = year
@@ -53,21 +72,21 @@ extension MoreView {
         }
     }
 
-    func exportTimesheetToExcel() {
+    // MARK: - Timesheet
+
+    func exportTimesheetToExcel(month: Int, year: Int) -> URL? {
         createIfNotExists(exportsFolderURL)
-        let filename = exportFilename(prefix: "Timesheet", extension: "xlsx")
-        let exportPath = exportsFolderURL
-            .appendingPathComponent(filename)
-            .path(percentEncoded: false)
-        let workbook = Workbook(name: exportPath)
+        let filename = exportFilename(prefix: "Timesheet", extension: "xlsx", month: month, year: year)
+        let exportURL = exportsFolderURL.appendingPathComponent(filename)
+        let workbook = Workbook(name: exportURL.path(percentEncoded: false))
         let worksheet = workbook.addWorksheet(name: "Timesheet")
         worksheet.gridline(screen: false)
         writeTimesheetHeaders(to: worksheet, in: workbook)
-        let entries = fetchCurrentMonthEntries()
+        let entries = fetchEntries(month: month, year: year)
         let lastRowWritten = writeTimesheetRows(entries, to: worksheet, in: workbook)
         writeTimesheetFooter(entries, at: lastRowWritten, to: worksheet, in: workbook)
         workbook.close()
-        openURL(URL(string: "shareddocuments://\(exportPath)")!)
+        return exportURL
     }
 
     func writeTimesheetHeaders(to worksheet: Worksheet, in workbook: Workbook) {
@@ -137,11 +156,10 @@ extension MoreView {
         worksheet.write(.blank, [row, 6], format: footerFormat)
     }
 
-    func exportTimesheetToCSV() {
+    func exportTimesheetToCSV(month: Int, year: Int) -> URL? {
         createIfNotExists(exportsFolderURL)
-        let filename = exportFilename(prefix: "Timesheet", extension: "csv")
-        let exportPath = exportsFolderURL
-            .appendingPathComponent(filename)
+        let filename = exportFilename(prefix: "Timesheet", extension: "csv", month: month, year: year)
+        let exportURL = exportsFolderURL.appendingPathComponent(filename)
 
         var csvContent = ""
 
@@ -156,7 +174,7 @@ extension MoreView {
         ]
         csvContent += headers.map { escapeCSV($0) }.joined(separator: ",") + "\n"
 
-        let entries = fetchCurrentMonthEntries()
+        let entries = fetchEntries(month: month, year: year)
         for entry in entries {
             if let clockInDate = entry.clockInDateString(),
                let clockInDay = entry.clockInDayString(),
@@ -176,27 +194,28 @@ extension MoreView {
         }
 
         do {
-            try csvContent.write(to: exportPath, atomically: true, encoding: .utf8)
-            openURL(URL(string: "shareddocuments://\(exportPath.path(percentEncoded: false))")!)
+            try csvContent.write(to: exportURL, atomically: true, encoding: .utf8)
+            return exportURL
         } catch {
             print("Error exporting CSV: \(error)")
+            return nil
         }
     }
 
-    func exportOvertimeToExcel() {
+    // MARK: - Overtime
+
+    func exportOvertimeToExcel(month: Int, year: Int) -> URL? {
         createIfNotExists(exportsFolderURL)
-        let filename = exportFilename(prefix: "OvertimeReport", extension: "xlsx")
-        let exportPath = exportsFolderURL
-            .appendingPathComponent(filename)
-            .path(percentEncoded: false)
-        let workbook = Workbook(name: exportPath)
+        let filename = exportFilename(prefix: "OvertimeReport", extension: "xlsx", month: month, year: year)
+        let exportURL = exportsFolderURL.appendingPathComponent(filename)
+        let workbook = Workbook(name: exportURL.path(percentEncoded: false))
         let worksheet = workbook.addWorksheet(name: "Overtime Report")
         worksheet.gridline(screen: false)
         writeOvertimeHeaders(to: worksheet, in: workbook)
-        let entries = fetchCurrentMonthEntries()
+        let entries = fetchEntries(month: month, year: year)
         writeOvertimeRows(entries, to: worksheet, in: workbook)
         workbook.close()
-        openURL(URL(string: "shareddocuments://\(exportPath)")!)
+        return exportURL
     }
 
     func writeOvertimeHeaders(to worksheet: Worksheet, in workbook: Workbook) {
@@ -274,11 +293,10 @@ extension MoreView {
         worksheet.write(.string(formatTimeInterval(totalOvertime)), [currentRow, 4], format: totalFormat)
     }
 
-    func exportOvertimeToCSV() {
+    func exportOvertimeToCSV(month: Int, year: Int) -> URL? {
         createIfNotExists(exportsFolderURL)
-        let filename = exportFilename(prefix: "OvertimeReport", extension: "csv")
-        let exportPath = exportsFolderURL
-            .appendingPathComponent(filename)
+        let filename = exportFilename(prefix: "OvertimeReport", extension: "csv", month: month, year: year)
+        let exportURL = exportsFolderURL.appendingPathComponent(filename)
 
         var csvContent = ""
 
@@ -294,7 +312,7 @@ extension MoreView {
         let standardHours = settingsManager.standardWorkingHours
         var totalOvertime: TimeInterval = 0
 
-        let entries = fetchCurrentMonthEntries()
+        let entries = fetchEntries(month: month, year: year)
         for entry in entries {
             if let clockInDate = entry.clockInDateString(),
                let clockInDay = entry.clockInDayString() {
@@ -313,20 +331,19 @@ extension MoreView {
         }
 
         do {
-            try csvContent.write(to: exportPath, atomically: true, encoding: .utf8)
-            openURL(URL(string: "shareddocuments://\(exportPath.path(percentEncoded: false))")!)
+            try csvContent.write(to: exportURL, atomically: true, encoding: .utf8)
+            return exportURL
         } catch {
             print("Error exporting CSV: \(error)")
+            return nil
         }
     }
 
     // MARK: - Helper Functions
 
-    func exportFilename(prefix: String, extension ext: String) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyyMMdd"
-        let formattedDate = dateFormatter.string(from: .now)
-        return "\(formattedDate)-\(prefix).\(ext)"
+    func exportFilename(prefix: String, extension ext: String, month: Int, year: Int) -> String {
+        let yearMonth = String(format: "%04d%02d", year, month)
+        return "\(yearMonth)-\(prefix).\(ext)"
     }
 
     func createIfNotExists(_ url: URL?) {
