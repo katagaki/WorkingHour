@@ -151,7 +151,7 @@ final class GeofencingManager: NSObject {
 
             let newEntry = ClockEntry(.now)
 
-            if settings.autoAddBreakTime && settings.defaultBreakDuration > 0 {
+            if settings.defaultBreakDuration > 0 {
                 let breakStart = Date.now
                 let breakEnd = breakStart.addingTimeInterval(settings.defaultBreakDuration)
                 let newBreak = Break(start: breakStart, end: breakEnd)
