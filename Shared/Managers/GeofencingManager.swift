@@ -21,15 +21,10 @@ final class GeofencingManager: NSObject {
     var authorizationStatus: CLAuthorizationStatus = .notDetermined
     var isMonitoring: Bool = false
 
-    /// Region exits we've received but not yet confirmed via `requestState`.
-    /// A raw `didExitRegion` can be spurious (GPS jitter, or re-registering a
-    /// region the device is currently inside), so we verify the real state
-    /// before acting on it.
+    /// Region exits awaiting confirmation via `requestState`.
     private var pendingExitConfirmations: Set<String> = []
 
-    /// Exit events received before this date are ignored. Set whenever we
-    /// (re)register regions, because re-registering a geofence the device is
-    /// currently inside can make iOS briefly report a spurious exit.
+    /// Exit events received before this date are ignored.
     private var ignoreExitEventsUntil: Date = .distantPast
 
     private override init() {
@@ -86,11 +81,7 @@ final class GeofencingManager: NSObject {
         // Stop all existing monitoring first
         stopMonitoringAllRegions()
 
-        // Re-registering regions can make iOS briefly report the device as
-        // outside a region it is actually inside, firing a spurious exit.
-        // Ignore exit events for a short settling window so editing or toggling
-        // a workplace while clocked in doesn't auto-clock-out and tear down the
-        // live activity.
+        // Ignore exits briefly while regions settle after re-registration.
         ignoreExitEventsUntil = Date().addingTimeInterval(15)
 
         do {
@@ -269,10 +260,7 @@ extension GeofencingManager: CLLocationManagerDelegate {
                 return
             }
 
-            // Don't trust the raw exit event — confirm the device is genuinely
-            // outside the region before clocking out. Spurious exits (GPS
-            // jitter or region re-registration) would otherwise tear down the
-            // live activity unexpectedly.
+            // Confirm the device is genuinely outside before clocking out.
             self.pendingExitConfirmations.insert(region.identifier)
             manager.requestState(for: region)
         }

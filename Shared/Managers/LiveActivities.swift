@@ -44,27 +44,36 @@ class LiveActivities {
         await startActivity(with: data)
     }
 
-    /// Ends every currently tracked live activity. Called when the app
-    /// launches so we can start fresh activities with a reset stale date.
+    /// Ends every currently tracked live activity.
     public static func endAllActivities(immediately: Bool = true) async {
+        await endActivities(excluding: nil, immediately: immediately)
+    }
+
+    /// Ends tracked activities whose entryId differs from `keepEntryId`.
+    private static func endActivities(excluding keepEntryId: String?, immediately: Bool = true) async {
         let activities = Activity<UshioAttributes>.activities
-        log("LiveActivityManager: Ending all \(activities.count) activities")
-        for activity in activities {
+        for activity in activities where activity.attributes.entryId != keepEntryId {
             await activity.end(nil, dismissalPolicy: immediately ? .immediate : .default)
         }
     }
 
-    /// On the first call per app launch, ends every existing live activity
-    /// and starts a fresh one for the current active session (if any). On
-    /// subsequent calls within the same launch, just ensures the activity
-    /// exists without tearing it down (avoids flicker on scene transitions).
+    /// On the first call per app launch, refreshes the current session's
+    /// activity in place (resetting the stale date) and ends any orphaned
+    /// activities. The active activity is never torn down, since a restart may
+    /// be impossible (e.g. a background launch from a geofence event) and would
+    /// leave it gone. Later calls just ensure the activity exists.
     public static func refreshOnLaunch(with data: WorkSessionData?) async {
         if !hasRefreshedOnLaunch {
             hasRefreshedOnLaunch = true
             log("LiveActivityManager: Refreshing live activities on launch")
-            await endAllActivities(immediately: true)
+            let keepEntryId = data?.clockOutTime == nil ? data?.entryId : nil
+            await endActivities(excluding: keepEntryId, immediately: true)
             if let data, data.clockOutTime == nil {
-                await startActivity(with: data)
+                if hasActivity(for: data.entryId) {
+                    await updateActivity(with: data)
+                } else {
+                    await startActivity(with: data)
+                }
             }
         } else if let data {
             await ensureActivity(with: data)
