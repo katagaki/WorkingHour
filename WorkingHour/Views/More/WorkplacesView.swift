@@ -82,6 +82,19 @@ struct WorkplacesView: View {
                         .foregroundStyle(.secondary)
                 }
 
+                // Automatic breaks
+                Section {
+                    NavigationLink("BreakWindow.Title") {
+                        BreakWindowsView()
+                    }
+                } header: {
+                    Text("BreakWindow.Section.AutoBreak")
+                } footer: {
+                    Text("BreakWindow.Section.AutoBreak.Footer")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
                 // Workplace list
                 Section {
                     ForEach(workplaces) { workplace in

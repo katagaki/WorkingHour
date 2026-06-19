@@ -25,7 +25,8 @@ public class SharedModelContainer {
             Break.self,
             Project.self,
             ProjectTask.self,
-            Workplace.self
+            Workplace.self,
+            BreakWindow.self
         ])
 
         let modelConfiguration = ModelConfiguration(
