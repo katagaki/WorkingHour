@@ -8,11 +8,9 @@
 import Komponents
 import SwiftUI
 import SwiftData
-import xlsxwriter
 
 struct MoreView: View {
     @Environment(\.modelContext) var modelContext
-    @Environment(\.openURL) var openURL
     @State var settingsManager = SettingsManager.shared
     @State var dataManager = DataManager.shared
 
@@ -31,60 +29,6 @@ struct MoreView: View {
     var body: some View {
         NavigationStack {
             MoreList(repoName: "katagaki/WorkingHour") {
-                // Timesheet Export Section
-                Section {
-                    LazyVGrid(columns: [
-                        GridItem(.flexible()),
-                        GridItem(.flexible())
-                    ], spacing: 16) {
-                        ExportGridButton(
-                            title: "Excel",
-                            systemImage: "x.square.fill",
-                            color: .green
-                        ) {
-                            exportTimesheetToExcel()
-                        }
-                        ExportGridButton(
-                            title: "CSV",
-                            systemImage: "tablecells",
-                            color: .blue
-                        ) {
-                            exportTimesheetToCSV()
-                        }
-                    }
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                } header: {
-                    Text("Export.Section.Timesheet")
-                }
-
-                // Overtime Report Section
-                Section {
-                    LazyVGrid(columns: [
-                        GridItem(.flexible()),
-                        GridItem(.flexible())
-                    ], spacing: 16) {
-                        ExportGridButton(
-                            title: "Excel",
-                            systemImage: "x.square.fill",
-                            color: .green
-                        ) {
-                            exportOvertimeToExcel()
-                        }
-                        ExportGridButton(
-                            title: "CSV",
-                            systemImage: "tablecells",
-                            color: .blue
-                        ) {
-                            exportOvertimeToCSV()
-                        }
-                    }
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                } header: {
-                    Text("Export.Section.Overtime")
-                }
-
                 // Workplaces Section
                 Section {
                     NavigationLink("Workplace.Title") {
