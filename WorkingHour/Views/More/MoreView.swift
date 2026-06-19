@@ -16,9 +16,17 @@ struct MoreView: View {
     @State var settingsManager = SettingsManager.shared
     @State var dataManager = DataManager.shared
 
+    @Query private var breakWindows: [BreakWindow]
+
     @State private var workingHours: Double = 8.0
     @State private var breakMinutes: Double = 60.0
     @State private var autoAddBreak: Bool = false
+
+    /// Auto-adding break time is only available when geofencing is enabled and
+    /// at least one break time range is configured.
+    private var canAutoAddBreak: Bool {
+        settingsManager.geofencingEnabled && !breakWindows.isEmpty
+    }
 
     var body: some View {
         NavigationStack {
@@ -130,6 +138,7 @@ struct MoreView: View {
                     .padding(.vertical, 4)
 
                     Toggle("Settings.AutoAddBreak", isOn: $autoAddBreak)
+                        .disabled(!canAutoAddBreak)
                 } header: {
                     Text("Settings.Section.WorkingTimeAndBreak")
                 } footer: {
@@ -156,6 +165,7 @@ struct MoreView: View {
             .toolbarTitleDisplayMode(.inlineLarge)
             .task {
                 loadSettings()
+                enforceAutoBreakGate()
             }
             .onChange(of: workingHours) { _, _ in
                 saveSettings()
@@ -166,6 +176,9 @@ struct MoreView: View {
             .onChange(of: autoAddBreak) { _, _ in
                 saveSettings()
             }
+            .onChange(of: canAutoAddBreak) { _, _ in
+                enforceAutoBreakGate()
+            }
         }
     }
 
@@ -173,6 +186,16 @@ struct MoreView: View {
         workingHours = settingsManager.standardWorkingHours / 3600.0
         breakMinutes = settingsManager.defaultBreakDuration / 60.0
         autoAddBreak = settingsManager.autoAddBreakTime
+    }
+
+    /// Forces auto-add-break off (and persists it) whenever its prerequisites
+    /// are not met, so it can't keep adding breaks while disabled.
+    private func enforceAutoBreakGate() {
+        guard !canAutoAddBreak else { return }
+        if settingsManager.autoAddBreakTime {
+            settingsManager.autoAddBreakTime = false
+        }
+        autoAddBreak = false
     }
 
     private func saveSettings() {
