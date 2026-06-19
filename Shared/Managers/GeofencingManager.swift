@@ -21,6 +21,17 @@ final class GeofencingManager: NSObject {
     var authorizationStatus: CLAuthorizationStatus = .notDetermined
     var isMonitoring: Bool = false
 
+    /// Region exits we've received but not yet confirmed via `requestState`.
+    /// A raw `didExitRegion` can be spurious (GPS jitter, or re-registering a
+    /// region the device is currently inside), so we verify the real state
+    /// before acting on it.
+    private var pendingExitConfirmations: Set<String> = []
+
+    /// Exit events received before this date are ignored. Set whenever we
+    /// (re)register regions, because re-registering a geofence the device is
+    /// currently inside can make iOS briefly report a spurious exit.
+    private var ignoreExitEventsUntil: Date = .distantPast
+
     private override init() {
         super.init()
         locationManager.delegate = self
@@ -74,6 +85,13 @@ final class GeofencingManager: NSObject {
 
         // Stop all existing monitoring first
         stopMonitoringAllRegions()
+
+        // Re-registering regions can make iOS briefly report the device as
+        // outside a region it is actually inside, firing a spurious exit.
+        // Ignore exit events for a short settling window so editing or toggling
+        // a workplace while clocked in doesn't auto-clock-out and tear down the
+        // live activity.
+        ignoreExitEventsUntil = Date().addingTimeInterval(15)
 
         do {
             let descriptor = FetchDescriptor<Workplace>(
@@ -242,7 +260,43 @@ extension GeofencingManager: CLLocationManagerDelegate {
         guard region is CLCircularRegion else { return }
         Task { @MainActor in
             log("GeofencingManager: Exited region \(region.identifier)", prefix: "MIKA")
-            self.handleRegionExit()
+
+            if Date() < self.ignoreExitEventsUntil {
+                log(
+                    "GeofencingManager: Ignoring exit for \(region.identifier) during monitoring settling window",
+                    prefix: "MIKA"
+                )
+                return
+            }
+
+            // Don't trust the raw exit event — confirm the device is genuinely
+            // outside the region before clocking out. Spurious exits (GPS
+            // jitter or region re-registration) would otherwise tear down the
+            // live activity unexpectedly.
+            self.pendingExitConfirmations.insert(region.identifier)
+            manager.requestState(for: region)
+        }
+    }
+
+    nonisolated func locationManager(
+        _ manager: CLLocationManager,
+        didDetermineState state: CLRegionState,
+        for region: CLRegion
+    ) {
+        guard region is CLCircularRegion else { return }
+        Task { @MainActor in
+            // Only act on states we explicitly requested to confirm an exit.
+            guard self.pendingExitConfirmations.remove(region.identifier) != nil else { return }
+
+            if state == .outside {
+                log("GeofencingManager: Confirmed exit for \(region.identifier)", prefix: "MIKA")
+                self.handleRegionExit()
+            } else {
+                log(
+                    "GeofencingManager: Ignoring unconfirmed exit for \(region.identifier) (state=\(state.rawValue))",
+                    prefix: "MIKA"
+                )
+            }
         }
     }
 
