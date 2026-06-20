@@ -18,6 +18,7 @@ struct UshioAttributes: ActivityAttributes {
         var breakStartTime: Date?
         var totalBreakTime: TimeInterval
         var standardWorkingHours: TimeInterval
+        var defaultBreakDuration: TimeInterval
 
         static var working: UshioAttributes.ContentState {
             UshioAttributes.ContentState(
@@ -26,7 +27,8 @@ struct UshioAttributes: ActivityAttributes {
                 isOnBreak: false,
                 breakStartTime: nil,
                 totalBreakTime: 0,
-                standardWorkingHours: 28800
+                standardWorkingHours: 28800,
+                defaultBreakDuration: 3600
             )
         }
 
@@ -37,7 +39,8 @@ struct UshioAttributes: ActivityAttributes {
                 isOnBreak: true,
                 breakStartTime: Date.now.addingTimeInterval(-600),
                 totalBreakTime: 0,
-                standardWorkingHours: 28800
+                standardWorkingHours: 28800,
+                defaultBreakDuration: 3600
             )
         }
     }

@@ -93,7 +93,8 @@ class LiveActivities {
             isOnBreak: data.isOnBreak,
             breakStartTime: data.breakStartTime,
             totalBreakTime: data.totalBreakTime,
-            standardWorkingHours: data.standardWorkingHours
+            standardWorkingHours: data.standardWorkingHours,
+            defaultBreakDuration: data.defaultBreakDuration
         )
         let content = ActivityContent(state: contentState, staleDate: nextStaleDate())
 
@@ -112,7 +113,8 @@ class LiveActivities {
             isOnBreak: data.isOnBreak,
             breakStartTime: data.breakStartTime,
             totalBreakTime: data.totalBreakTime,
-            standardWorkingHours: data.standardWorkingHours
+            standardWorkingHours: data.standardWorkingHours,
+            defaultBreakDuration: data.defaultBreakDuration
         )
         let content = ActivityContent(state: contentState, staleDate: nextStaleDate())
 
@@ -133,7 +135,8 @@ class LiveActivities {
             isOnBreak: false,
             breakStartTime: nil,
             totalBreakTime: data.totalBreakTime,
-            standardWorkingHours: data.standardWorkingHours
+            standardWorkingHours: data.standardWorkingHours,
+            defaultBreakDuration: data.defaultBreakDuration
         )
         let dismissDate = Date(timeIntervalSinceNow: 1800)
         let content = ActivityContent(state: contentState, staleDate: immediately ? nil : dismissDate)

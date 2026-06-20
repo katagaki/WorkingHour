@@ -1312,6 +1312,23 @@
         }
       }
     },
+    "Shared.BreakOvertime" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Break over"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "休憩超過"
+          }
+        }
+      }
+    },
     "Shared.Cancel" : {
       "localizations" : {
         "en" : {

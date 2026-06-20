@@ -12,6 +12,17 @@ import SwiftUI
 struct LiveActivityView: View {
     let context: ActivityViewContext<UshioAttributes>
 
+    /// The moment the current break exceeds the configured break duration,
+    /// or `nil` when not on a break or no break duration is configured.
+    private var breakEndDate: Date? {
+        guard context.state.isOnBreak,
+              context.state.defaultBreakDuration > 0,
+              let breakStartTime = context.state.breakStartTime else {
+            return nil
+        }
+        return breakStartTime.addingTimeInterval(context.state.defaultBreakDuration)
+    }
+
     var body: some View {
         VStack(spacing: 6.0) {
             // Clock in/out times
@@ -105,14 +116,28 @@ struct LiveActivityView: View {
                                     }
                                     .foregroundStyle(.secondary)
                                 }
+                            } else if let breakEndDate = breakEndDate,
+                                      Date.now >= breakEndDate {
+                                // Warn when the configured break time is exceeded
+                                HStack(spacing: 3) {
+                                    Image(systemName: "exclamationmark.triangle.fill")
+                                        .font(.caption2)
+                                    Text("Shared.BreakOvertime")
+                                        .font(.caption2)
+                                        .fontWeight(.semibold)
+                                    Text(breakEndDate, style: .timer)
+                                        .font(.caption2)
+                                }
+                                .foregroundStyle(.red)
                             }
                         }
 
                         if context.state.isOnBreak, let breakStartTime = context.state.breakStartTime {
+                            let isExceedingBreak = breakEndDate.map { Date.now >= $0 } ?? false
                             Text(breakStartTime, style: .relative)
                                 .font(.title2)
                                 .fontWeight(.bold)
-                                .foregroundStyle(.orange)
+                                .foregroundStyle(isExceedingBreak ? .red : .orange)
                         } else {
                             Text(context.state.clockInTime, style: .relative)
                                 .font(.title2)

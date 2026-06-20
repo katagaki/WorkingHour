@@ -15,4 +15,5 @@ struct WorkSessionData {
     let breakStartTime: Date?
     let totalBreakTime: TimeInterval
     let standardWorkingHours: TimeInterval
+    let defaultBreakDuration: TimeInterval
 }
