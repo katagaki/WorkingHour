@@ -884,22 +884,6 @@
         }
       }
     },
-    "Settings.AutoAddBreak" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto-add Break Time"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "休憩時間を自動追加"
-          }
-        }
-      }
-    },
     "Settings.ClockInReminder" : {
       "localizations" : {
         "en" : {
@@ -1324,6 +1308,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "休憩"
+          }
+        }
+      }
+    },
+    "Shared.BreakOvertime" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Break over"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "休憩超過"
           }
         }
       }

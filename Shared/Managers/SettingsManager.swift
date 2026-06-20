@@ -20,7 +20,6 @@ final class SettingsManager {
     private enum Keys {
         static let standardWorkingHours = "standardWorkingHours"
         static let defaultBreakDuration = "defaultBreakDuration"
-        static let autoAddBreakTime = "autoAddBreakTime"
         static let clockInReminderEnabled = "clockInReminderEnabled"
         static let clockOutReminderEnabled = "clockOutReminderEnabled"
         static let clockInReminderTime = "clockInReminderTime"
@@ -53,15 +52,6 @@ final class SettingsManager {
         }
         set {
             defaults.set(newValue, forKey: Keys.defaultBreakDuration)
-        }
-    }
-
-    var autoAddBreakTime: Bool {
-        get {
-            defaults.bool(forKey: Keys.autoAddBreakTime)
-        }
-        set {
-            defaults.set(newValue, forKey: Keys.autoAddBreakTime)
         }
     }
 
@@ -173,7 +163,6 @@ final class SettingsManager {
         defaults.register(defaults: [
             Keys.standardWorkingHours: 8 * 3600,
             Keys.defaultBreakDuration: 3600,
-            Keys.autoAddBreakTime: false,
             Keys.clockInReminderEnabled: false,
             Keys.clockOutReminderEnabled: false,
             Keys.clockInReminderTime: 8 * 3600,

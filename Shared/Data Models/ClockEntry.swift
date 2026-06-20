@@ -146,6 +146,7 @@ final class ClockEntry: Identifiable {
         }
 
         let standardWorkingHours = SettingsManager.shared.standardWorkingHours
+        let defaultBreakDuration = SettingsManager.shared.defaultBreakDuration
 
         return WorkSessionData(
             entryId: self.id,
@@ -154,7 +155,8 @@ final class ClockEntry: Identifiable {
             isOnBreak: self.isOnBreak,
             breakStartTime: self.isOnBreak ? (self.breakTimes ?? []).last?.start : nil,
             totalBreakTime: totalBreakTime,
-            standardWorkingHours: standardWorkingHours
+            standardWorkingHours: standardWorkingHours,
+            defaultBreakDuration: defaultBreakDuration
         )
     }
 }

@@ -9,6 +9,23 @@ import SwiftUI
 import WidgetKit
 
 struct UshioLiveActivity: Widget {
+    /// Whether the current break has exceeded the configured break duration.
+    private func isExceedingBreak(_ state: UshioAttributes.ContentState) -> Bool {
+        guard state.isOnBreak,
+              state.defaultBreakDuration > 0,
+              let breakStartTime = state.breakStartTime else {
+            return false
+        }
+        return Date.now >= breakStartTime.addingTimeInterval(state.defaultBreakDuration)
+    }
+
+    /// Tint reflecting the session state: blue while working, orange on
+    /// break, and red once the break exceeds its configured duration.
+    private func sessionTint(_ state: UshioAttributes.ContentState) -> Color {
+        guard state.isOnBreak else { return .blue }
+        return isExceedingBreak(state) ? .red : .orange
+    }
+
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: UshioAttributes.self) { context in
             LiveActivityView(context: context)
@@ -31,15 +48,16 @@ struct UshioLiveActivity: Widget {
                 DynamicIslandExpandedRegion(.trailing) {
                     VStack(alignment: .trailing, spacing: 2) {
                         if context.state.isOnBreak {
-                            Text("Shared.Break")
+                            let exceeding = isExceedingBreak(context.state)
+                            Text(exceeding ? "Shared.BreakOvertime" : "Shared.Break")
                                 .font(.caption2)
-                                .foregroundStyle(.orange)
+                                .foregroundStyle(exceeding ? .red : .orange)
                                 .multilineTextAlignment(.trailing)
                             if let breakStartTime = context.state.breakStartTime {
                                 Text(breakStartTime, style: .relative)
                                     .font(.headline)
                                     .fontWeight(.semibold)
-                                    .foregroundStyle(.orange)
+                                    .foregroundStyle(exceeding ? .red : .orange)
                                     .multilineTextAlignment(.trailing)
                             }
                         } else {
@@ -115,7 +133,7 @@ struct UshioLiveActivity: Widget {
             } compactLeading: {
                 if context.state.isOnBreak {
                     Image(systemName: "cup.and.heat.waves.fill")
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(sessionTint(context.state))
                 } else {
                     Image(systemName: "clock.fill")
                         .foregroundStyle(.blue)
@@ -134,7 +152,7 @@ struct UshioLiveActivity: Widget {
                         total: context.state.standardWorkingHours
                     )
                     .progressViewStyle(.circular)
-                    .tint(.orange)
+                    .tint(sessionTint(context.state))
                     .padding(.leading, 4.0)
                 } else {
                     let adjustedStart = context.state.clockInTime
@@ -155,9 +173,9 @@ struct UshioLiveActivity: Widget {
                 }
             } minimal: {
                 Image(systemName: context.state.isOnBreak ? "cup.and.heat.waves.fill" : "clock.fill")
-                    .foregroundStyle(context.state.isOnBreak ? .orange : .blue)
+                    .foregroundStyle(sessionTint(context.state))
             }
-            .keylineTint(context.state.isOnBreak ? .orange : .blue)
+            .keylineTint(sessionTint(context.state))
         }
     }
 }

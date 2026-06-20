@@ -336,7 +336,7 @@ struct TimeClockView: View {
     func clockIn() {
         withAnimation(.smooth.speed(2.0)) {
             let newEntry = ClockEntry(.now)
-            if settingsManager.autoAddBreakTime && settingsManager.defaultBreakDuration > 0 {
+            if settingsManager.defaultBreakDuration > 0 {
                 let breakStart = Date.now
                 let breakEnd = breakStart.addingTimeInterval(settingsManager.defaultBreakDuration)
                 let newBreak = Break(start: breakStart, end: breakEnd)
