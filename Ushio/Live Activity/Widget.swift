@@ -19,6 +19,13 @@ struct UshioLiveActivity: Widget {
         return Date.now >= breakStartTime.addingTimeInterval(state.defaultBreakDuration)
     }
 
+    /// Tint reflecting the session state: blue while working, orange on
+    /// break, and red once the break exceeds its configured duration.
+    private func sessionTint(_ state: UshioAttributes.ContentState) -> Color {
+        guard state.isOnBreak else { return .blue }
+        return isExceedingBreak(state) ? .red : .orange
+    }
+
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: UshioAttributes.self) { context in
             LiveActivityView(context: context)
@@ -126,7 +133,7 @@ struct UshioLiveActivity: Widget {
             } compactLeading: {
                 if context.state.isOnBreak {
                     Image(systemName: "cup.and.heat.waves.fill")
-                        .foregroundStyle(isExceedingBreak(context.state) ? .red : .orange)
+                        .foregroundStyle(sessionTint(context.state))
                 } else {
                     Image(systemName: "clock.fill")
                         .foregroundStyle(.blue)
@@ -145,7 +152,7 @@ struct UshioLiveActivity: Widget {
                         total: context.state.standardWorkingHours
                     )
                     .progressViewStyle(.circular)
-                    .tint(isExceedingBreak(context.state) ? .red : .orange)
+                    .tint(sessionTint(context.state))
                     .padding(.leading, 4.0)
                 } else {
                     let adjustedStart = context.state.clockInTime
@@ -166,17 +173,9 @@ struct UshioLiveActivity: Widget {
                 }
             } minimal: {
                 Image(systemName: context.state.isOnBreak ? "cup.and.heat.waves.fill" : "clock.fill")
-                    .foregroundStyle(
-                        context.state.isOnBreak
-                            ? (isExceedingBreak(context.state) ? .red : .orange)
-                            : .blue
-                    )
+                    .foregroundStyle(sessionTint(context.state))
             }
-            .keylineTint(
-                context.state.isOnBreak
-                    ? (isExceedingBreak(context.state) ? .red : .orange)
-                    : .blue
-            )
+            .keylineTint(sessionTint(context.state))
         }
     }
 }
