@@ -375,14 +375,9 @@ extension GeofencingManager: CLLocationManagerDelegate {
             // Only act on states we explicitly requested to confirm an exit.
             guard self.pendingExitConfirmations.remove(region.identifier) != nil else { return }
 
-            // `didExitRegion` already told us the device crossed the boundary;
-            // this confirmation only exists to discard GPS jitter that fires a
-            // spurious exit while the device is really still at the workplace.
-            // Trust the exit unless we get a *definitive* `.inside`. Treating
-            // `.unknown` (no fresh fix yet — common in the background, and on the
-            // short excursions typical of stepping out for a break) as "still
-            // inside" would silently drop the exit, so the break/clock-out would
-            // never happen.
+            // Trust the exit unless the device is definitively back inside.
+            // Dropping `.unknown` (no fresh fix yet, common in the background)
+            // would silently miss legitimate exits.
             if state == .inside {
                 log(
                     "GeofencingManager: Ignoring exit for \(region.identifier); device is still inside",
