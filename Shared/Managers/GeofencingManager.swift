@@ -166,14 +166,6 @@ final class GeofencingManager: NSObject {
 
             let newEntry = ClockEntry(.now)
 
-            if settings.defaultBreakDuration > 0 {
-                let breakStart = Date.now
-                let breakEnd = breakStart.addingTimeInterval(settings.defaultBreakDuration)
-                let newBreak = Break(start: breakStart, end: breakEnd)
-                newBreak.clockEntry = newEntry
-                modelContext.insert(newBreak)
-            }
-
             modelContext.insert(newEntry)
             try modelContext.save()
             DataManager.shared.loadAll()
