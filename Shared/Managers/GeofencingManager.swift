@@ -21,11 +21,25 @@ final class GeofencingManager: NSObject {
     var authorizationStatus: CLAuthorizationStatus = .notDetermined
     var isMonitoring: Bool = false
 
-    /// Region exits awaiting confirmation via `requestState`.
-    private var pendingExitConfirmations: Set<String> = []
+    /// A confirmed boundary crossing, used to debounce flapping at the edge.
+    private enum RegionTransition { case entered, exited }
 
-    /// Exit events received before this date are ignored.
-    private var ignoreExitEventsUntil: Date = .distantPast
+    /// Region boundary crossings awaiting confirmation via `requestState`,
+    /// keyed by region identifier with the direction that triggered them.
+    private var pendingConfirmations: [String: RegionTransition] = [:]
+
+    /// Entry/exit events received before this date are ignored, to let regions
+    /// settle after (re-)registration.
+    private var ignoreEventsUntil: Date = .distantPast
+
+    /// The last transition we acted on, and when — used to drop duplicate or
+    /// rapidly-flapping events while lingering at the boundary.
+    private var lastActedTransition: RegionTransition?
+    private var lastActedTransitionAt: Date = .distantPast
+
+    /// Minimum spacing between two *same-direction* transitions. Opposite
+    /// directions (a genuine state change) are always allowed through.
+    private let transitionCooldown: TimeInterval = 60
 
     private override init() {
         super.init()
@@ -81,8 +95,9 @@ final class GeofencingManager: NSObject {
         // Stop all existing monitoring first
         stopMonitoringAllRegions()
 
-        // Ignore exits briefly while regions settle after re-registration.
-        ignoreExitEventsUntil = Date().addingTimeInterval(15)
+        // Ignore entries and exits briefly while regions settle after
+        // re-registration, which otherwise re-deliver spurious crossings.
+        ignoreEventsUntil = Date().addingTimeInterval(15)
 
         do {
             let descriptor = FetchDescriptor<Workplace>(
@@ -210,11 +225,12 @@ final class GeofencingManager: NSObject {
 
             guard settings.autoClockOutEnabled else { return }
 
-            // End any active break first
+            // End any active break first. Find the open break explicitly —
+            // `breakTimes` is an unordered SwiftData relationship, so `.last`
+            // is not reliably the ongoing one.
             if activeEntry.isOnBreak,
-               let lastBreak = (activeEntry.breakTimes ?? []).last,
-               lastBreak.end == nil {
-                lastBreak.end = .now
+               let openBreak = (activeEntry.breakTimes ?? []).first(where: { $0.end == nil }) {
+                openBreak.end = .now
                 activeEntry.isOnBreak = false
             }
 
@@ -292,14 +308,15 @@ final class GeofencingManager: NSObject {
         )
 
         do {
+            // `breakTimes` is unordered, so locate the open break explicitly
+            // rather than relying on `.last`.
             guard let activeEntry = try modelContext.fetch(descriptor).first,
                   activeEntry.isOnBreak,
-                  let lastBreak = (activeEntry.breakTimes ?? []).last,
-                  lastBreak.end == nil else {
+                  let openBreak = (activeEntry.breakTimes ?? []).first(where: { $0.end == nil }) else {
                 return false
             }
 
-            lastBreak.end = .now
+            openBreak.end = .now
             activeEntry.isOnBreak = false
             try modelContext.save()
             DataManager.shared.loadAll()
@@ -341,27 +358,14 @@ extension GeofencingManager: CLLocationManagerDelegate {
     nonisolated func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         guard region is CLCircularRegion else { return }
         Task { @MainActor in
-            log("GeofencingManager: Entered region \(region.identifier)", prefix: "MIKA")
-            self.handleRegionEntry()
+            self.queueConfirmation(.entered, for: region, with: manager)
         }
     }
 
     nonisolated func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         guard region is CLCircularRegion else { return }
         Task { @MainActor in
-            log("GeofencingManager: Exited region \(region.identifier)", prefix: "MIKA")
-
-            if Date() < self.ignoreExitEventsUntil {
-                log(
-                    "GeofencingManager: Ignoring exit for \(region.identifier) during monitoring settling window",
-                    prefix: "MIKA"
-                )
-                return
-            }
-
-            // Confirm the device is genuinely outside before clocking out.
-            self.pendingExitConfirmations.insert(region.identifier)
-            manager.requestState(for: region)
+            self.queueConfirmation(.exited, for: region, with: manager)
         }
     }
 
@@ -372,25 +376,66 @@ extension GeofencingManager: CLLocationManagerDelegate {
     ) {
         guard region is CLCircularRegion else { return }
         Task { @MainActor in
-            // Only act on states we explicitly requested to confirm an exit.
-            guard self.pendingExitConfirmations.remove(region.identifier) != nil else { return }
+            // Only act on states we explicitly requested to confirm a crossing.
+            guard let transition = self.pendingConfirmations.removeValue(forKey: region.identifier) else { return }
 
-            // Trust the exit unless the device is definitively back inside.
-            // Dropping `.unknown` (no fresh fix yet, common in the background)
-            // would silently miss legitimate exits.
-            if state == .inside {
-                log(
-                    "GeofencingManager: Ignoring exit for \(region.identifier); device is still inside",
-                    prefix: "MIKA"
-                )
-            } else {
-                log(
-                    "GeofencingManager: Confirmed exit for \(region.identifier) (state=\(state.rawValue))",
-                    prefix: "MIKA"
-                )
-                self.handleRegionExit()
+            // Use the confirmed state to veto obvious GPS jitter, but trust the
+            // original event (including `.unknown`, which is common in the
+            // background) so genuine crossings are never silently dropped.
+            switch transition {
+            case .entered:
+                guard state != .outside else {
+                    log("GeofencingManager: Ignoring entry for \(region.identifier); device is outside", prefix: "MIKA")
+                    return
+                }
+                self.act(on: .entered, region: region.identifier, state: state) { self.handleRegionEntry() }
+            case .exited:
+                guard state != .inside else {
+                    log("GeofencingManager: Ignoring exit for \(region.identifier); device is still inside", prefix: "MIKA")
+                    return
+                }
+                self.act(on: .exited, region: region.identifier, state: state) { self.handleRegionExit() }
             }
         }
+    }
+
+    /// Records a boundary crossing and asks Core Location to confirm the
+    /// device's current state before acting, unless we're still settling.
+    private func queueConfirmation(
+        _ transition: RegionTransition,
+        for region: CLRegion,
+        with manager: CLLocationManager
+    ) {
+        let verb = transition == .entered ? "entry" : "exit"
+        log("GeofencingManager: \(verb.capitalized) for region \(region.identifier)", prefix: "MIKA")
+
+        guard Date() >= ignoreEventsUntil else {
+            log("GeofencingManager: Ignoring \(verb) for \(region.identifier) during settling window", prefix: "MIKA")
+            return
+        }
+
+        pendingConfirmations[region.identifier] = transition
+        manager.requestState(for: region)
+    }
+
+    /// Runs `action` for a confirmed crossing, dropping a same-direction repeat
+    /// that lands within the cooldown (boundary flapping / duplicate events).
+    private func act(
+        on transition: RegionTransition,
+        region: String,
+        state: CLRegionState,
+        action: () -> Void
+    ) {
+        if transition == lastActedTransition,
+           Date().timeIntervalSince(lastActedTransitionAt) < transitionCooldown {
+            log("GeofencingManager: Debouncing repeat \(region) crossing within cooldown", prefix: "MIKA")
+            return
+        }
+
+        log("GeofencingManager: Confirmed crossing for \(region) (state=\(state.rawValue))", prefix: "MIKA")
+        lastActedTransition = transition
+        lastActedTransitionAt = Date()
+        action()
     }
 
     nonisolated func locationManager(
