@@ -153,7 +153,7 @@ final class ClockEntry: Identifiable {
             clockInTime: clockInTime,
             clockOutTime: self.clockOutTime,
             isOnBreak: self.isOnBreak,
-            breakStartTime: self.isOnBreak ? (self.breakTimes ?? []).last?.start : nil,
+            breakStartTime: self.isOnBreak ? (self.breakTimes ?? []).first(where: { $0.end == nil })?.start : nil,
             totalBreakTime: totalBreakTime,
             standardWorkingHours: standardWorkingHours,
             defaultBreakDuration: defaultBreakDuration

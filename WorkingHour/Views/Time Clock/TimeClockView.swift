@@ -336,13 +336,6 @@ struct TimeClockView: View {
     func clockIn() {
         withAnimation(.smooth.speed(2.0)) {
             let newEntry = ClockEntry(.now)
-            if settingsManager.defaultBreakDuration > 0 {
-                let breakStart = Date.now
-                let breakEnd = breakStart.addingTimeInterval(settingsManager.defaultBreakDuration)
-                let newBreak = Break(start: breakStart, end: breakEnd)
-                newBreak.clockEntry = newEntry
-                modelContext.insert(newBreak)
-            }
             modelContext.insert(newEntry)
             startTimer()
             modelContext.processPendingChanges()
