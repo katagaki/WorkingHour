@@ -98,7 +98,7 @@ struct WorkplaceEditorView: View {
                              + String(localized: "Workplace.Radius.Meters"))
                             .foregroundStyle(.secondary)
                     }
-                    Slider(value: $radius, in: 50...500, step: 25)
+                    Slider(value: $radius, in: Workplace.minimumReliableRadius...500, step: 25)
                         .tint(.accent)
                 }
                 .padding(.vertical, 4)
@@ -127,7 +127,7 @@ struct WorkplaceEditorView: View {
                     latitude: workplace.latitude,
                     longitude: workplace.longitude
                 )
-                radius = workplace.radius
+                radius = max(workplace.radius, Workplace.minimumReliableRadius)
             }
             updateCameraPosition()
         }

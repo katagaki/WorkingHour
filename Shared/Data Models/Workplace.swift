@@ -10,6 +10,12 @@ import SwiftData
 
 @Model
 final class Workplace: Identifiable {
+
+    /// iOS region monitoring relies on coarse (cell/Wi-Fi) location in the
+    /// background, which typically has 100m+ accuracy. Radii smaller than
+    /// this are prone to missed, delayed, or spurious entry/exit events.
+    static let minimumReliableRadius: Double = 100.0
+
     var id: String = UUID().uuidString
     var name: String = ""
     var latitude: Double = 0.0

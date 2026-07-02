@@ -111,7 +111,10 @@ final class GeofencingManager: NSObject {
                         latitude: workplace.latitude,
                         longitude: workplace.longitude
                     ),
-                    radius: min(workplace.radius, locationManager.maximumRegionMonitoringDistance),
+                    radius: max(
+                        Workplace.minimumReliableRadius,
+                        min(workplace.radius, locationManager.maximumRegionMonitoringDistance)
+                    ),
                     identifier: workplace.id
                 )
                 region.notifyOnEntry = true
