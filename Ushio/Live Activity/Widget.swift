@@ -177,5 +177,8 @@ struct UshioLiveActivity: Widget {
             }
             .keylineTint(sessionTint(context.state))
         }
+        // Opts into the Smart Stack on a paired Apple Watch, which renders
+        // the small activity family instead of recomposited compact views.
+        .supplementalActivityFamilies([.small])
     }
 }

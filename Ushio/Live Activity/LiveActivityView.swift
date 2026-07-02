@@ -10,6 +10,8 @@ import WidgetKit
 import SwiftUI
 
 struct LiveActivityView: View {
+    @Environment(\.activityFamily) private var activityFamily
+
     let context: ActivityViewContext<UshioAttributes>
 
     /// The moment the current break exceeds the configured break duration,
@@ -24,6 +26,18 @@ struct LiveActivityView: View {
     }
 
     var body: some View {
+        switch activityFamily {
+        case .small:
+            // Compact layout for the Smart Stack on a paired Apple Watch.
+            SmallLiveActivityView(context: context)
+        case .medium:
+            mediumContent
+        @unknown default:
+            mediumContent
+        }
+    }
+
+    private var mediumContent: some View {
         VStack(spacing: 6.0) {
             // Clock in/out times
             HStack(alignment: .center, spacing: 12.0) {
