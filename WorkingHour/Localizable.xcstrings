@@ -2446,13 +2446,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The circle shows the geofence area. You will be clocked in when you enter this area and clocked out when you leave."
+            "value" : "The circle shows the geofence area. You will be clocked in when you enter this area and clocked out when you leave. A radius below 100m is not recommended, as background location accuracy may prevent reliable detection."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "円はジオフェンスの範囲を示しています。この範囲に入ると出勤し、離れると退勤します。"
+            "value" : "円はジオフェンスの範囲を示しています。この範囲に入ると出勤し、離れると退勤します。バックグラウンドでの位置情報の精度上、半径100m未満では正確に検出できない場合があるため推奨しません。"
           }
         }
       }

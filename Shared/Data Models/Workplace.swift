@@ -10,6 +10,10 @@ import SwiftData
 
 @Model
 final class Workplace: Identifiable {
+
+    /// Below this, background location accuracy makes crossing detection unreliable.
+    static let minimumReliableRadius: Double = 100.0
+
     var id: String = UUID().uuidString
     var name: String = ""
     var latitude: Double = 0.0
