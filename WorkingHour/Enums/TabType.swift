@@ -13,6 +13,7 @@ enum TabType: Int, TabTypeProtocol {
     case history = 1
     case projects = 2
     case more = 3
+    case earnings = 4
 
     static var defaultTab: TabType = .timesheet
 }

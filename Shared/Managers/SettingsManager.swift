@@ -32,6 +32,10 @@ final class SettingsManager {
         static let breakEndReminderEnabled = "breakEndReminderEnabled"
         static let sessionConfirmedAtWorkplace = "sessionConfirmedAtWorkplace"
         static let isOnAwayBreak = "isOnAwayBreak"
+        static let hourlyRate = "hourlyRate"
+        static let overtimeRateMultiplier = "overtimeRateMultiplier"
+        static let currencyCode = "currencyCode"
+        static let timeRoundingMinutes = "timeRoundingMinutes"
     }
 
     // MARK: - Properties
@@ -162,6 +166,58 @@ final class SettingsManager {
         }
     }
 
+    // MARK: - Pay & Rounding
+
+    /// The user's hourly pay rate, or 0 when earnings tracking is not set up.
+    var hourlyRate: Double {
+        get {
+            defaults.double(forKey: Keys.hourlyRate)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.hourlyRate)
+        }
+    }
+
+    /// Multiplier applied to the hourly rate for overtime (e.g. 1.25 or 1.5).
+    var overtimeRateMultiplier: Double {
+        get {
+            let value = defaults.double(forKey: Keys.overtimeRateMultiplier)
+            return value > 0 ? value : 1.0
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.overtimeRateMultiplier)
+        }
+    }
+
+    /// ISO 4217 currency code used to display earnings.
+    var currencyCode: String {
+        get {
+            defaults.string(forKey: Keys.currencyCode)
+                ?? Locale.current.currency?.identifier
+                ?? "USD"
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.currencyCode)
+        }
+    }
+
+    /// Whether the user has set up earnings tracking.
+    var isEarningsTrackingEnabled: Bool {
+        hourlyRate > 0
+    }
+
+    /// Rounding interval in minutes applied to clock-in/out times in exports
+    /// and earnings calculations, or 0 when rounding is off. Times are always
+    /// rounded to the nearest interval; stored times are never modified.
+    var timeRoundingMinutes: Int {
+        get {
+            defaults.integer(forKey: Keys.timeRoundingMinutes)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.timeRoundingMinutes)
+        }
+    }
+
     // MARK: - Geofencing Session State
 
     // These are runtime state rather than user preferences, persisted here so
@@ -222,7 +278,10 @@ final class SettingsManager {
             Keys.breakStartReminderEnabled: false,
             Keys.breakEndReminderEnabled: false,
             Keys.sessionConfirmedAtWorkplace: false,
-            Keys.isOnAwayBreak: false
+            Keys.isOnAwayBreak: false,
+            Keys.hourlyRate: 0.0,
+            Keys.overtimeRateMultiplier: 1.0,
+            Keys.timeRoundingMinutes: 0
         ])
     }
 }

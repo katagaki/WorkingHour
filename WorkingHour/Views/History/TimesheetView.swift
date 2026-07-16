@@ -80,6 +80,9 @@ struct TimesheetView: View {
                             Button("CSV", systemImage: "doc.text") {
                                 share(.timesheetCSV)
                             }
+                            Button("PDF", systemImage: "doc.richtext") {
+                                share(.timesheetPDF)
+                            }
                         }
                         Section("Export.Section.Overtime") {
                             Button("Excel", systemImage: "tablecells") {

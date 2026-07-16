@@ -23,6 +23,11 @@ struct MainTabView: View {
                 value: .history) {
                 TimesheetView()
             }
+            Tab("Tab.Earnings",
+                systemImage: "chart.bar.fill",
+                value: .earnings) {
+                EarningsView()
+            }
             Tab("Tab.Projects",
                 systemImage: "folder.fill",
                 value: .projects) {

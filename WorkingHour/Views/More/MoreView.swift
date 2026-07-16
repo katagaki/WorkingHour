@@ -16,6 +16,9 @@ struct MoreView: View {
 
     @State private var workingHours: Double = 8.0
     @State private var breakMinutes: Double = 60.0
+    @State private var roundingMinutes: Int = 0
+
+    private let selectableRoundingMinutes: [Int] = [5, 10, 15, 30]
 
     var body: some View {
         NavigationStack {
@@ -79,6 +82,24 @@ struct MoreView: View {
                         .foregroundStyle(.secondary)
                 }
 
+                // Time Rounding Section
+                Section {
+                    Picker("Settings.Rounding.Title", selection: $roundingMinutes) {
+                        Text("Settings.Rounding.Off")
+                            .tag(0)
+                        ForEach(selectableRoundingMinutes, id: \.self) { minutes in
+                            Text("Settings.Rounding.Minutes.\(minutes)")
+                                .tag(minutes)
+                        }
+                    }
+                } header: {
+                    Text("Settings.Section.Rounding")
+                } footer: {
+                    Text("Settings.Rounding.Footer")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
                 #if DEBUG
                 Section {
                     Button("Populate Sample Data") {
@@ -104,17 +125,22 @@ struct MoreView: View {
             .onChange(of: breakMinutes) { _, _ in
                 saveSettings()
             }
+            .onChange(of: roundingMinutes) { _, _ in
+                saveSettings()
+            }
         }
     }
 
     private func loadSettings() {
         workingHours = settingsManager.standardWorkingHours / 3600.0
         breakMinutes = settingsManager.defaultBreakDuration / 60.0
+        roundingMinutes = settingsManager.timeRoundingMinutes
     }
 
     private func saveSettings() {
         settingsManager.standardWorkingHours = workingHours * 3600
         settingsManager.defaultBreakDuration = breakMinutes * 60
+        settingsManager.timeRoundingMinutes = roundingMinutes
     }
 
     private func secondsSinceMidnight(from date: Date) -> Double {

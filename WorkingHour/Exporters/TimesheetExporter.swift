@@ -18,6 +18,7 @@ let exportsFolderURL = documentsURL.appendingPathComponent("Exports")
 enum TimesheetExportFormat {
     case timesheetExcel
     case timesheetCSV
+    case timesheetPDF
     case overtimeExcel
     case overtimeCSV
 }
@@ -29,11 +30,17 @@ struct TimesheetExporter {
     let modelContext: ModelContext
     let settingsManager: SettingsManager
 
+    /// Rounding interval applied to punches in exports (0 = off).
+    var roundingMinutes: Int {
+        settingsManager.timeRoundingMinutes
+    }
+
     /// Generates the requested export for the given month/year and returns the file URL, or `nil` on failure.
     func export(_ format: TimesheetExportFormat, month: Int, year: Int) -> URL? {
         switch format {
         case .timesheetExcel: exportTimesheetToExcel(month: month, year: year)
         case .timesheetCSV: exportTimesheetToCSV(month: month, year: year)
+        case .timesheetPDF: exportTimesheetToPDF(month: month, year: year)
         case .overtimeExcel: exportOvertimeToExcel(month: month, year: year)
         case .overtimeCSV: exportOvertimeToCSV(month: month, year: year)
         }
@@ -72,89 +79,7 @@ struct TimesheetExporter {
         }
     }
 
-    // MARK: - Timesheet
-
-    func exportTimesheetToExcel(month: Int, year: Int) -> URL? {
-        createIfNotExists(exportsFolderURL)
-        let filename = exportFilename(prefix: "Timesheet", extension: "xlsx", month: month, year: year)
-        let exportURL = exportsFolderURL.appendingPathComponent(filename)
-        let workbook = Workbook(name: exportURL.path(percentEncoded: false))
-        let worksheet = workbook.addWorksheet(name: "Timesheet")
-        worksheet.gridline(screen: false)
-        writeTimesheetHeaders(to: worksheet, in: workbook)
-        let entries = fetchEntries(month: month, year: year)
-        let lastRowWritten = writeTimesheetRows(entries, to: worksheet, in: workbook)
-        writeTimesheetFooter(entries, at: lastRowWritten, to: worksheet, in: workbook)
-        workbook.close()
-        return exportURL
-    }
-
-    func writeTimesheetHeaders(to worksheet: Worksheet, in workbook: Workbook) {
-        let headerFormat = workbook.addFormat()
-        headerFormat.background(color: Color(hex: 0x004561))
-        headerFormat.font(color: .white)
-        headerFormat.font(name: "Arial")
-        headerFormat.bold()
-        headerFormat.border(style: .thin)
-
-        worksheet.write(.string(String(localized: "Header.Date")), [0, 0], format: headerFormat)
-        worksheet.write(.string(String(localized: "Header.Day")), [0, 1], format: headerFormat)
-        worksheet.write(.string(String(localized: "Header.StartTime")), [0, 2], format: headerFormat)
-        worksheet.write(.string(String(localized: "Header.EndTime")), [0, 3], format: headerFormat)
-        worksheet.write(.string(String(localized: "Header.BreakTime")), [0, 4], format: headerFormat)
-        worksheet.write(.string(String(localized: "Header.WorkingTime")), [0, 5], format: headerFormat)
-        worksheet.write(.string(String(localized: "Header.Remarks")), [0, 6], format: headerFormat)
-
-        worksheet.column([0, 0], width: 15.0)
-        worksheet.column([2, 5], width: 15.0)
-        worksheet.column([6, 6], width: 30.0)
-    }
-
-    func writeTimesheetRows(_ entries: [ClockEntry], to worksheet: Worksheet, in workbook: Workbook) -> Int {
-        let rowHeaderFormat = workbook.addFormat()
-        rowHeaderFormat.background(color: Color(hex: 0xF2F2F7))
-        rowHeaderFormat.font(color: .black)
-        rowHeaderFormat.font(name: "Arial")
-        rowHeaderFormat.border(style: .thin)
-
-        let rowFormat = workbook.addFormat()
-        rowFormat.background(color: .white)
-        rowFormat.font(color: .black)
-        rowFormat.font(name: "Arial")
-        rowFormat.border(style: .thin)
-
-        var currentRow: Int = 1
-        for entry in entries {
-            if let clockInDate = entry.clockInDateString(),
-               let clockInDay = entry.clockInDayString(),
-               let clockInTime = entry.clockInTimeString(),
-               let clockOutTime = entry.clockOutTimeString() {
-                worksheet.write(.string(clockInDate), [currentRow, 0], format: rowHeaderFormat)
-                worksheet.write(.string(clockInDay), [currentRow, 1], format: rowHeaderFormat)
-                worksheet.write(.string(clockInTime), [currentRow, 2], format: rowFormat)
-                worksheet.write(.string(clockOutTime), [currentRow, 3], format: rowFormat)
-                worksheet.write(.string(entry.breakTimeString()), [currentRow, 4], format: rowFormat)
-                worksheet.write(.string(entry.timeWorkedString()), [currentRow, 5], format: rowFormat)
-                worksheet.write(.string(formatProjectTasks(entry.tasks ?? [])), [currentRow, 6], format: rowFormat)
-                currentRow += 1
-            }
-        }
-        return currentRow
-    }
-
-    func writeTimesheetFooter(_ entries: [ClockEntry], at row: Int, to worksheet: Worksheet, in workbook: Workbook) {
-        let footerFormat = workbook.addFormat()
-        footerFormat.background(color: Color(hex: 0xE6EDF0))
-        footerFormat.font(color: .black)
-        footerFormat.font(name: "Arial")
-        footerFormat.bold()
-        footerFormat.border(style: .thin)
-
-        let totalHours = entries.reduce(into: TimeInterval.zero) { $0 += ($1.timeWorked() ?? .zero) }
-        worksheet.merge(range: [row, 0, row, 4], string: String(localized: "Header.Total"), format: footerFormat)
-        worksheet.write(.string(formatTimeInterval(totalHours)), [row, 5], format: footerFormat)
-        worksheet.write(.blank, [row, 6], format: footerFormat)
-    }
+    // MARK: - CSV
 
     func exportTimesheetToCSV(month: Int, year: Int) -> URL? {
         createIfNotExists(exportsFolderURL)
@@ -178,15 +103,15 @@ struct TimesheetExporter {
         for entry in entries {
             if let clockInDate = entry.clockInDateString(),
                let clockInDay = entry.clockInDayString(),
-               let clockInTime = entry.clockInTimeString(),
-               let clockOutTime = entry.clockOutTimeString() {
+               let clockInTime = entry.roundedClockInTime(minutes: roundingMinutes),
+               let clockOutTime = entry.roundedClockOutTime(minutes: roundingMinutes) {
                 let row = [
                     clockInDate,
                     clockInDay,
-                    clockInTime,
-                    clockOutTime,
-                    entry.breakTimeString(),
-                    entry.timeWorkedString(),
+                    formatTime(clockInTime),
+                    formatTime(clockOutTime),
+                    formatTimeInterval(entry.roundedBreakTime(minutes: roundingMinutes)),
+                    formatTimeInterval(entry.roundedTimeWorked(minutes: roundingMinutes) ?? .zero),
                     formatProjectTasks(entry.tasks ?? [])
                 ]
                 csvContent += row.map { escapeCSV($0) }.joined(separator: ",") + "\n"
@@ -200,97 +125,6 @@ struct TimesheetExporter {
             print("Error exporting CSV: \(error)")
             return nil
         }
-    }
-
-    // MARK: - Overtime
-
-    func exportOvertimeToExcel(month: Int, year: Int) -> URL? {
-        createIfNotExists(exportsFolderURL)
-        let filename = exportFilename(prefix: "OvertimeReport", extension: "xlsx", month: month, year: year)
-        let exportURL = exportsFolderURL.appendingPathComponent(filename)
-        let workbook = Workbook(name: exportURL.path(percentEncoded: false))
-        let worksheet = workbook.addWorksheet(name: "Overtime Report")
-        worksheet.gridline(screen: false)
-        writeOvertimeHeaders(to: worksheet, in: workbook)
-        let entries = fetchEntries(month: month, year: year)
-        writeOvertimeRows(entries, to: worksheet, in: workbook)
-        workbook.close()
-        return exportURL
-    }
-
-    func writeOvertimeHeaders(to worksheet: Worksheet, in workbook: Workbook) {
-        let headerFormat = workbook.addFormat()
-        headerFormat.background(color: Color(hex: 0x8B0000))
-        headerFormat.font(color: .white)
-        headerFormat.font(name: "Arial")
-        headerFormat.bold()
-        headerFormat.border(style: .thin)
-
-        worksheet.write(.string(String(localized: "Header.Date")), [0, 0], format: headerFormat)
-        worksheet.write(.string(String(localized: "Header.Day")), [0, 1], format: headerFormat)
-        worksheet.write(.string(String(localized: "Header.WorkingTime")), [0, 2], format: headerFormat)
-        worksheet.write(.string(String(localized: "Header.StandardHours")), [0, 3], format: headerFormat)
-        worksheet.write(.string(String(localized: "Header.Overtime")), [0, 4], format: headerFormat)
-
-        worksheet.column([0, 0], width: 15.0)
-        worksheet.column([2, 4], width: 15.0)
-    }
-
-    func writeOvertimeRows(_ entries: [ClockEntry], to worksheet: Worksheet, in workbook: Workbook) {
-        let rowHeaderFormat = workbook.addFormat()
-        rowHeaderFormat.background(color: Color(hex: 0xF2F2F7))
-        rowHeaderFormat.font(color: .black)
-        rowHeaderFormat.font(name: "Arial")
-        rowHeaderFormat.border(style: .thin)
-
-        let rowFormat = workbook.addFormat()
-        rowFormat.background(color: .white)
-        rowFormat.font(color: .black)
-        rowFormat.font(name: "Arial")
-        rowFormat.border(style: .thin)
-
-        let overtimeFormat = workbook.addFormat()
-        overtimeFormat.background(color: Color(hex: 0xFFE4E1))
-        overtimeFormat.font(color: Color(hex: 0x8B0000))
-        overtimeFormat.font(name: "Arial")
-        overtimeFormat.border(style: .thin)
-
-        let standardHours = settingsManager.standardWorkingHours
-
-        var currentRow: Int = 1
-        var totalOvertime: TimeInterval = 0
-
-        for entry in entries {
-            if let clockInDate = entry.clockInDateString(),
-               let clockInDay = entry.clockInDayString(),
-               entry.timeWorked() != nil {
-                let overtime = entry.overtime(standardWorkingTime: standardHours) ?? 0
-                totalOvertime += overtime
-
-                worksheet.write(.string(clockInDate), [currentRow, 0], format: rowHeaderFormat)
-                worksheet.write(.string(clockInDay), [currentRow, 1], format: rowHeaderFormat)
-                worksheet.write(.string(entry.timeWorkedString()), [currentRow, 2], format: rowFormat)
-                worksheet.write(.string(formatTimeInterval(standardHours)), [currentRow, 3], format: rowFormat)
-                worksheet.write(.string(entry.overtimeString(standardWorkingTime: standardHours)),
-                                [currentRow, 4], format: overtime > 0 ? overtimeFormat : rowFormat)
-                currentRow += 1
-            }
-        }
-
-        // writeOvertimeFooter
-        let totalFormat = workbook.addFormat()
-        totalFormat.background(color: Color(hex: 0xE27373))
-        totalFormat.font(color: .white)
-        totalFormat.font(name: "Arial")
-        totalFormat.bold()
-        totalFormat.border(style: .thin)
-
-        worksheet.merge(
-            range: [currentRow, 0, currentRow, 3],
-            string: String(localized: "Header.Total"),
-            format: totalFormat
-        )
-        worksheet.write(.string(formatTimeInterval(totalOvertime)), [currentRow, 4], format: totalFormat)
     }
 
     func exportOvertimeToCSV(month: Int, year: Int) -> URL? {
@@ -310,21 +144,23 @@ struct TimesheetExporter {
         csvContent += headers.map { escapeCSV($0) }.joined(separator: ",") + "\n"
 
         let standardHours = settingsManager.standardWorkingHours
-        var totalOvertime: TimeInterval = 0
 
         let entries = fetchEntries(month: month, year: year)
         for entry in entries {
             if let clockInDate = entry.clockInDateString(),
-               let clockInDay = entry.clockInDayString() {
-                let overtime = entry.overtime(standardWorkingTime: standardHours) ?? 0
-                totalOvertime += overtime
+               let clockInDay = entry.clockInDayString(),
+               let timeWorked = entry.roundedTimeWorked(minutes: roundingMinutes) {
+                let overtime = entry.roundedOvertime(
+                    standardWorkingTime: standardHours,
+                    minutes: roundingMinutes
+                ) ?? .zero
 
                 let row = [
                     clockInDate,
                     clockInDay,
-                    entry.timeWorkedString(),
+                    formatTimeInterval(timeWorked),
                     formatTimeInterval(standardHours),
-                    entry.overtimeString(standardWorkingTime: standardHours)
+                    formatTimeInterval(overtime)
                 ]
                 csvContent += row.map { escapeCSV($0) }.joined(separator: ",") + "\n"
             }
@@ -365,6 +201,13 @@ struct TimesheetExporter {
             result = "\"\(result)\""
         }
         return result
+    }
+
+    func formatTime(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
     }
 
     func formatTimeInterval(_ interval: TimeInterval) -> String {

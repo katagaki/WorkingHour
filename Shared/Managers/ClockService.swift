@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import WidgetKit
 
 /// Single source of truth for clock in/out and break operations.
 ///
@@ -210,5 +211,8 @@ final class ClockService {
         }
         modelContext.processPendingChanges()
         DataManager.shared.loadAll()
+        // Reflect the new session state on Home Screen widgets immediately
+        // instead of waiting for the next timeline refresh.
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }

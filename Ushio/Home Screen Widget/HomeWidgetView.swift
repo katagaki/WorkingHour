@@ -79,13 +79,45 @@ struct HomeWidgetView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
+
+            clockButton
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// One-tap clock in/out without opening the app.
+    var clockButton: some View {
+        Group {
+            if entry.isActive {
+                Button(intent: QuickClockOutIntent()) {
+                    Label("TimeClock.Work.ClockOut", systemImage: "figure.walk.departure")
+                        .frame(maxWidth: .infinity)
+                }
+                .tint(.red)
+            } else {
+                Button(intent: QuickClockInIntent()) {
+                    Label("TimeClock.Work.ClockIn", systemImage: "figure.walk.arrival")
+                        .frame(maxWidth: .infinity)
+                }
+                .tint(.accent)
+            }
+        }
+        .buttonStyle(.borderedProminent)
+        .controlSize(.small)
+        .font(.caption)
+        .fontWeight(.semibold)
     }
 
     // MARK: - Medium Widget
 
     var mediumWidget: some View {
+        VStack(spacing: 10.0) {
+            mediumWidgetContent
+            clockButton
+        }
+    }
+
+    var mediumWidgetContent: some View {
         HStack(spacing: 16.0) {
             // Left side: times
             VStack(alignment: .leading, spacing: 6.0) {
