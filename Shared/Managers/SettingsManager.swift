@@ -28,6 +28,10 @@ final class SettingsManager {
         static let geofencingEnabled = "geofencingEnabled"
         static let autoClockInEnabled = "autoClockInEnabled"
         static let autoClockOutEnabled = "autoClockOutEnabled"
+        static let breakStartReminderEnabled = "breakStartReminderEnabled"
+        static let breakEndReminderEnabled = "breakEndReminderEnabled"
+        static let sessionConfirmedAtWorkplace = "sessionConfirmedAtWorkplace"
+        static let isOnAwayBreak = "isOnAwayBreak"
     }
 
     // MARK: - Properties
@@ -138,6 +142,51 @@ final class SettingsManager {
         }
     }
 
+    /// Whether to send a reminder 15 minutes before a break window starts.
+    var breakStartReminderEnabled: Bool {
+        get {
+            defaults.bool(forKey: Keys.breakStartReminderEnabled)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.breakStartReminderEnabled)
+        }
+    }
+
+    /// Whether to send a reminder 15 minutes before a break window ends.
+    var breakEndReminderEnabled: Bool {
+        get {
+            defaults.bool(forKey: Keys.breakEndReminderEnabled)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.breakEndReminderEnabled)
+        }
+    }
+
+    // MARK: - Geofencing Session State
+
+    // These are runtime state rather than user preferences, persisted here so
+    // that background relaunches (geofence events) do not lose them.
+
+    /// Whether the current session is known to be at a workplace.
+    var sessionConfirmedAtWorkplace: Bool {
+        get {
+            defaults.bool(forKey: Keys.sessionConfirmedAtWorkplace)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.sessionConfirmedAtWorkplace)
+        }
+    }
+
+    /// Whether the current break started because the user left the workplace.
+    var isOnAwayBreak: Bool {
+        get {
+            defaults.bool(forKey: Keys.isOnAwayBreak)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.isOnAwayBreak)
+        }
+    }
+
     /// Convenience: returns `DateComponents` (hour + minute) for the stored clock-in time.
     var clockInReminderTimeComponents: DateComponents {
         let totalSeconds = Int(clockInReminderTime)
@@ -169,7 +218,11 @@ final class SettingsManager {
             Keys.clockOutReminderTime: 17 * 3600,
             Keys.geofencingEnabled: false,
             Keys.autoClockInEnabled: true,
-            Keys.autoClockOutEnabled: true
+            Keys.autoClockOutEnabled: true,
+            Keys.breakStartReminderEnabled: false,
+            Keys.breakEndReminderEnabled: false,
+            Keys.sessionConfirmedAtWorkplace: false,
+            Keys.isOnAwayBreak: false
         ])
     }
 }

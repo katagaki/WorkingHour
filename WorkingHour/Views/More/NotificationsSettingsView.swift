@@ -25,6 +25,8 @@ struct NotificationsSettingsView: View {
         components.minute = 0
         return Calendar.current.date(from: components) ?? Date()
     }()
+    @State private var breakStartReminderEnabled: Bool = false
+    @State private var breakEndReminderEnabled: Bool = false
 
     var body: some View {
         List {
@@ -53,6 +55,17 @@ struct NotificationsSettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+
+            Section {
+                Toggle("Settings.BreakStartReminder", isOn: $breakStartReminderEnabled)
+                Toggle("Settings.BreakEndReminder", isOn: $breakEndReminderEnabled)
+            } header: {
+                Text("Settings.Notifications.Breaks")
+            } footer: {
+                Text("Settings.Notifications.Breaks.Footer")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .navigationTitle("Settings.Section.Notifications")
         .toolbarTitleDisplayMode(.inline)
@@ -71,6 +84,12 @@ struct NotificationsSettingsView: View {
         .onChange(of: clockOutReminderTime) { _, _ in
             saveNotificationSettings()
         }
+        .onChange(of: breakStartReminderEnabled) { _, _ in
+            saveBreakReminderSettings()
+        }
+        .onChange(of: breakEndReminderEnabled) { _, _ in
+            saveBreakReminderSettings()
+        }
     }
 
     private func loadSettings() {
@@ -78,6 +97,16 @@ struct NotificationsSettingsView: View {
         clockOutReminderEnabled = settingsManager.clockOutReminderEnabled
         clockInReminderTime = dateFromSecondsSinceMidnight(settingsManager.clockInReminderTime)
         clockOutReminderTime = dateFromSecondsSinceMidnight(settingsManager.clockOutReminderTime)
+        breakStartReminderEnabled = settingsManager.breakStartReminderEnabled
+        breakEndReminderEnabled = settingsManager.breakEndReminderEnabled
+    }
+
+    private func saveBreakReminderSettings() {
+        settingsManager.breakStartReminderEnabled = breakStartReminderEnabled
+        settingsManager.breakEndReminderEnabled = breakEndReminderEnabled
+        Task {
+            await NotificationManager.shared.refreshBreakReminders()
+        }
     }
 
     private func saveNotificationSettings() {

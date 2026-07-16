@@ -23,7 +23,6 @@ class LiveActivities {
         return Date().addingTimeInterval(maxStaleInterval)
     }
 
-
     public static func hasActivity(for entryId: String) -> Bool {
         let activities = Activity<UshioAttributes>.activities
         return activities.contains(where: { $0.attributes.entryId == entryId })
@@ -98,11 +97,30 @@ class LiveActivities {
         )
         let content = ActivityContent(state: contentState, staleDate: nextStaleDate())
 
-        do {
-            let activity = try Activity<UshioAttributes>.request(attributes: attributes, content: content)
-            log("LiveActivityManager: Started activity \(activity.id) for entryId \(activity.attributes.entryId)")
-        } catch {
-            log("LiveActivityManager: Error while starting activity: \(error), \(error.localizedDescription)")
+        // A background start (e.g. from a geofence clock-in) is only allowed
+        // while the app is receiving location updates; retry once in case the
+        // request races the first location fix.
+        for attempt in 1...2 {
+            do {
+                let activity = try Activity<UshioAttributes>.request(attributes: attributes, content: content)
+                log("LiveActivityManager: Started activity \(activity.id) for entryId \(activity.attributes.entryId)")
+                return
+            } catch {
+                log("LiveActivityManager: Error while starting activity (attempt \(attempt)): "
+                    + "\(error), \(error.localizedDescription)")
+                if attempt == 1 {
+                    try? await Task.sleep(for: .seconds(2))
+                }
+            }
+        }
+    }
+
+    /// Updates the activity for this session, starting it if it is missing.
+    public static func startOrUpdateActivity(with data: WorkSessionData) async {
+        if hasActivity(for: data.entryId) {
+            await updateActivity(with: data)
+        } else {
+            await ensureActivity(with: data)
         }
     }
 

@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-// swiftlint:disable type_body_length file_length
+// swiftlint:disable type_body_length
 struct TimeClockView: View {
 
     @Environment(\.modelContext) private var modelContext
@@ -335,31 +335,14 @@ struct TimeClockView: View {
 
     func clockIn() {
         withAnimation(.smooth.speed(2.0)) {
-            let newEntry = ClockEntry(.now)
-            modelContext.insert(newEntry)
+            ClockService.shared.clockIn(source: .manual)
             startTimer()
-            modelContext.processPendingChanges()
-            if let sessionData = newEntry.toWorkSessionData() {
-                Task {
-                    await LiveActivities.startActivity(with: sessionData)
-                }
-            }
-            Task {
-                await NotificationManager.shared.sendClockInConfirmation(at: .now)
-            }
         }
     }
 
     func clockOut() {
         withAnimation(.smooth.speed(2.0)) {
-            if let activeEntry,
-               let sessionData = activeEntry.toWorkSessionData() {
-                activeEntry.clockOutTime = .now
-                modelContext.processPendingChanges()
-                Task {
-                    await LiveActivities.endActivity(with: sessionData, immediately: true)
-                }
-            }
+            ClockService.shared.clockOut(source: .manual)
             timer?.invalidate()
             timer = nil
         }
@@ -367,34 +350,13 @@ struct TimeClockView: View {
 
     func startBreak() {
         withAnimation(.smooth.speed(2.0)) {
-            let newBreak = Break(start: .now)
-            newBreak.clockEntry = activeEntry
-            modelContext.insert(newBreak)
-            activeEntry?.isOnBreak = true
-            modelContext.processPendingChanges()
-            if let activeEntry,
-               let sessionData = activeEntry.toWorkSessionData() {
-                Task {
-                    await LiveActivities.updateActivity(with: sessionData)
-                }
-            }
+            ClockService.shared.startBreak(source: .manual)
         }
     }
 
     func endBreak() {
-        if let lastBreak = (activeEntry?.breakTimes ?? []).last,
-           lastBreak.end == nil {
-            withAnimation(.smooth.speed(2.0)) {
-                lastBreak.end = .now
-                activeEntry?.isOnBreak = false
-                modelContext.processPendingChanges()
-                if let activeEntry,
-                   let sessionData = activeEntry.toWorkSessionData() {
-                    Task {
-                        await LiveActivities.updateActivity(with: sessionData)
-                    }
-                }
-            }
+        withAnimation(.smooth.speed(2.0)) {
+            ClockService.shared.endBreak(source: .manual)
         }
     }
 
@@ -405,4 +367,4 @@ struct TimeClockView: View {
         return formatter.string(from: interval) ?? ""
     }
 }
-// swiftlint:enable type_body_length file_length
+// swiftlint:enable type_body_length

@@ -50,6 +50,9 @@ struct BreakWindowsView: View {
                         Button {
                             window.isEnabled.toggle()
                             try? modelContext.save()
+                            Task {
+                                await NotificationManager.shared.refreshBreakReminders()
+                            }
                         } label: {
                             Label(
                                 window.isEnabled ? "BreakWindow.Disable" : "BreakWindow.Enable",
@@ -83,6 +86,9 @@ struct BreakWindowsView: View {
                 if let windowToDelete {
                     modelContext.delete(windowToDelete)
                     try? modelContext.save()
+                    Task {
+                        await NotificationManager.shared.refreshBreakReminders()
+                    }
                 }
                 windowToDelete = nil
             }

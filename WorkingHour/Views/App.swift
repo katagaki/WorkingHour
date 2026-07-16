@@ -12,6 +12,10 @@ import SwiftUI
 @main
 struct WorkingHourApp: App {
 
+    // Wires up managers at launch, including background launches for
+    // location events where no scene is created.
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     @StateObject var navigator = Navigator<TabType, ViewPath>()
     @Environment(\.scenePhase) private var scenePhase
 
@@ -20,11 +24,11 @@ struct WorkingHourApp: App {
             MainTabView()
                 .onAppear {
                     let context = SharedModelContainer.shared.container.mainContext
-                    DataManager.shared.modelContext = context
-                    DataManager.shared.loadAll()
                     checkAndRestoreLiveActivity(context: context)
                     refreshClockInRemindersIfNeeded()
-                    startGeofencingIfEnabled()
+                    Task {
+                        await NotificationManager.shared.refreshBreakReminders()
+                    }
                 }
         }
         .environmentObject(navigator)
@@ -36,6 +40,8 @@ struct WorkingHourApp: App {
             if newPhase == .active {
                 let context = SharedModelContainer.shared.container.mainContext
                 checkAndRestoreLiveActivity(context: context)
+                // Self-heal session upkeep after manual timesheet edits.
+                GeofencingManager.shared.syncSessionUpkeep()
             }
         }
     }
@@ -57,13 +63,6 @@ struct WorkingHourApp: App {
         Task {
             await LiveActivities.refreshOnLaunch(with: sessionData)
         }
-    }
-
-    /// Re-schedules reminders if they are enabled and were last
-    private func startGeofencingIfEnabled() {
-        let settings = SettingsManager.shared
-        guard settings.geofencingEnabled else { return }
-        GeofencingManager.shared.startMonitoringWorkplaces()
     }
 
     /// Re-schedules clock-in reminders if they are enabled and were last

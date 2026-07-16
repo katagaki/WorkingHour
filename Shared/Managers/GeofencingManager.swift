@@ -10,6 +10,18 @@ import CoreLocation
 import Foundation
 import SwiftData
 
+// swiftlint:disable type_body_length file_length
+
+/// Coordinates workplace geofencing for automatic clock in/out and breaks.
+///
+/// Region events from iOS are treated as *hints* rather than facts: every hint
+/// is verified against a fresh location fix before acting. When the fix is
+/// conclusive the action happens automatically; when it is inconclusive (weak
+/// GPS, boundary jitter) the user is asked to confirm via an actionable
+/// notification instead of the event being silently dropped.
+///
+/// While a session is active, significant-change location monitoring keeps the
+/// Live Activity from going stale and self-heals missed region events.
 @MainActor
 @Observable
 final class GeofencingManager: NSObject {
@@ -21,41 +33,86 @@ final class GeofencingManager: NSObject {
     var authorizationStatus: CLAuthorizationStatus = .notDetermined
     var isMonitoring: Bool = false
 
-    /// A confirmed boundary crossing, used to debounce flapping at the edge.
-    private enum RegionTransition { case entered, exited }
+    // MARK: Hint verification
 
-    /// Region boundary crossings awaiting confirmation via `requestState`,
-    /// keyed by region identifier with the direction that triggered them.
-    private var pendingConfirmations: [String: RegionTransition] = [:]
+    enum HintDirection {
+        case entry
+        case exit
+    }
 
-    /// Entry/exit events received before this date are ignored, to let regions
-    /// settle after (re-)registration.
-    private var ignoreEventsUntil: Date = .distantPast
+    private enum Verdict {
+        case inside
+        case outside
+        case uncertain
+    }
 
-    /// The last transition we acted on, and when — used to drop duplicate or
-    /// rapidly-flapping events while lingering at the boundary.
-    private var lastActedTransition: RegionTransition?
-    private var lastActedTransitionAt: Date = .distantPast
+    /// The region hint currently awaiting verification by a fresh fix.
+    private var pendingHint: (direction: HintDirection, date: Date)?
+    private var verificationTimeout: Task<Void, Never>?
+    /// How long to wait for a usable fix before falling back to asking the user.
+    private let verificationTimeoutInterval: TimeInterval = 20
 
-    /// Minimum spacing between two *same-direction* transitions. Opposite
-    /// directions (a genuine state change) are always allowed through.
-    private let transitionCooldown: TimeInterval = 60
+    // MARK: Flap suppression
+
+    /// The last automatic action taken, used to suppress rapid flip-flopping
+    /// at the fence boundary.
+    private var lastAutoAction: (direction: HintDirection, date: Date)?
+    /// Minimum time before an automatic action in the opposite direction.
+    private let actionCooldown: TimeInterval = 150
+
+    // MARK: Session location upkeep
+
+    /// Whether significant-change monitoring is running for an active session.
+    private var isTrackingSession = false
+    private var lastActivityRefresh: Date = .distantPast
+    /// Minimum time between Live Activity refreshes from location updates.
+    private let activityRefreshInterval: TimeInterval = 5 * 60
+    /// Whether a short burst of standard location updates is running.
+    private var isPulsing = false
+    private var pulseTimeout: Task<Void, Never>?
+
+    /// Whether the current session is known to be at a workplace. Only then
+    /// may upkeep fixes clock the user out — a session started manually away
+    /// from any workplace (e.g. working from home) must never be ended by a
+    /// location update. Persisted so background relaunches keep the state.
+    private var sessionConfirmedAtWorkplace: Bool {
+        get { SettingsManager.shared.sessionConfirmedAtWorkplace }
+        set { SettingsManager.shared.sessionConfirmedAtWorkplace = newValue }
+    }
+    /// Whether the current break started because the user left the workplace.
+    /// Manually started breaks must never be ended by a location event.
+    /// Persisted so background relaunches keep the state.
+    private var isOnAwayBreak: Bool {
+        get { SettingsManager.shared.isOnAwayBreak }
+        set { SettingsManager.shared.isOnAwayBreak = newValue }
+    }
+
+    private var modelContext: ModelContext {
+        SharedModelContainer.shared.container.mainContext
+    }
 
     private override init() {
         super.init()
         locationManager.delegate = self
-        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.pausesLocationUpdatesAutomatically = false
         authorizationStatus = locationManager.authorizationStatus
+    }
+
+    /// Called as early as possible on every launch — including background
+    /// launches caused by a region crossing or a significant location change —
+    /// so the delegate is armed before CoreLocation delivers the event.
+    func bootstrap() {
+        authorizationStatus = locationManager.authorizationStatus
+        startMonitoringWorkplaces()
+        syncSessionUpkeep()
     }
 
     // MARK: - Authorization
 
     func requestAlwaysAuthorization() {
         let status = locationManager.authorizationStatus
-        if status == .notDetermined {
-            locationManager.requestAlwaysAuthorization()
-        } else if status == .authorizedWhenInUse {
+        if status == .notDetermined || status == .authorizedWhenInUse {
             locationManager.requestAlwaysAuthorization()
         }
     }
@@ -73,7 +130,7 @@ final class GeofencingManager: NSObject {
 
     func startMonitoringWorkplaces() {
         guard SettingsManager.shared.geofencingEnabled else {
-            log("GeofencingManager: Geofencing is disabled in settings", prefix: "MIKA")
+            stopMonitoringAllRegions()
             return
         }
 
@@ -87,47 +144,45 @@ final class GeofencingManager: NSObject {
             return
         }
 
-        guard let modelContext = DataManager.shared.modelContext else {
-            log("GeofencingManager: No model context available", prefix: "MIKA")
-            return
+        let workplaces = enabledWorkplaces()
+
+        // Re-register only what changed; tearing everything down on every
+        // launch makes CoreLocation re-deliver boundary events unnecessarily.
+        let wantedIds = Set(workplaces.map(\.id))
+        for region in locationManager.monitoredRegions where !wantedIds.contains(region.identifier) {
+            locationManager.stopMonitoring(for: region)
         }
 
-        // Stop all existing monitoring first
-        stopMonitoringAllRegions()
-
-        // Ignore entries and exits briefly while regions settle after
-        // re-registration, which otherwise re-deliver spurious crossings.
-        ignoreEventsUntil = Date().addingTimeInterval(15)
-
-        do {
-            let descriptor = FetchDescriptor<Workplace>(
-                predicate: #Predicate { $0.isEnabled }
+        for workplace in workplaces {
+            let region = CLCircularRegion(
+                center: CLLocationCoordinate2D(
+                    latitude: workplace.latitude,
+                    longitude: workplace.longitude
+                ),
+                radius: max(
+                    Workplace.minimumReliableRadius,
+                    min(workplace.radius, locationManager.maximumRegionMonitoringDistance)
+                ),
+                identifier: workplace.id
             )
-            let workplaces = try modelContext.fetch(descriptor)
+            region.notifyOnEntry = true
+            region.notifyOnExit = true
 
-            for workplace in workplaces {
-                let region = CLCircularRegion(
-                    center: CLLocationCoordinate2D(
-                        latitude: workplace.latitude,
-                        longitude: workplace.longitude
-                    ),
-                    radius: max(
-                        Workplace.minimumReliableRadius,
-                        min(workplace.radius, locationManager.maximumRegionMonitoringDistance)
-                    ),
-                    identifier: workplace.id
-                )
-                region.notifyOnEntry = true
-                region.notifyOnExit = true
-                locationManager.startMonitoring(for: region)
-                log("GeofencingManager: Started monitoring \(workplace.name) (r=\(workplace.radius)m)", prefix: "MIKA")
+            if let monitored = locationManager.monitoredRegions.first(where: { $0.identifier == workplace.id }) {
+                if let monitored = monitored as? CLCircularRegion,
+                   monitored.center.latitude == region.center.latitude,
+                   monitored.center.longitude == region.center.longitude,
+                   monitored.radius == region.radius {
+                    continue // Unchanged, keep the existing registration.
+                }
+                locationManager.stopMonitoring(for: monitored)
             }
-
-            isMonitoring = !workplaces.isEmpty
-            log("GeofencingManager: Monitoring \(workplaces.count) workplace(s)", prefix: "MIKA")
-        } catch {
-            log("GeofencingManager: Error fetching workplaces: \(error)", prefix: "MIKA")
+            locationManager.startMonitoring(for: region)
+            log("GeofencingManager: Monitoring \(workplace.name) (r=\(workplace.radius)m)", prefix: "MIKA")
         }
+
+        isMonitoring = !workplaces.isEmpty
+        log("GeofencingManager: Monitoring \(workplaces.count) workplace(s)", prefix: "MIKA")
     }
 
     func stopMonitoringAllRegions() {
@@ -138,120 +193,231 @@ final class GeofencingManager: NSObject {
         log("GeofencingManager: Stopped monitoring all regions", prefix: "MIKA")
     }
 
-    // MARK: - Clock In/Out Actions
+    // MARK: - Hint Handling
 
-    private func handleRegionEntry() {
-        let settings = SettingsManager.shared
-        guard settings.geofencingEnabled else { return }
+    /// Handles a raw region-crossing hint from CoreLocation by verifying it
+    /// against a fresh location fix before acting on it.
+    private func handleHint(_ direction: HintDirection) {
+        guard SettingsManager.shared.geofencingEnabled else { return }
 
-        guard let modelContext = DataManager.shared.modelContext else {
-            log("GeofencingManager: No model context for clock-in", prefix: "MIKA")
+        guard hintIsActionable(direction) else {
+            log("GeofencingManager: \(direction) hint has no applicable action, ignoring", prefix: "MIKA")
             return
         }
 
-        // Ending an in-progress break takes priority and happens regardless of
-        // the auto clock-in setting or the current time.
-        if endActiveBreak(in: modelContext) { return }
+        // Suppress flip-flopping at the fence boundary: an opposite hint right
+        // after an automatic action is almost always jitter.
+        if let lastAutoAction,
+           lastAutoAction.direction != direction,
+           Date.now.timeIntervalSince(lastAutoAction.date) < actionCooldown {
+            log("GeofencingManager: \(direction) hint within cooldown of last auto action, ignoring", prefix: "MIKA")
+            return
+        }
+
+        if let pendingHint, pendingHint.direction == direction {
+            return // Already verifying this hint.
+        }
+
+        log("GeofencingManager: Verifying \(direction) hint with a fresh fix", prefix: "MIKA")
+        pendingHint = (direction, .now)
+        startVerificationTimeout()
+        // While a pulse is streaming updates the next fix resolves the hint;
+        // requestLocation must not run concurrently with standard updates.
+        if !isPulsing {
+            locationManager.requestLocation()
+        }
+    }
+
+    /// Whether a hint in this direction could lead to any action, so we do not
+    /// spin up GPS for hints that would be no-ops.
+    private func hintIsActionable(_ direction: HintDirection) -> Bool {
+        let settings = SettingsManager.shared
+        let entry = ClockService.shared.activeEntry()
+
+        switch direction {
+        case .entry:
+            if let entry {
+                // Only breaks that started by leaving the workplace may be
+                // ended by returning; manually started breaks are off-limits.
+                return entry.isOnBreak && isOnAwayBreak
+            }
+            return settings.autoClockInEnabled
+        case .exit:
+            guard let entry else { return false }
+            if isWithinBreakWindow(.now), !entry.isOnBreak {
+                return true // Leaving during a break window starts a break.
+            }
+            return settings.autoClockOutEnabled
+        }
+    }
+
+    private func startVerificationTimeout() {
+        verificationTimeout?.cancel()
+        verificationTimeout = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(self?.verificationTimeoutInterval ?? 20))
+            guard !Task.isCancelled else { return }
+            guard let self, let hint = self.pendingHint else { return }
+            self.pendingHint = nil
+            log("GeofencingManager: No usable fix in time, asking the user to confirm", prefix: "MIKA")
+            self.requestUserConfirmation(for: hint.direction, hintDate: hint.date)
+        }
+    }
+
+    private func resolveHint(with location: CLLocation) {
+        guard let hint = pendingHint else { return }
+        pendingHint = nil
+        verificationTimeout?.cancel()
+        verificationTimeout = nil
+
+        let verdict = classify(location)
+        log(
+            "GeofencingManager: \(hint.direction) hint verified as \(verdict) "
+            + "(accuracy=\(Int(location.horizontalAccuracy))m)",
+            prefix: "MIKA"
+        )
+
+        if verdict == .inside, ClockService.shared.hasActiveSession {
+            sessionConfirmedAtWorkplace = true
+        }
+
+        switch (hint.direction, verdict) {
+        case (.entry, .inside):
+            performEntryActions(at: hint.date)
+        case (.exit, .outside):
+            performExitActions(at: hint.date)
+        case (.entry, .uncertain), (.exit, .uncertain):
+            requestUserConfirmation(for: hint.direction, hintDate: hint.date)
+        case (.entry, .outside), (.exit, .inside):
+            log("GeofencingManager: Fix contradicts \(hint.direction) hint, rejecting", prefix: "MIKA")
+        }
+    }
+
+    private func failPendingHint() {
+        guard let hint = pendingHint else { return }
+        pendingHint = nil
+        verificationTimeout?.cancel()
+        verificationTimeout = nil
+        log("GeofencingManager: Could not get a fix, asking the user to confirm", prefix: "MIKA")
+        requestUserConfirmation(for: hint.direction, hintDate: hint.date)
+    }
+
+    // MARK: - Fix Classification
+
+    /// Classifies a fix against all enabled workplaces with accuracy-based
+    /// hysteresis: `.inside` if confidently within any fence, `.outside` only
+    /// if confidently outside every fence, `.uncertain` otherwise.
+    private func classify(_ location: CLLocation) -> Verdict {
+        let workplaces = enabledWorkplaces()
+        guard !workplaces.isEmpty else { return .uncertain }
+
+        let accuracy = location.horizontalAccuracy
+        guard accuracy >= 0, accuracy <= 250 else {
+            return .uncertain // Fix too coarse to trust either way.
+        }
+        let slack = max(accuracy, 30)
+
+        var uncertain = false
+        for workplace in workplaces {
+            let center = CLLocation(latitude: workplace.latitude, longitude: workplace.longitude)
+            let distance = location.distance(from: center)
+            if distance + slack <= workplace.radius + 40 {
+                return .inside
+            }
+            if distance - slack >= workplace.radius + 40 {
+                continue // Confidently outside this fence.
+            }
+            uncertain = true
+        }
+        return uncertain ? .uncertain : .outside
+    }
+
+    private func enabledWorkplaces() -> [Workplace] {
+        let descriptor = FetchDescriptor<Workplace>(
+            predicate: #Predicate { $0.isEnabled }
+        )
+        do {
+            return try modelContext.fetch(descriptor)
+        } catch {
+            log("GeofencingManager: Error fetching workplaces: \(error)", prefix: "MIKA")
+            return []
+        }
+    }
+
+    // MARK: - Automatic Actions
+
+    private func performEntryActions(at date: Date) {
+        let settings = SettingsManager.shared
+
+        if let entry = ClockService.shared.activeEntry() {
+            // Ending an in-progress break takes priority and happens
+            // regardless of the auto clock-in setting — but only for breaks
+            // that started by leaving the workplace. A manually started break
+            // must never be ended by a location event.
+            if entry.isOnBreak, isOnAwayBreak {
+                lastAutoAction = (.entry, .now)
+                ClockService.shared.endBreak(at: date, source: .geofence, notify: true)
+            }
+            return
+        }
 
         guard settings.autoClockInEnabled else { return }
-
-        // Check if there's already an active entry
-        let descriptor = FetchDescriptor<ClockEntry>(
-            predicate: #Predicate { $0.clockOutTime == nil }
-        )
-
-        do {
-            let activeEntries = try modelContext.fetch(descriptor)
-            guard activeEntries.isEmpty else {
-                log("GeofencingManager: Already clocked in, skipping auto clock-in", prefix: "MIKA")
-                return
-            }
-
-            let newEntry = ClockEntry(.now)
-
-            modelContext.insert(newEntry)
-            try modelContext.save()
-            DataManager.shared.loadAll()
-
-            log("GeofencingManager: Auto clocked in", prefix: "MIKA")
-
-            // Send clock-in notification
-            Task {
-                await NotificationManager.shared.sendClockInConfirmation(at: .now)
-            }
-
-            // Start live activity
-            if let sessionData = newEntry.toWorkSessionData() {
-                Task {
-                    await LiveActivities.startActivity(with: sessionData)
-                }
-            }
-        } catch {
-            log("GeofencingManager: Error during auto clock-in: \(error)", prefix: "MIKA")
-        }
+        lastAutoAction = (.entry, .now)
+        ClockService.shared.clockIn(at: date, source: .geofence)
     }
 
-    private func handleRegionExit() {
+    private func performExitActions(at date: Date) {
         let settings = SettingsManager.shared
-        guard settings.geofencingEnabled else { return }
+        guard let entry = ClockService.shared.activeEntry() else { return }
 
-        guard let modelContext = DataManager.shared.modelContext else {
-            log("GeofencingManager: No model context for clock-out", prefix: "MIKA")
+        // During a configured break window, leaving starts a break instead of
+        // clocking out — regardless of the auto clock-out setting.
+        if isWithinBreakWindow(date) {
+            if !entry.isOnBreak {
+                lastAutoAction = (.exit, .now)
+                ClockService.shared.startBreak(at: date, source: .geofence, notify: true)
+            }
             return
         }
 
-        let descriptor = FetchDescriptor<ClockEntry>(
-            predicate: #Predicate { $0.clockOutTime == nil },
-            sortBy: [SortDescriptor(\.clockInTime, order: .reverse)]
-        )
+        guard settings.autoClockOutEnabled else { return }
+        lastAutoAction = (.exit, .now)
+        ClockService.shared.clockOut(at: date, source: .geofence)
+    }
 
-        do {
-            guard let activeEntry = try modelContext.fetch(descriptor).first else {
-                log("GeofencingManager: No active entry on exit", prefix: "MIKA")
+    /// Asks the user to confirm an action we could not verify automatically.
+    private func requestUserConfirmation(for direction: HintDirection, hintDate: Date) {
+        let entry = ClockService.shared.activeEntry()
+
+        let kind: NotificationManager.ConfirmationRequest
+        switch direction {
+        case .entry:
+            if let entry, entry.isOnBreak {
+                // Don't even ask about ending a manually started break.
+                guard isOnAwayBreak else { return }
+                kind = .breakEnd
+            } else if entry == nil {
+                kind = .clockIn
+            } else {
                 return
             }
-
-            // During a configured break window, leaving starts a break instead
-            // of clocking out — regardless of the auto clock-out setting.
-            if isWithinBreakWindow(.now, in: modelContext) {
-                startAutoBreak(for: activeEntry, in: modelContext)
-                return
+        case .exit:
+            guard let entry else { return }
+            if isWithinBreakWindow(hintDate), !entry.isOnBreak {
+                kind = .breakStart
+            } else {
+                kind = .clockOut
             }
+        }
 
-            guard settings.autoClockOutEnabled else { return }
-
-            // End any active break first. Find the open break explicitly —
-            // `breakTimes` is an unordered SwiftData relationship, so `.last`
-            // is not reliably the ongoing one.
-            if activeEntry.isOnBreak,
-               let openBreak = (activeEntry.breakTimes ?? []).first(where: { $0.end == nil }) {
-                openBreak.end = .now
-                activeEntry.isOnBreak = false
-            }
-
-            let sessionData = activeEntry.toWorkSessionData()
-
-            activeEntry.clockOutTime = .now
-            try modelContext.save()
-            DataManager.shared.loadAll()
-
-            log("GeofencingManager: Auto clocked out", prefix: "MIKA")
-
-            // End live activity
-            if let sessionData {
-                Task {
-                    await LiveActivities.endActivity(with: sessionData, immediately: true)
-                }
-            }
-        } catch {
-            log("GeofencingManager: Error during auto clock-out: \(error)", prefix: "MIKA")
+        Task {
+            await NotificationManager.shared.sendConfirmationRequest(kind, hintDate: hintDate)
         }
     }
 
-    // MARK: - Automatic Breaks
+    // MARK: - Break Windows
 
     /// Whether `date` falls within any enabled break window.
-    private func isWithinBreakWindow(_ date: Date, in modelContext: ModelContext) -> Bool {
+    private func isWithinBreakWindow(_ date: Date) -> Bool {
         let descriptor = FetchDescriptor<BreakWindow>(
             predicate: #Predicate { $0.isEnabled }
         )
@@ -264,72 +430,140 @@ final class GeofencingManager: NSObject {
         }
     }
 
-    /// Starts a break for the active entry (unless one is already in progress)
-    /// and notifies the user.
-    private func startAutoBreak(for activeEntry: ClockEntry, in modelContext: ModelContext) {
-        guard !activeEntry.isOnBreak else {
-            log("GeofencingManager: Already on break, skipping auto break", prefix: "MIKA")
-            return
-        }
+    // MARK: - Session Location Upkeep
 
-        do {
-            let newBreak = Break(start: .now)
-            newBreak.clockEntry = activeEntry
-            modelContext.insert(newBreak)
-            activeEntry.isOnBreak = true
-            try modelContext.save()
-            DataManager.shared.loadAll()
-
-            log("GeofencingManager: Auto started break", prefix: "MIKA")
-
-            if let sessionData = activeEntry.toWorkSessionData() {
-                Task {
-                    await LiveActivities.updateActivity(with: sessionData)
-                }
-            }
-            Task {
-                await NotificationManager.shared.sendBreakStartedConfirmation(at: .now)
-            }
-        } catch {
-            log("GeofencingManager: Error starting auto break: \(error)", prefix: "MIKA")
+    /// Starts or stops significant-change monitoring to match whether a
+    /// session is currently active.
+    func syncSessionUpkeep() {
+        if ClockService.shared.hasActiveSession {
+            sessionDidStart()
+        } else {
+            sessionDidEnd()
         }
     }
 
-    /// Ends the active break, if any. Returns `true` when a break was ended.
-    private func endActiveBreak(in modelContext: ModelContext) -> Bool {
-        let descriptor = FetchDescriptor<ClockEntry>(
-            predicate: #Predicate { $0.clockOutTime == nil },
-            sortBy: [SortDescriptor(\.clockInTime, order: .reverse)]
-        )
+    /// Begins location upkeep for an active session: significant-change
+    /// monitoring wakes the app periodically to refresh the Live Activity's
+    /// stale date and to self-heal missed region events.
+    ///
+    /// Pass `confirmedAtWorkplace` when a session starts to record whether it
+    /// began at a workplace; omit it when merely resuming upkeep for a
+    /// session that is already running.
+    func sessionDidStart(confirmedAtWorkplace: Bool? = nil) {
+        if let confirmedAtWorkplace {
+            sessionConfirmedAtWorkplace = confirmedAtWorkplace
+            isOnAwayBreak = false
+        }
+        guard hasAnyAuthorization,
+              CLLocationManager.significantLocationChangeMonitoringAvailable() else {
+            return
+        }
+        updateBackgroundLocationCapability()
+        guard !isTrackingSession else { return }
+        isTrackingSession = true
+        locationManager.startMonitoringSignificantLocationChanges()
+        log("GeofencingManager: Started session location upkeep", prefix: "MIKA")
+    }
 
-        do {
-            // `breakTimes` is unordered, so locate the open break explicitly
-            // rather than relying on `.last`.
-            guard let activeEntry = try modelContext.fetch(descriptor).first,
-                  activeEntry.isOnBreak,
-                  let openBreak = (activeEntry.breakTimes ?? []).first(where: { $0.end == nil }) else {
-                return false
-            }
+    /// Stops location upkeep when no session is active.
+    func sessionDidEnd() {
+        sessionConfirmedAtWorkplace = false
+        isOnAwayBreak = false
+        guard isTrackingSession else { return }
+        isTrackingSession = false
+        locationManager.stopMonitoringSignificantLocationChanges()
+        endLocationPulse()
+        log("GeofencingManager: Stopped session location upkeep", prefix: "MIKA")
+    }
 
-            openBreak.end = .now
-            activeEntry.isOnBreak = false
-            try modelContext.save()
-            DataManager.shared.loadAll()
+    /// Records how the current break started. Only breaks that began because
+    /// the user left the workplace may be ended by a location event.
+    func noteBreakStarted(awayFromWorkplace: Bool) {
+        isOnAwayBreak = awayFromWorkplace
+    }
 
-            log("GeofencingManager: Auto ended break", prefix: "MIKA")
+    /// Records that the current break has ended.
+    func noteBreakEnded() {
+        isOnAwayBreak = false
+    }
 
-            if let sessionData = activeEntry.toWorkSessionData() {
+    /// Briefly streams location updates. While updates are flowing the app is
+    /// allowed to start Live Activities from the background, and the extra
+    /// runtime lets in-flight work (saves, notifications) finish.
+    func beginLocationPulse(for duration: TimeInterval = 15) {
+        guard hasAnyAuthorization else { return }
+        updateBackgroundLocationCapability()
+        isPulsing = true
+        locationManager.startUpdatingLocation()
+        pulseTimeout?.cancel()
+        pulseTimeout = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(duration))
+            guard !Task.isCancelled else { return }
+            self?.endLocationPulse()
+        }
+    }
+
+    private func endLocationPulse() {
+        pulseTimeout?.cancel()
+        pulseTimeout = nil
+        guard isPulsing else { return }
+        isPulsing = false
+        locationManager.stopUpdatingLocation()
+    }
+
+    private func updateBackgroundLocationCapability() {
+        let allowed = hasAlwaysAuthorization
+        if locationManager.allowsBackgroundLocationUpdates != allowed {
+            locationManager.allowsBackgroundLocationUpdates = allowed
+        }
+    }
+
+    /// Handles a fix that arrived outside hint verification (significant
+    /// location change or a pulse): refreshes the Live Activity and reconciles
+    /// the session against the fences to catch missed region events.
+    private func handleUpkeepFix(_ location: CLLocation) {
+        guard let entry = ClockService.shared.activeEntry() else {
+            sessionDidEnd()
+            return
+        }
+
+        // Refresh the Live Activity so it never reaches its 8-hour stale date
+        // mid-shift, starting it if it is missing (possible here because the
+        // app is actively receiving location updates).
+        if Date.now.timeIntervalSince(lastActivityRefresh) >= activityRefreshInterval {
+            lastActivityRefresh = .now
+            if let sessionData = entry.toWorkSessionData() {
                 Task {
-                    await LiveActivities.updateActivity(with: sessionData)
+                    await LiveActivities.startOrUpdateActivity(with: sessionData)
                 }
             }
-            Task {
-                await NotificationManager.shared.sendBreakEndedConfirmation(at: .now)
+        }
+
+        // Reconcile against the fences, but only on confident verdicts —
+        // upkeep fixes must never generate confirmation notifications.
+        guard SettingsManager.shared.geofencingEnabled else { return }
+        // Significant-change monitoring can deliver cached fixes; never
+        // reconcile against a stale position.
+        guard abs(location.timestamp.timeIntervalSinceNow) < 120 else { return }
+        if let lastAutoAction, Date.now.timeIntervalSince(lastAutoAction.date) < actionCooldown {
+            return
+        }
+
+        switch classify(location) {
+        case .outside:
+            // Only sessions known to be at a workplace may be ended here; a
+            // session started manually elsewhere is none of our business.
+            guard sessionConfirmedAtWorkplace else { return }
+            log("GeofencingManager: Upkeep fix shows we left the workplace, reconciling", prefix: "MIKA")
+            performExitActions(at: location.timestamp)
+        case .inside:
+            sessionConfirmedAtWorkplace = true
+            if entry.isOnBreak, isOnAwayBreak {
+                log("GeofencingManager: Upkeep fix shows we are back at the workplace, ending break", prefix: "MIKA")
+                performEntryActions(at: location.timestamp)
             }
-            return true
-        } catch {
-            log("GeofencingManager: Error ending break: \(error)", prefix: "MIKA")
-            return false
+        case .uncertain:
+            break
         }
     }
 }
@@ -344,8 +578,11 @@ extension GeofencingManager: CLLocationManagerDelegate {
             self.authorizationStatus = status
             log("GeofencingManager: Authorization changed to \(status.rawValue)", prefix: "MIKA")
 
-            if status == .authorizedAlways && SettingsManager.shared.geofencingEnabled {
-                self.startMonitoringWorkplaces()
+            if status == .authorizedAlways {
+                if SettingsManager.shared.geofencingEnabled {
+                    self.startMonitoringWorkplaces()
+                }
+                self.syncSessionUpkeep()
             }
         }
     }
@@ -353,84 +590,40 @@ extension GeofencingManager: CLLocationManagerDelegate {
     nonisolated func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         guard region is CLCircularRegion else { return }
         Task { @MainActor in
-            self.queueConfirmation(.entered, for: region, with: manager)
+            log("GeofencingManager: Entered region \(region.identifier)", prefix: "MIKA")
+            self.handleHint(.entry)
         }
     }
 
     nonisolated func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         guard region is CLCircularRegion else { return }
         Task { @MainActor in
-            self.queueConfirmation(.exited, for: region, with: manager)
+            log("GeofencingManager: Exited region \(region.identifier)", prefix: "MIKA")
+            self.handleHint(.exit)
         }
     }
 
-    nonisolated func locationManager(
-        _ manager: CLLocationManager,
-        didDetermineState state: CLRegionState,
-        for region: CLRegion
-    ) {
-        guard region is CLCircularRegion else { return }
+    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
         Task { @MainActor in
-            // Only act on states we explicitly requested to confirm a crossing.
-            guard let transition = self.pendingConfirmations.removeValue(forKey: region.identifier) else { return }
-
-            // Use the confirmed state to veto obvious GPS jitter, but trust the
-            // original event (including `.unknown`, which is common in the
-            // background) so genuine crossings are never silently dropped.
-            switch transition {
-            case .entered:
-                guard state != .outside else {
-                    log("GeofencingManager: Ignoring entry for \(region.identifier); device is outside", prefix: "MIKA")
-                    return
-                }
-                self.act(on: .entered, region: region.identifier, state: state) { self.handleRegionEntry() }
-            case .exited:
-                guard state != .inside else {
-                    log("GeofencingManager: Ignoring exit for \(region.identifier); device is still inside", prefix: "MIKA")
-                    return
-                }
-                self.act(on: .exited, region: region.identifier, state: state) { self.handleRegionExit() }
+            if self.pendingHint != nil {
+                self.resolveHint(with: location)
+            } else {
+                self.handleUpkeepFix(location)
             }
         }
     }
 
-    /// Records a boundary crossing and asks Core Location to confirm the
-    /// device's current state before acting, unless we're still settling.
-    private func queueConfirmation(
-        _ transition: RegionTransition,
-        for region: CLRegion,
-        with manager: CLLocationManager
-    ) {
-        let verb = transition == .entered ? "entry" : "exit"
-        log("GeofencingManager: \(verb.capitalized) for region \(region.identifier)", prefix: "MIKA")
-
-        guard Date() >= ignoreEventsUntil else {
-            log("GeofencingManager: Ignoring \(verb) for \(region.identifier) during settling window", prefix: "MIKA")
-            return
+    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Task { @MainActor in
+            log("GeofencingManager: Location request failed: \(error)", prefix: "MIKA")
+            // kCLErrorLocationUnknown is transient — CoreLocation keeps
+            // trying, and the verification timeout covers the worst case.
+            if let clError = error as? CLError, clError.code == .locationUnknown {
+                return
+            }
+            self.failPendingHint()
         }
-
-        pendingConfirmations[region.identifier] = transition
-        manager.requestState(for: region)
-    }
-
-    /// Runs `action` for a confirmed crossing, dropping a same-direction repeat
-    /// that lands within the cooldown (boundary flapping / duplicate events).
-    private func act(
-        on transition: RegionTransition,
-        region: String,
-        state: CLRegionState,
-        action: () -> Void
-    ) {
-        if transition == lastActedTransition,
-           Date().timeIntervalSince(lastActedTransitionAt) < transitionCooldown {
-            log("GeofencingManager: Debouncing repeat \(region) crossing within cooldown", prefix: "MIKA")
-            return
-        }
-
-        log("GeofencingManager: Confirmed crossing for \(region) (state=\(state.rawValue))", prefix: "MIKA")
-        lastActedTransition = transition
-        lastActedTransitionAt = Date()
-        action()
     }
 
     nonisolated func locationManager(
@@ -446,3 +639,4 @@ extension GeofencingManager: CLLocationManagerDelegate {
         }
     }
 }
+// swiftlint:enable type_body_length file_length

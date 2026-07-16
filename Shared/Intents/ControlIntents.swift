@@ -16,28 +16,7 @@ struct StartWorkSessionIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult {
         log("StartWorkSessionIntent: Starting", prefix: "YUUKA")
-        let modelContext = SharedModelContainer.shared.container.mainContext
-        let descriptor = FetchDescriptor<ClockEntry>(
-            predicate: #Predicate { $0.clockOutTime == nil }
-        )
-        if let entries = try? modelContext.fetch(descriptor),
-           !entries.isEmpty {
-            log("StartWorkSessionIntent: Active session already exists, skipping", prefix: "YUUKA")
-            return .result()
-        }
-
-        log("StartWorkSessionIntent: Creating new clock entry", prefix: "YUUKA")
-        let newEntry = ClockEntry(.now)
-        modelContext.insert(newEntry)
-
-        try? modelContext.save()
-        modelContext.processPendingChanges()
-
-        if let sessionData = newEntry.toWorkSessionData() {
-            log("StartWorkSessionIntent: Starting live activity", prefix: "YUUKA")
-            await LiveActivities.startActivity(with: sessionData)
-        }
-
+        await ClockService.shared.clockIn(source: .intent)?.value
         log("StartWorkSessionIntent: Completed", prefix: "YUUKA")
         return .result()
     }
@@ -51,37 +30,7 @@ struct EndWorkSessionIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult {
         log("EndWorkSessionIntent: Starting", prefix: "YUUKA")
-        let modelContext = SharedModelContainer.shared.container.mainContext
-        let descriptor = FetchDescriptor<ClockEntry>(
-            predicate: #Predicate { $0.clockOutTime == nil }
-        )
-        guard let entries = try? modelContext.fetch(descriptor),
-              let entry = entries.first else {
-            log("EndWorkSessionIntent: No active session found", prefix: "YUUKA")
-            return .result()
-        }
-
-        log("EndWorkSessionIntent: Found active session", prefix: "YUUKA")
-
-        if entry.isOnBreak,
-           let lastBreak = (entry.breakTimes ?? []).last,
-           lastBreak.end == nil {
-            log("EndWorkSessionIntent: Ending active break", prefix: "YUUKA")
-            lastBreak.end = .now
-            entry.isOnBreak = false
-        }
-
-        log("EndWorkSessionIntent: Setting clock out time", prefix: "YUUKA")
-        entry.clockOutTime = .now
-
-        try? modelContext.save()
-        modelContext.processPendingChanges()
-
-        if let sessionData = entry.toWorkSessionData() {
-            log("EndWorkSessionIntent: Ending live activity", prefix: "YUUKA")
-            await LiveActivities.endActivity(with: sessionData)
-        }
-
+        await ClockService.shared.clockOut(source: .intent, dismissActivityImmediately: false)?.value
         log("EndWorkSessionIntent: Completed", prefix: "YUUKA")
         return .result()
     }

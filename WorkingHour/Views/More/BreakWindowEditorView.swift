@@ -81,6 +81,9 @@ struct BreakWindowEditorView: View {
         }
 
         try? modelContext.save()
+        Task {
+            await NotificationManager.shared.refreshBreakReminders()
+        }
         dismiss()
     }
 
