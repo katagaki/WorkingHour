@@ -38,9 +38,19 @@ struct SmallLiveActivityView: View {
             .addingTimeInterval(context.state.standardWorkingHours)
     }
 
-    private var statusTint: Color {
-        guard context.state.isOnBreak else { return .blue }
-        return isExceedingBreak ? .red : .orange
+    /// Whether the session has passed the standard working hours.
+    private var isInOvertime: Bool {
+        Date.now >= endWorkDate
+    }
+
+    /// Solid card background keeping the Smart Stack readable: accent green
+    /// while working, orange on break, red once in overtime (or when a break
+    /// has run over).
+    private var backgroundTint: Color {
+        if context.state.isOnBreak {
+            return isExceedingBreak ? .red : .orange
+        }
+        return isInOvertime ? .red : .accent
     }
 
     var body: some View {
@@ -62,14 +72,13 @@ struct SmallLiveActivityView: View {
                 }
                 .font(.caption2)
                 .fontWeight(.semibold)
-                .foregroundStyle(statusTint)
+                .foregroundStyle(.white)
 
                 if context.state.isOnBreak,
                    let breakStartTime = context.state.breakStartTime {
                     Text(breakStartTime, style: .relative)
                         .font(.title3)
                         .fontWeight(.bold)
-                        .foregroundStyle(isExceedingBreak ? .red : .primary)
                 } else {
                     Text(context.state.clockInTime, style: .relative)
                         .font(.title3)
@@ -85,7 +94,7 @@ struct SmallLiveActivityView: View {
                 // refresh indicator takes the control's place instead.
                 Image(systemName: "exclamationmark.arrow.circlepath")
                     .font(.body)
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(.white)
             } else if context.state.isOnBreak {
                 Button(intent: EndBreakIntent(entryId: context.attributes.entryId)) {
                     Image(systemName: "arrowshape.turn.up.backward.badge.clock.fill")
@@ -94,7 +103,7 @@ struct SmallLiveActivityView: View {
                 }
                 .buttonStyle(.bordered)
                 .buttonBorderShape(.circle)
-                .tint(.red)
+                .tint(.white)
             } else {
                 Button(intent: StartBreakIntent(entryId: context.attributes.entryId)) {
                     Image(systemName: "cup.and.heat.waves.fill")
@@ -103,15 +112,15 @@ struct SmallLiveActivityView: View {
                 }
                 .buttonStyle(.bordered)
                 .buttonBorderShape(.circle)
-                .tint(.orange)
+                .tint(.white)
             }
         }
         .padding(8.0)
         .background {
-            if context.state.isOnBreak {
-                Color.orange.opacity(0.2)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
+            // Solid state color so the card stays readable in the Smart
+            // Stack, which otherwise renders it on a transparent background.
+            backgroundTint
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
@@ -128,11 +137,11 @@ struct SmallLiveActivityView: View {
                     Text(breakEndDate, style: .timer)
                 }
                 .font(.caption2)
-                .foregroundStyle(.red)
+                .foregroundStyle(.white)
             } else {
                 clockInRow
             }
-        } else if Date.now >= endWorkDate {
+        } else if isInOvertime {
             HStack(spacing: 3.0) {
                 Image(systemName: "exclamationmark.triangle.fill")
                 Text("Shared.Overtime")
@@ -140,7 +149,7 @@ struct SmallLiveActivityView: View {
                 Text(endWorkDate, style: .timer)
             }
             .font(.caption2)
-            .foregroundStyle(.red)
+            .foregroundStyle(.white)
         } else {
             HStack(spacing: 3.0) {
                 Image(systemName: "clock.badge.checkmark.fill")
