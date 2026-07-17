@@ -76,11 +76,11 @@ struct SmallLiveActivityView: View {
 
                 if context.state.isOnBreak,
                    let breakStartTime = context.state.breakStartTime {
-                    Text(breakStartTime, style: .relative)
+                    Text(breakStartTime, style: .timer)
                         .font(.title3)
                         .fontWeight(.bold)
                 } else {
-                    Text(context.state.clockInTime, style: .relative)
+                    Text(context.state.clockInTime, style: .timer)
                         .font(.title3)
                         .fontWeight(.bold)
                 }
