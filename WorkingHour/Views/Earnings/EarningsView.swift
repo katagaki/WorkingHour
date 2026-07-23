@@ -120,7 +120,6 @@ struct EarningsList: View {
         List {
             let summary = self.summary
 
-            // Estimated earnings, front and center
             if isEarningsTrackingEnabled {
                 Section {
                     VStack(alignment: .leading, spacing: 4.0) {
@@ -152,7 +151,6 @@ struct EarningsList: View {
                 }
             }
 
-            // Hours chart
             Section {
                 if summary.daysWorked == 0 {
                     Text("Earnings.NoData")
@@ -170,7 +168,6 @@ struct EarningsList: View {
                 ListSectionHeader(text: "Earnings.Section.Hours")
             }
 
-            // Working time stats
             Section {
                 LabeledContent("Earnings.HoursWorked", value: formatTimeInterval(summary.totalTime))
                 LabeledContent("Earnings.Overtime", value: formatTimeInterval(summary.overtime))
@@ -180,7 +177,6 @@ struct EarningsList: View {
                 ListSectionHeader(text: "Earnings.Section.Summary")
             }
 
-            // Pay breakdown
             if isEarningsTrackingEnabled {
                 Section {
                     LabeledContent("Earnings.RegularPay") {

@@ -49,7 +49,6 @@ struct TimeClockView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 12.0) {
-                // Working Time
                 VStack(alignment: .center, spacing: 6.0) {
                     HStack(alignment: .center, spacing: 12.0) {
                         VStack(alignment: .leading, spacing: 4.0) {
@@ -81,7 +80,6 @@ struct TimeClockView: View {
                         Image(systemName: "arrow.right")
                         VStack(alignment: .trailing, spacing: 4.0) {
                             if activeEntry != nil {
-                                // Show active entry's clock out time (or "-" if still clocked in)
                                 if let clockOutTime = activeEntry?.clockOutTime {
                                     Text(clockOutTime, style: .date)
                                         .foregroundStyle(.secondary)
@@ -99,7 +97,6 @@ struct TimeClockView: View {
                                 }
                             } else if let lastEntry = lastCompletedEntry,
                                       let clockOutTime = lastEntry.clockOutTime {
-                                // Show last completed entry's clock out time
                                 Text(clockOutTime, style: .date)
                                     .foregroundStyle(.secondary)
                                     .fontWeight(.bold)
@@ -107,7 +104,6 @@ struct TimeClockView: View {
                                     .font(.largeTitle)
                                     .fontWeight(.bold)
                             } else {
-                                // No entries at all
                                 Text(verbatim: "-")
                                     .foregroundStyle(.secondary)
                                     .fontWeight(.bold)
@@ -138,7 +134,6 @@ struct TimeClockView: View {
                 .background(.groupedBackground)
                 .clipShape(.rect(cornerRadius: cornerRadius))
 
-                // Working Hours with Overtime Info
                 if let activeEntry, activeEntry.clockOutTime == nil,
                    let clockInTime = activeEntry.clockInTime {
                     VStack(alignment: .leading, spacing: 6.0) {
@@ -149,7 +144,6 @@ struct TimeClockView: View {
                             .font(.largeTitle)
                             .fontWeight(.bold)
 
-                        // Overtime indicator
                         if currentWorkingTime > 0 {
                             if currentWorkingTime > standardWorkingHours {
                                 HStack(spacing: 6.0) {
@@ -196,7 +190,6 @@ struct TimeClockView: View {
                     .clipShape(.rect(cornerRadius: cornerRadius))
                 }
 
-                // Break Time
                 if let activeEntry, activeEntry.clockOutTime == nil {
                     VStack(alignment: .leading, spacing: 6.0) {
                         if let lastBreakTime = (activeEntry.breakTimes ?? []).last {
@@ -249,7 +242,6 @@ struct TimeClockView: View {
                     .clipShape(.rect(cornerRadius: cornerRadius))
                 }
 
-                // Tasks
                 if let activeEntry, activeEntry.clockOutTime == nil {
                     VStack(alignment: .leading, spacing: 6.0) {
                         Text("TimeClock.Tasks.Title")

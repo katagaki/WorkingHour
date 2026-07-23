@@ -92,7 +92,6 @@ struct EntryEditor: View {
                     TimelineRow(.end, date: $newClockOutTime, in: newClockInTime...Date.distantFuture)
                 }
 
-                // Break Management Section
                 Section {
                     Button {
                         newBreakStart = newClockInTime.addingTimeInterval(3600)
@@ -143,7 +142,6 @@ struct EntryEditor: View {
                     Text("EntryEditor.Section.Breaks")
                 }
 
-                // Tasks Section
                 Section {
                     Button {
                         showingTasksEditor = true
@@ -252,22 +250,20 @@ struct EntryEditor: View {
     }
 
     private func deleteBreak(_ breakTime: Break) {
-        // If this was the ongoing break of an active work session, clear the flag
-        // so the entry is no longer stuck in an "on break" state.
+        // Clear the on-break flag if deleting the ongoing break of an active session.
         if entry.clockOutTime == nil, breakTime.end == nil, entry.isOnBreak {
             entry.isOnBreak = false
         }
 
-        // Sever the inverse relationship first so SwiftUI's next render no longer
-        // sees this break in entry.breakTimes, avoiding stale bindings to a
-        // deleted SwiftData object.
+        // Sever the inverse relationship first so the next render no longer sees this
+        // break, avoiding stale bindings to a deleted SwiftData object.
         if let index = entry.breakTimes?.firstIndex(where: { $0.id == breakTime.id }) {
             entry.breakTimes?.remove(at: index)
         }
         breakTime.clockEntry = nil
         modelContext.delete(breakTime)
 
-        // Keep the live activity in sync when the session is still ongoing.
+        // Keep the live activity in sync while the session is still ongoing.
         if entry.clockOutTime == nil, let sessionData = entry.toWorkSessionData() {
             Task {
                 await LiveActivities.updateActivity(with: sessionData)

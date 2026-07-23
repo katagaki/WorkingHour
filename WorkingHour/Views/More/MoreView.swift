@@ -23,7 +23,6 @@ struct MoreView: View {
     var body: some View {
         NavigationStack {
             MoreList(repoName: "katagaki/WorkingHour") {
-                // Workplaces Section
                 Section {
                     NavigationLink("Workplace.Title") {
                         WorkplacesView()
@@ -36,7 +35,6 @@ struct MoreView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                // Notifications Section
                 Section {
                     NavigationLink("Settings.Section.Notifications") {
                         NotificationsSettingsView()
@@ -49,7 +47,6 @@ struct MoreView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                // Working Hours & Break Settings Section
                 Section {
                     VStack(alignment: .leading, spacing: 8.0) {
                         HStack {
@@ -82,7 +79,6 @@ struct MoreView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                // Time Rounding Section
                 Section {
                     Picker("Settings.Rounding.Title", selection: $roundingMinutes) {
                         Text("Settings.Rounding.Off")

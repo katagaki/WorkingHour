@@ -23,7 +23,6 @@ struct ProjectsView: View {
     var body: some View {
         NavigationStack {
             List {
-                // Active Projects
                 Section {
                     ForEach(activeProjects) { project in
                         Button(project.name, systemImage: "folder.fill") {
@@ -39,7 +38,6 @@ struct ProjectsView: View {
                             Button("Projects.Archive", systemImage: "archivebox") {
                                 withAnimation {
                                     project.isActive = false
-                                    // dataManager.updateProject(project)
                                 }
                             }
                             .tint(.orange)
@@ -49,7 +47,6 @@ struct ProjectsView: View {
                     ListSectionHeader(text: "Projects.Section.Active")
                 }
 
-                // Archived Projects
                 if !archivedProjects.isEmpty {
                     Section {
                         ForEach(archivedProjects) { project in
@@ -63,7 +60,6 @@ struct ProjectsView: View {
                                 Button("Projects.Restore", systemImage: "arrow.uturn.backward") {
                                     withAnimation {
                                         project.isActive = true
-                                        // dataManager.updateProject(project)
                                     }
                                 }
                                 .tint(.accent)

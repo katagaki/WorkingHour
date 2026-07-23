@@ -174,11 +174,9 @@ final class DataManager {
             let weekday = calendar.component(.weekday, from: dayDate)
             if weekday == 1 || weekday == 7 { continue }
 
-            // Random variation between -5 and +5 minutes
             let clockInVariation = Int.random(in: -10...15)
             let clockOutVariation = Int.random(in: -5...85)
 
-            // Set clock in time to 9:00 AM with random variation
             var clockInComponents = calendar.dateComponents([.year, .month, .day], from: dayDate)
             clockInComponents.hour = 9
             clockInComponents.minute = 0
@@ -192,7 +190,6 @@ final class DataManager {
 
             let entry = ClockEntry(clockInTime)
 
-            // Add clock out at 6:00 PM with random variation
             var clockOutComponents = calendar.dateComponents([.year, .month, .day], from: dayDate)
             clockOutComponents.hour = 18
             clockOutComponents.minute = 0
@@ -202,7 +199,6 @@ final class DataManager {
                let clockOutTime = calendar.date(byAdding: .minute, value: clockOutVariation, to: baseClockOutTime) {
                 entry.clockOutTime = clockOutTime
 
-                // Add 1 hour break starting at 12:00 PM
                 var breakStartComponents = calendar.dateComponents([.year, .month, .day], from: dayDate)
                 breakStartComponents.hour = 12
                 breakStartComponents.minute = 0
@@ -227,12 +223,10 @@ final class DataManager {
     func clearAllData() {
         guard let modelContext else { return }
 
-        // Delete all clock entries
         for entry in clockEntries {
             modelContext.delete(entry)
         }
 
-        // Delete all projects
         for project in projects {
             modelContext.delete(project)
         }

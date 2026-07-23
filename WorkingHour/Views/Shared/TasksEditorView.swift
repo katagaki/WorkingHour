@@ -26,7 +26,6 @@ struct TasksEditorView: View {
     var body: some View {
         NavigationStack {
             List {
-                // Projects
                 if !activeProjects.isEmpty {
                     ForEach(activeProjects) { project in
                         Section {
@@ -42,7 +41,6 @@ struct TasksEditorView: View {
                     }
                 }
 
-                // Others
                 Section {
                     TextField("Tasks.Others.Placeholder",
                               text: $othersDescription,
@@ -100,7 +98,6 @@ struct TasksEditorView: View {
     }
 
     private func loadTasks() {
-        // Load existing tasks from the entry's relationship
         for task in entry.tasks ?? [] {
             if let project = task.project {
                 projectDescriptions[project.id] = task.taskDescription
@@ -111,32 +108,27 @@ struct TasksEditorView: View {
     }
 
     private func saveTasks() {
-        // Build a lookup of existing tasks by project ID (nil key = "others")
+        // Lookup of existing tasks by project ID (nil key = "others").
         var existingByProjectId: [String?: ProjectTask] = [:]
         for task in entry.tasks ?? [] {
             existingByProjectId[task.project?.id] = task
         }
 
-        // Update or create tasks for each project
         for (projectId, description) in projectDescriptions {
             let trimmed = description.trimmingCharacters(in: .whitespacesAndNewlines)
             if trimmed.isEmpty {
-                // Remove the task if description is now empty
                 if let existing = existingByProjectId[projectId] {
                     modelContext.delete(existing)
                 }
             } else if let existing = existingByProjectId[projectId] {
-                // Update existing task
                 existing.taskDescription = trimmed
             } else {
-                // Create a new task linked to this entry and project
                 let project = activeProjects.first { $0.id == projectId }
                 let newTask = ProjectTask(taskDescription: trimmed, clockEntry: entry, project: project)
                 modelContext.insert(newTask)
             }
         }
 
-        // Handle "Others" (no project)
         let trimmedOthers = othersDescription.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmedOthers.isEmpty {
             if let existing = existingByProjectId[nil] {

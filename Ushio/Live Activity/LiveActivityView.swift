@@ -39,7 +39,6 @@ struct LiveActivityView: View {
 
     private var mediumContent: some View {
         VStack(spacing: 6.0) {
-            // Clock in/out times
             HStack(alignment: .center, spacing: 12.0) {
                 VStack(alignment: .leading, spacing: 2.0) {
                     Text(context.state.clockInTime, style: .date)
@@ -79,11 +78,9 @@ struct LiveActivityView: View {
 
             Divider()
 
-            // Working time or total time worked
             HStack(alignment: .center, spacing: 16) {
                 VStack(alignment: .leading, spacing: 2) {
                     if let clockOutTime = context.state.clockOutTime {
-                        // Show total time worked when clocked out
                         Text("Timesheet.TotalTimeWorked")
                             .foregroundStyle(.secondary)
                             .font(.caption)
@@ -102,7 +99,6 @@ struct LiveActivityView: View {
                                 .font(.caption)
                                 .fontWeight(.bold)
 
-                            // Show remaining/overtime beside the Working text
                             if !context.state.isOnBreak {
                                 let endWorkDate = context.state.clockInTime
                                     .addingTimeInterval(context.state.totalBreakTime)
@@ -162,8 +158,7 @@ struct LiveActivityView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            // Action buttons (only show when not clocked out). When the
-            // activity has gone stale, StaleWarningView takes their place.
+            // Hidden once clocked out; StaleWarningView replaces them when stale.
             if context.state.clockOutTime == nil {
                 if context.isStale {
                     StaleWarningView()

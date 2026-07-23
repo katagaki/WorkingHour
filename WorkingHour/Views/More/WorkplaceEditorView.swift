@@ -199,7 +199,6 @@ struct WorkplaceEditorView: View {
             log("WorkplaceEditorView: Error saving workplace: \(error)")
         }
 
-        // Refresh geofencing
         GeofencingManager.shared.startMonitoringWorkplaces()
 
         dismiss()

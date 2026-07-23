@@ -14,9 +14,8 @@ import Foundation
 /// that race produced duplicate live activities for the same session.
 @MainActor
 class LiveActivities {
-    /// Tracks whether the live activities have already been refreshed for the
-    /// current app launch. Used by `refreshOnLaunch` to ensure the full
-    /// end-and-restart cycle only runs once per process lifetime.
+    /// Whether `refreshOnLaunch` has already run this process, so its
+    /// end-and-restart cycle happens only once per launch.
     private static var hasRefreshedOnLaunch = false
 
     /// Maximum stale interval allowed by ActivityKit (8 hours from now).

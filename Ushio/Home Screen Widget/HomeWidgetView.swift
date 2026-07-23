@@ -27,7 +27,6 @@ struct HomeWidgetView: View {
 
     var smallWidget: some View {
         VStack(alignment: .leading, spacing: 6.0) {
-            // Status indicator
             HStack(spacing: 4.0) {
                 Image(systemName: statusIcon)
                     .font(.caption2)
@@ -41,7 +40,6 @@ struct HomeWidgetView: View {
             Spacer()
 
             if let clockInTime = entry.clockInTime {
-                // Clock in time
                 VStack(alignment: .leading, spacing: 2.0) {
                     Text("TimeClock.Work.ClockIn")
                         .font(.caption2)
@@ -51,7 +49,6 @@ struct HomeWidgetView: View {
                         .fontWeight(.bold)
                 }
 
-                // Time worked
                 if entry.clockOutTime != nil {
                     if let timeWorked = entry.timeWorked {
                         VStack(alignment: .leading, spacing: 2.0) {
@@ -119,7 +116,6 @@ struct HomeWidgetView: View {
 
     var mediumWidgetContent: some View {
         HStack(spacing: 16.0) {
-            // Left side: times
             VStack(alignment: .leading, spacing: 6.0) {
                 HStack(spacing: 4.0) {
                     Image(systemName: statusIcon)
@@ -161,14 +157,12 @@ struct HomeWidgetView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            // Right side: work summary
             if entry.clockInTime != nil {
                 VStack(alignment: .trailing, spacing: 6.0) {
                     Spacer()
 
                     if let clockOutTime = entry.clockOutTime,
                        let clockInTime = entry.clockInTime {
-                        // Completed session
                         VStack(alignment: .trailing, spacing: 2.0) {
                             Text("Timesheet.TotalTimeWorked")
                                 .font(.caption2)
@@ -191,7 +185,6 @@ struct HomeWidgetView: View {
                             }
                         }
                     } else if entry.isActive, let clockInTime = entry.clockInTime {
-                        // Active session
                         if entry.isOnBreak {
                             VStack(alignment: .trailing, spacing: 2.0) {
                                 Text("TimeClock.Break.OnBreak")

@@ -47,7 +47,6 @@ struct WorkingHourApp: App {
     }
 
     private func checkAndRestoreLiveActivity(context: ModelContext) {
-        // Fetch active entries (entries without clock out time)
         let descriptor = FetchDescriptor<ClockEntry>(
             predicate: #Predicate { $0.clockOutTime == nil },
             sortBy: [SortDescriptor(\.clockInTime, order: .reverse)]
@@ -78,7 +77,6 @@ struct WorkingHourApp: App {
             ).day ?? 0
             needsRefresh = daysSinceLastScheduled >= 7
         } else {
-            // Never scheduled before
             needsRefresh = true
         }
 

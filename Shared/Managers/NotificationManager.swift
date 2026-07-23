@@ -358,7 +358,6 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         let authorized = await requestAuthorization()
         guard authorized else { return }
 
-        // Cancel any existing clock-in reminders before scheduling new ones
         await cancelClockInReminders()
 
         let calendar = Calendar.current
@@ -403,7 +402,6 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         }
     }
 
-    // Cancels all pending clock-in reminders.
     func cancelClockInReminders() async {
         let pendingRequests = await center.pendingNotificationRequests()
         let clockInIdentifiers = pendingRequests
@@ -417,7 +415,6 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         let authorized = await requestAuthorization()
         guard authorized else { return }
 
-        // Cancel any existing clock-out reminders before scheduling new ones
         await cancelClockOutReminder()
 
         let calendar = Calendar.current

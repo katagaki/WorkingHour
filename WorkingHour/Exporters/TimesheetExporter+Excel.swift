@@ -220,7 +220,6 @@ extension TimesheetExporter {
             }
         }
 
-        // writeOvertimeFooter
         let totalFormat = workbook.addFormat()
         totalFormat.background(color: Color(hex: 0xE27373))
         totalFormat.font(color: .white)

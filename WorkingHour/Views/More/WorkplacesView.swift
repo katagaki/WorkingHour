@@ -28,12 +28,10 @@ struct WorkplacesView: View {
 
     var body: some View {
         List {
-            // Geofencing toggle
             Section {
                 Toggle("Workplace.Geofencing.Enable", isOn: $geofencingEnabled)
 
                 if geofencingEnabled {
-                    // Authorization status
                     if !geofencingManager.hasAlwaysAuthorization {
                         Button {
                             geofencingManager.requestAlwaysAuthorization()
@@ -70,7 +68,6 @@ struct WorkplacesView: View {
             }
 
             if geofencingEnabled {
-                // Auto clock-in/out settings
                 Section {
                     Toggle("Workplace.AutoClockIn", isOn: $autoClockInEnabled)
                     Toggle("Workplace.AutoClockOut", isOn: $autoClockOutEnabled)
@@ -82,7 +79,6 @@ struct WorkplacesView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                // Automatic breaks
                 Section {
                     NavigationLink("BreakWindow.Title") {
                         BreakWindowsView()
@@ -95,7 +91,6 @@ struct WorkplacesView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                // Workplace list
                 Section {
                     ForEach(workplaces) { workplace in
                         NavigationLink {

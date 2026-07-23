@@ -29,7 +29,6 @@ struct ProjectEditorView: View {
                     Toggle("Projects.Active", isOn: $isActive)
                 }
 
-                // Tasks linked to this project
                 Section {
                     let tasks = (project.tasks ?? []).sorted {
                         ($0.clockEntry?.clockInTime ?? .distantPast) > ($1.clockEntry?.clockInTime ?? .distantPast)
@@ -76,14 +75,12 @@ struct ProjectEditorView: View {
                             Button(role: .confirm) {
                                 project.name = editedName.trimmingCharacters(in: .whitespaces)
                                 project.isActive = isActive
-                                // dataManager.updateProject(project)
                                 dismiss()
                             }
                         } else {
                             Button("Shared.Done") {
                                 project.name = editedName.trimmingCharacters(in: .whitespaces)
                                 project.isActive = isActive
-                                // dataManager.updateProject(project)
                                 dismiss()
                             }
                         }
