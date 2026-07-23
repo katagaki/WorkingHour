@@ -8,6 +8,11 @@
 import ActivityKit
 import Foundation
 
+/// Main-actor isolated so that concurrent start requests (clock-in side
+/// effects, location upkeep fixes, launch refreshes) cannot interleave
+/// between checking for an existing activity and requesting a new one —
+/// that race produced duplicate live activities for the same session.
+@MainActor
 class LiveActivities {
     /// Tracks whether the live activities have already been refreshed for the
     /// current app launch. Used by `refreshOnLaunch` to ensure the full
@@ -101,6 +106,14 @@ class LiveActivities {
         // while the app is receiving location updates; retry once in case the
         // request races the first location fix.
         for attempt in 1...2 {
+            // Callers may have suspended since their own existence check (and
+            // the retry sleeps below), so re-check right before requesting.
+            // On the main actor there is no suspension between this check and
+            // the request, so at most one concurrent caller can win.
+            if hasActivity(for: data.entryId) {
+                log("LiveActivityManager: Activity already started elsewhere for entryId \(data.entryId)")
+                return
+            }
             do {
                 let activity = try Activity<UshioAttributes>.request(attributes: attributes, content: content)
                 log("LiveActivityManager: Started activity \(activity.id) for entryId \(activity.attributes.entryId)")
